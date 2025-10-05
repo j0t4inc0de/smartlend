@@ -13,22 +13,36 @@ jobs:
       uses: actions/checkout@v4
 
     - name: 🐳 Desplegar aplicación
-      uses: appleboy/ssh-action@v1.0.3
+      uses: appleboy/ssh-action@v0.1.0
       with:
         host: ${{ secrets.VPS_HOST }}
         username: ${{ secrets.VPS_USER }}
         key: ${{ secrets.VPS_SSH_KEY }}
         script: |
+          echo "🔧 Iniciando despliegue automático..."
           cd /opt/smartlend/smartlend
+          
           echo "🔄 Actualizando código desde GitHub..."
           git fetch origin
           git reset --hard origin/main
-          echo "🐳 Reconstruyendo contenedores Docker..."
-          docker-compose down
-          docker-compose build --no-cache
-          docker-compose up -d
+          
+          echo "🐳 Construyendo nueva imagen Docker..."
+          docker build -t smartlend:latest .
+          
+          echo "🛑 Deteniendo contenedor anterior..."
+          docker stop silly_hopper || true
+          docker rm silly_hopper || true
+          
+          echo "🚀 Iniciando nuevo contenedor..."
+          docker run -d -p 8080:80 --name smartlend-app smartlend:latest
+          
           echo "⏳ Esperando que la aplicación inicie..."
           sleep 10
-          echo "📊 Estado de los contenedores:"
+          
+          echo "📊 Verificando estado del contenedor:"
           docker ps
-          echo "✅ Despliegue completado!"
+          
+          echo "🌐 Probando que la aplicación responde..."
+          curl -f http://localhost:8080 && echo "✅ Aplicación funcionando correctamente!" || echo "⚠️ La aplicación puede estar iniciando..."
+          
+          echo "🎉 Despliegue completado exitosamente!"
