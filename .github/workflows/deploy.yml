@@ -26,21 +26,32 @@ jobs:
           git fetch origin
           git reset --hard origin/main
           
-          echo "🐳 Construyendo nueva imagen Docker..."
-          docker build -t smartlend:latest .
+          echo "📦 Instalando dependencias y construyendo la aplicación..."
+          # Si usas npm
+          npm install
+          npm run build
           
-          echo "🛑 Deteniendo contenedor anterior..."
-          docker stop silly_hopper || true
-          docker rm silly_hopper || true
+          echo "🐳 Construyendo nueva imagen Docker..."
+          docker build --no-cache -t smartlend:latest .
+          
+          echo "🛑 Deteniendo y eliminando contenedor anterior..."
+          docker stop smartlend-app || true
+          docker rm smartlend-app || true
+          
+          # Eliminar imagen anterior para liberar espacio
+          docker rmi 12b74ad94ec5 || true
           
           echo "🚀 Iniciando nuevo contenedor..."
           docker run -d -p 8080:80 --name smartlend-app smartlend:latest
           
           echo "⏳ Esperando que la aplicación inicie..."
-          sleep 10
+          sleep 15
           
           echo "📊 Verificando estado del contenedor:"
           docker ps
+          
+          echo "🔍 Verificando que se usa la imagen correcta:"
+          docker images | grep smartlend
           
           echo "🌐 Probando que la aplicación responde..."
           curl -f http://localhost:8080 && echo "✅ Aplicación funcionando correctamente!" || echo "⚠️ La aplicación puede estar iniciando..."
