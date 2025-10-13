@@ -3,7 +3,7 @@
     <!-- Partículas animadas -->
     <div class="absolute inset-0 pointer-events-none z-10">
       <div class="particles">
-        <div v-for="n in 20" :key="n" class="particle"></div>
+        <div v-for="n in 30" :key="n" class="particle"></div>
       </div>
     </div>
 
@@ -275,6 +275,86 @@ const startProcess = () => {
   height: 3px;
   left: 88%;
   animation-duration: 26s;
+  animation-delay: -19s;
+}
+
+.particle:nth-child(21) {
+  width: 4px;
+  height: 4px;
+  left: 12%;
+  animation-duration: 23s;
+  animation-delay: -3s;
+}
+
+.particle:nth-child(22) {
+  width: 2px;
+  height: 2px;
+  left: 33%;
+  animation-duration: 29s;
+  animation-delay: -7s;
+}
+
+.particle:nth-child(23) {
+  width: 5px;
+  height: 5px;
+  left: 58%;
+  animation-duration: 21s;
+  animation-delay: -11s;
+}
+
+.particle:nth-child(24) {
+  width: 3px;
+  height: 3px;
+  left: 78%;
+  animation-duration: 27s;
+  animation-delay: -16s;
+}
+
+.particle:nth-child(25) {
+  width: 6px;
+  height: 6px;
+  left: 92%;
+  animation-duration: 19s;
+  animation-delay: -6s;
+}
+
+.particle:nth-child(26) {
+  width: 2px;
+  height: 2px;
+  left: 8%;
+  animation-duration: 31s;
+  animation-delay: -17s;
+}
+
+.particle:nth-child(27) {
+  width: 4px;
+  height: 4px;
+  left: 28%;
+  animation-duration: 24s;
+  animation-delay: -1s;
+}
+
+.particle:nth-child(28) {
+  width: 3px;
+  height: 3px;
+  left: 48%;
+  animation-duration: 26s;
+  animation-delay: -14s;
+}
+
+.particle:nth-child(29) {
+  width: 5px;
+  height: 5px;
+  left: 68%;
+  animation-duration: 20s;
+  animation-delay: -9s;
+}
+
+.particle:nth-child(30) {
+  width: 3px;
+  height: 3px;
+  left: 82%;
+  animation-duration: 25s;
   animation-delay: -19s;
 }
 </style>
