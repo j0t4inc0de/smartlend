@@ -32,7 +32,7 @@
 
     <!-- Logo SmartLend -->
     <div class="relative w-full flex justify-center pb-4 sm:pb-6">
-      <h2 class="text-white text-xl sm:text-2xl md:text-3xl">SmartLend</h2>
+      <h2 class="text-white text-2xl sm:text-3xl md:text-4xl">SmartLend</h2>
     </div>
   </div>
 </template>
