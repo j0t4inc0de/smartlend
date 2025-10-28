@@ -29,6 +29,7 @@ jobs:
           echo "📦 Instalando dependencias y construyendo la aplicación..."
           # Si usas npm
           npm install
+          rm -rf dist
           npm run build
           
           echo "🐳 Construyendo nueva imagen Docker..."
