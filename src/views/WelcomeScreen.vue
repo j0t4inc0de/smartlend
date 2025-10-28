@@ -22,7 +22,7 @@
     <div class="relative flex-1 flex items-center justify-center px-4">
       <button @click="startProcess"
         class="animate-pulse-slow group/button relative inline-flex cursor-pointer items-center justify-center overflow-hidden rounded-md bg-red-500/30 backdrop-blur-lg px-6 py-2 text-base font-semibold text-white transition-all duration-300 ease-in-out scale-125 hover:scale-125 hover:animate-none border border-white/20">
-        <span class="text-lg">Ingresar TEST1</span>
+        <span class="text-lg">Ingresar TEST2</span>
         <div
           class="absolute inset-0 flex h-full w-full justify-center [transform:skew(-13deg)_translateX(-100%)] group-hover/button:duration-1000 group-hover/button:[transform:skew(-13deg)_translateX(100%)]">
           <div class="relative h-full w-10 bg-white/30"></div>
