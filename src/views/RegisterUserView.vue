@@ -40,46 +40,51 @@
             <!-- RUT -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">
-                RUT
+                RUT <span class="text-red-500">*</span>
               </label>
-              <input type="text" placeholder="12.345.678-9"
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all" />
+              <input v-model="formData.rut" type="text" placeholder="21351502-9"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
+                required />
             </div>
 
             <!-- Nombres -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">
-                Nombres
+                Nombres <span class="text-red-500">*</span>
               </label>
-              <input type="text" placeholder="Juan Pablo"
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all" />
+              <input v-model="formData.nombres" type="text" placeholder="Juan Pablo"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
+                required />
             </div>
 
             <!-- Apellidos -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">
-                Apellidos
+                Apellidos <span class="text-red-500">*</span>
               </label>
-              <input type="text" placeholder="González Pérez"
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all" />
+              <input v-model="formData.apellidos" type="text" placeholder="Erices Fuentealba"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
+                required />
             </div>
 
             <!-- Correo -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">
-                Correo Electrónico
+                Correo Electrónico <span class="text-red-500">*</span>
               </label>
-              <input type="email" placeholder="usuario@inacapmail.cl"
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all" />
+              <input v-model="formData.correo" type="email" placeholder="usuario@inacapmail.cl"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
+                required />
             </div>
 
             <!-- Rol -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">
-                Rol
+                Rol <span class="text-red-500">*</span>
               </label>
-              <select
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all">
+              <select v-model="formData.rol"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
+                required>
                 <option value="">Seleccionar rol...</option>
                 <option value="estudiante">Estudiante</option>
                 <option value="docente">Docente</option>
@@ -92,7 +97,7 @@
               <label class="block text-sm font-medium text-gray-700 mb-2">
                 Carrera (opcional)
               </label>
-              <select
+              <select v-model="formData.carrera"
                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all">
                 <option value="">Seleccionar carrera...</option>
                 <option value="ingenieria">Ingeniería en Informática</option>
@@ -135,10 +140,15 @@
               </div>
 
               <!-- Indicador de estado de cámara -->
-              <div
+              <div v-if="isCameraActive"
                 class="absolute top-4 right-4 bg-black/50 backdrop-blur-sm px-3 py-2 rounded-lg flex items-center space-x-2">
                 <div class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
                 <span class="text-white text-sm font-medium">Cámara activa</span>
+              </div>
+              <div v-else
+                class="absolute top-4 right-4 bg-black/50 backdrop-blur-sm px-3 py-2 rounded-lg flex items-center space-x-2">
+                <div class="w-2 h-2 bg-gray-400 rounded-full"></div>
+                <span class="text-white text-sm font-medium">Iniciando cámara...</span>
               </div>
             </div>
 
@@ -165,8 +175,8 @@
 
             <!-- Botones de acción -->
             <div class="flex flex-col sm:flex-row gap-3">
-              <button
-                class="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl">
+              <button @click="captureImage" :disabled="!isCameraActive"
+                class="flex-1 bg-red-600 hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
@@ -176,8 +186,8 @@
                 <span>Capturar Foto</span>
               </button>
 
-              <button
-                class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center space-x-2">
+              <button @click="retryCapture" :disabled="!capturedImage"
+                class="flex-1 bg-gray-200 hover:bg-gray-300 disabled:bg-gray-100 disabled:cursor-not-allowed text-gray-700 font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center space-x-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -187,11 +197,11 @@
             </div>
 
             <!-- Preview de imagen capturada -->
-            <div class="mt-4 hidden">
+            <div v-if="showPreview" class="mt-4">
               <p class="text-sm font-medium text-gray-700 mb-2">Vista previa:</p>
               <div class="relative bg-gray-100 rounded-lg p-4">
                 <img ref="previewImage" class="w-full max-w-sm mx-auto rounded-lg shadow-lg" alt="Preview" />
-                <button
+                <button @click="retryCapture"
                   class="absolute top-6 right-6 bg-red-600 hover:bg-red-700 text-white p-2 rounded-full shadow-lg transition-all">
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -204,7 +214,7 @@
 
         <!-- Botones finales -->
         <div class="flex flex-col sm:flex-row gap-4 pt-6 border-t border-gray-200">
-          <button
+          <button @click="cancelRegistration"
             class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center space-x-2">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -212,13 +222,19 @@
             <span>Cancelar</span>
           </button>
 
-          <button
-            class="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-4 px-6 rounded-lg transition-all duration-200 flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <button @click="registerUser" :disabled="!isFormValid || isSubmitting"
+            class="flex-1 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold py-4 px-6 rounded-lg transition-all duration-200 flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl">
+            <svg v-if="!isSubmitting" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <span>Registrar Usuario</span>
+            <svg v-else class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+              </path>
+            </svg>
+            <span>{{ isSubmitting ? 'Registrando...' : 'Registrar Usuario' }}</span>
           </button>
         </div>
       </div>
@@ -242,26 +258,408 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 // Referencias a elementos del DOM
 const videoElement = ref(null)
 const canvasElement = ref(null)
 const previewImage = ref(null)
 
-// Estado
+// Estado de la cámara
 const stream = ref(null)
+const isCameraActive = ref(false)
+const capturedImage = ref(null)
+const capturedImageURL = ref(null)
+
+// Datos del formulario
+const formData = ref({
+  rut: '',
+  nombres: '',
+  apellidos: '',
+  correo: '',
+  rol: '',
+  carrera: ''
+})
+
+// Estados de UI
+const isCapturing = ref(false)
+const showPreview = ref(false)
+const isSubmitting = ref(false)
+
+// Validación del formulario
+const isFormValid = computed(() => {
+  return formData.value.rut &&
+    formData.value.nombres &&
+    formData.value.apellidos &&
+    formData.value.correo &&
+    formData.value.rol &&
+    capturedImage.value !== null
+})
+
+// Iniciar cámara
+const startCamera = async () => {
+  try {
+    console.log('🎥 Iniciando cámara...')
+
+    stream.value = await navigator.mediaDevices.getUserMedia({
+      video: {
+        width: { ideal: 1280 },
+        height: { ideal: 720 },
+        facingMode: 'user'
+      }
+    })
+
+    if (videoElement.value) {
+      videoElement.value.srcObject = stream.value
+      isCameraActive.value = true
+      console.log('✅ Cámara iniciada correctamente')
+      console.log('📹 Stream info:', {
+        active: stream.value.active,
+        tracks: stream.value.getTracks().length
+      })
+    }
+  } catch (error) {
+    console.error('❌ Error al acceder a la cámara:', error)
+    alert('No se pudo acceder a la cámara. Verifica los permisos del navegador.')
+  }
+}
+
+// Capturar imagen
+const captureImage = () => {
+  try {
+    console.log('📸 Capturando imagen...')
+
+    const canvas = canvasElement.value
+    const video = videoElement.value
+
+    if (!canvas || !video) {
+      console.error('❌ Canvas o video no disponibles')
+      return
+    }
+
+    // Configurar tamaño del canvas
+    canvas.width = video.videoWidth
+    canvas.height = video.videoHeight
+
+    console.log('📐 Dimensiones de captura:', {
+      width: canvas.width,
+      height: canvas.height
+    })
+
+    // Capturar frame actual
+    const context = canvas.getContext('2d')
+    context.drawImage(video, 0, 0, canvas.width, canvas.height)
+
+    // Convertir a blob
+    canvas.toBlob((blob) => {
+      capturedImage.value = blob
+      capturedImageURL.value = URL.createObjectURL(blob)
+      showPreview.value = true
+
+      console.log('✅ Imagen capturada exitosamente')
+      console.log('📦 Blob info:', {
+        size: blob.size,
+        type: blob.type,
+        sizeInKB: (blob.size / 1024).toFixed(2) + ' KB'
+      })
+
+      // Mostrar preview
+      if (previewImage.value) {
+        previewImage.value.src = capturedImageURL.value
+      }
+    }, 'image/jpeg', 0.95)
+
+  } catch (error) {
+    console.error('❌ Error al capturar imagen:', error)
+  }
+}
+
+// Reintentar captura
+const retryCapture = () => {
+  console.log('🔄 Reintentando captura...')
+  capturedImage.value = null
+  capturedImageURL.value = null
+  showPreview.value = false
+
+  if (previewImage.value) {
+    previewImage.value.src = ''
+  }
+}
+
+// Cancelar registro
+const cancelRegistration = () => {
+  console.log('❌ Cancelando registro...')
+  if (confirm('¿Estás seguro de que deseas cancelar el registro?')) {
+    // Detener cámara
+    if (stream.value) {
+      stream.value.getTracks().forEach(track => track.stop())
+    }
+    // Regresar a la pantalla anterior o home
+    router.push('/')
+  }
+}
+
+// Registrar usuario
+const registerUser = () => {
+  console.log('\n🚀 ============ INICIANDO REGISTRO DE USUARIO ============')
+  console.log('Timestamp:', new Date().toISOString())
+
+  // Validar formulario
+  if (!isFormValid.value) {
+    console.error('\n❌ ============ FORMULARIO INCOMPLETO ============')
+    console.log('📋 Estado de validación:', {
+      rut: !!formData.value.rut,
+      nombres: !!formData.value.nombres,
+      apellidos: !!formData.value.apellidos,
+      correo: !!formData.value.correo,
+      rol: !!formData.value.rol,
+      imagenCapturada: !!capturedImage.value
+    })
+    alert('⚠️ Por favor completa todos los campos requeridos y captura una foto')
+    return
+  }
+
+  isSubmitting.value = true
+
+  // ============================================
+  // LOGS DETALLADOS DE TODOS LOS DATOS
+  // ============================================
+
+  console.log('\n📋 ============ DATOS DEL FORMULARIO ============')
+  console.table({
+    'RUT': formData.value.rut,
+    'Nombres': formData.value.nombres,
+    'Apellidos': formData.value.apellidos,
+    'Correo': formData.value.correo,
+    'Rol': formData.value.rol,
+    'Carrera': formData.value.carrera || 'No especificada'
+  })
+
+  console.log('\n📸 ============ DATOS DE LA IMAGEN ============')
+  if (capturedImage.value) {
+    console.log('✅ Imagen capturada exitosamente')
+    console.table({
+      'Tipo': capturedImage.value.type,
+      'Tamaño (KB)': (capturedImage.value.size / 1024).toFixed(2),
+      'Tamaño (bytes)': capturedImage.value.size,
+      'Nombre': 'face.jpg'
+    })
+    console.log('📐 Dimensiones del canvas:', {
+      width: canvasElement.value?.width,
+      height: canvasElement.value?.height
+    })
+
+    // Mostrar preview en consola (como data URL)
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      console.log('\n🖼️  Preview de la imagen (puedes abrir en nueva pestaña):')
+      console.log(e.target.result)
+    }
+    reader.readAsDataURL(capturedImage.value)
+  } else {
+    console.error('❌ No hay imagen capturada')
+  }
+
+  console.log('\n📦 ============ FORMDATA QUE SE ENVIARÍA AL BACKEND ============')
+  const formDataToSend = new FormData()
+  formDataToSend.append('image', capturedImage.value, 'face.jpg')
+  formDataToSend.append('rut', formData.value.rut)
+  formDataToSend.append('nombres', formData.value.nombres)
+  formDataToSend.append('apellidos', formData.value.apellidos)
+  formDataToSend.append('correo', formData.value.correo)
+  formDataToSend.append('rol', formData.value.rol)
+  if (formData.value.carrera) {
+    formDataToSend.append('carrera', formData.value.carrera)
+  }
+
+  console.log('Campos en FormData:')
+  for (let [key, value] of formDataToSend.entries()) {
+    if (key === 'image') {
+      console.log(`  - ${key}:`, {
+        type: value.type,
+        size: `${(value.size / 1024).toFixed(2)} KB`,
+        name: value.name
+      })
+    } else {
+      console.log(`  - ${key}: "${value}"`)
+    }
+  }
+
+  console.log('\n🌐 ============ INFORMACIÓN PARA EL BACKEND ============')
+  console.log('Endpoint: POST http://72.60.167.16:8000/api/auth/register-face/')
+  console.log('Content-Type: multipart/form-data (automático)')
+  console.log('Método: POST')
+
+  console.log('\n📡 ============ OBJETO JSON EQUIVALENTE ============')
+  const jsonData = {
+    usuario: {
+      rut: formData.value.rut,
+      nombres: formData.value.nombres,
+      apellidos: formData.value.apellidos,
+      correo: formData.value.correo,
+      rol: formData.value.rol,
+      carrera: formData.value.carrera || null
+    },
+    imagen: {
+      tipo: capturedImage.value.type,
+      tamaño_kb: (capturedImage.value.size / 1024).toFixed(2),
+      tamaño_bytes: capturedImage.value.size,
+      formato: 'JPEG',
+      dimensiones: {
+        width: canvasElement.value?.width,
+        height: canvasElement.value?.height
+      }
+    },
+    metadata: {
+      timestamp: new Date().toISOString(),
+      user_agent: navigator.userAgent,
+      idioma: navigator.language,
+      plataforma: navigator.platform
+    }
+  }
+
+  console.log(JSON.stringify(jsonData, null, 2))
+
+  console.log('\n💾 ============ RESUMEN DE LO QUE SE GUARDARÁ EN BD ============')
+  console.log('En tabla USUARIO:')
+  console.log(`  - rut: "${formData.value.rut}"`)
+  console.log(`  - nombres: "${formData.value.nombres}"`)
+  console.log(`  - apellidos: "${formData.value.apellidos}"`)
+  console.log(`  - correo: "${formData.value.correo}"`)
+  console.log(`  - id_rol: [ID del rol "${formData.value.rol}"]`)
+  console.log(`  - id_carrera: ${formData.value.carrera ? `[ID de "${formData.value.carrera}"]` : 'NULL'}`)
+  console.log(`  - embedding: [EMBEDDING ENCRIPTADO - ~500 caracteres]`)
+  console.log(`  - created_at: ${new Date().toISOString()}`)
+
+  console.log('\n⚡ ============ FLUJO DEL BACKEND (Opción 2) ============')
+  console.log('1. ✅ Recibir FormData con imagen (~250 KB)')
+  console.log('2. ✅ Validar campos requeridos')
+  console.log('3. ✅ Verificar que RUT no exista')
+  console.log('4. ✅ Extraer embedding de imagen (face_recognition - 0.3s)')
+  console.log('5. ✅ Encriptar embedding (cryptography.Fernet - 0.05s)')
+  console.log('6. ✅ Guardar en BD (0.1s)')
+  console.log('7. ✅ Responder success con user_id')
+  console.log('   TIEMPO TOTAL ESTIMADO: ~0.8 segundos')
+
+  console.log('\n📝 ============ CÓDIGO PARA CONECTAR CON BACKEND ============')
+  console.log(`
+// En RegisterUserView.vue, reemplazar esta función con:
+
+import { authService } from '@/services/authService'
+
+const registerUser = async () => {
+  if (!isFormValid.value) {
+    alert('⚠️ Completa todos los campos y captura una foto')
+    return
+  }
+
+  isSubmitting.value = true
+
+  try {
+    // Preparar FormData
+    const formDataToSend = new FormData()
+    formDataToSend.append('image', capturedImage.value, 'face.jpg')
+    formDataToSend.append('rut', formData.value.rut)
+    formDataToSend.append('nombres', formData.value.nombres)
+    formDataToSend.append('apellidos', formData.value.apellidos)
+    formDataToSend.append('correo', formData.value.correo)
+    formDataToSend.append('rol', formData.value.rol)
+    if (formData.value.carrera) {
+      formDataToSend.append('carrera', formData.value.carrera)
+    }
+
+    // LLAMADA REAL AL BACKEND
+    const result = await authService.registerUserWithFace(formDataToSend)
+
+    console.log('✅ Usuario registrado:', result)
+    alert(\`✅ Usuario registrado!\\nID: \${result.user_id}\\nRUT: \${result.rut}\`)
+
+    resetForm()
+
+  } catch (error) {
+    console.error('❌ Error:', error)
+    alert('❌ Error: ' + error.message)
+  } finally {
+    isSubmitting.value = false
+  }
+}
+  `)
+
+  // Simulación de éxito
+  setTimeout(() => {
+    console.log('\n✅ ============ SIMULACIÓN COMPLETADA ============')
+    console.log('🎉 Todos los datos fueron mostrados en consola')
+    console.log('📌 Revisa los logs de arriba para ver TODOS los detalles')
+    console.log('🔗 Cuando estés listo, conecta con el backend usando authService')
+    console.log('=' * 70 + '\n')
+
+    isSubmitting.value = false
+
+    // Mostrar alerta con resumen
+    alert(`✅ DATOS GUARDADOS EN CONSOLA
+
+📋 Usuario: ${formData.value.nombres} ${formData.value.apellidos}
+🆔 RUT: ${formData.value.rut}
+📧 Correo: ${formData.value.correo}
+👤 Rol: ${formData.value.rol}
+📸 Imagen: ${(capturedImage.value.size / 1024).toFixed(2)} KB
+
+Revisa la consola (F12) para ver TODOS los detalles.
+Cuando estés listo, conecta el backend.`)
+
+    // NO resetear el formulario para que puedas ver los datos
+    // resetForm()
+  }, 500)
+}
+
+// Resetear formulario
+const resetForm = () => {
+  console.log('🔄 Reseteando formulario...')
+
+  formData.value = {
+    rut: '',
+    nombres: '',
+    apellidos: '',
+    correo: '',
+    rol: '',
+    carrera: ''
+  }
+
+  capturedImage.value = null
+  capturedImageURL.value = null
+  showPreview.value = false
+  isSubmitting.value = false
+
+  if (previewImage.value) {
+    previewImage.value.src = ''
+  }
+
+  console.log('✅ Formulario reseteado')
+}
 
 // Lifecycle hooks
-onMounted(() => {
-  // Aquí irá la lógica para iniciar la cámara
-  console.log('Componente montado - Listo para iniciar cámara')
+onMounted(async () => {
+  console.log('🎬 Componente RegisterUserView montado')
+  await startCamera()
 })
 
 onUnmounted(() => {
-  // Limpiar stream de cámara al destruir componente
+  console.log('🛑 Componente desmontado, limpiando recursos...')
+
+  // Detener cámara
   if (stream.value) {
-    stream.value.getTracks().forEach(track => track.stop())
+    stream.value.getTracks().forEach(track => {
+      track.stop()
+      console.log('🎥 Track de cámara detenido')
+    })
+  }
+
+  // Limpiar URLs de objetos
+  if (capturedImageURL.value) {
+    URL.revokeObjectURL(capturedImageURL.value)
   }
 })
 </script>
