@@ -291,16 +291,28 @@ const isFormValid = computed(() => {
 // --- LÓGICA DE CÁMARA MEJORADA ---
 const startCamera = async () => {
   try {
+    console.log('🎥 Iniciando cámara...')
+
     stream.value = await navigator.mediaDevices.getUserMedia({
-      video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: 'user' }
+      video: {
+        width: { ideal: 1280 },
+        height: { ideal: 720 },
+        facingMode: 'user'
+      }
     })
+
     if (videoElement.value) {
       videoElement.value.srcObject = stream.value
       isCameraActive.value = true
+      console.log('✅ Cámara iniciada correctamente')
+      console.log('📹 Stream info:', {
+        active: stream.value.active,
+        tracks: stream.value.getTracks().length
+      })
     }
   } catch (error) {
-    console.error('Error cámara:', error)
-    alert('No se pudo acceder a la cámara. Revisa los permisos.')
+    console.error('❌ Error al acceder a la cámara:', error)
+    alert('No se pudo acceder a la cámara. Verifica los permisos del navegador.')
   }
 }
 
