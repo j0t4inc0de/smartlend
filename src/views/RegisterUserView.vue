@@ -260,6 +260,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { authService } from '@/services/authService'
 
 const router = useRouter()
 
@@ -403,156 +404,9 @@ const cancelRegistration = () => {
 }
 
 // Registrar usuario
-const registerUser = () => {
-  console.log('\n🚀 ============ INICIANDO REGISTRO DE USUARIO ============')
-  console.log('Timestamp:', new Date().toISOString())
-
-  // Validar formulario
-  if (!isFormValid.value) {
-    console.error('\n❌ ============ FORMULARIO INCOMPLETO ============')
-    console.log('📋 Estado de validación:', {
-      rut: !!formData.value.rut,
-      nombres: !!formData.value.nombres,
-      apellidos: !!formData.value.apellidos,
-      correo: !!formData.value.correo,
-      rol: !!formData.value.rol,
-      imagenCapturada: !!capturedImage.value
-    })
-    alert('⚠️ Por favor completa todos los campos requeridos y captura una foto')
-    return
-  }
-
-  isSubmitting.value = true
-
-  // ============================================
-  // LOGS DETALLADOS DE TODOS LOS DATOS
-  // ============================================
-
-  console.log('\n📋 ============ DATOS DEL FORMULARIO ============')
-  console.table({
-    'RUT': formData.value.rut,
-    'Nombres': formData.value.nombres,
-    'Apellidos': formData.value.apellidos,
-    'Correo': formData.value.correo,
-    'Rol': formData.value.rol,
-    'Carrera': formData.value.carrera || 'No especificada'
-  })
-
-  console.log('\n📸 ============ DATOS DE LA IMAGEN ============')
-  if (capturedImage.value) {
-    console.log('✅ Imagen capturada exitosamente')
-    console.table({
-      'Tipo': capturedImage.value.type,
-      'Tamaño (KB)': (capturedImage.value.size / 1024).toFixed(2),
-      'Tamaño (bytes)': capturedImage.value.size,
-      'Nombre': 'face.jpg'
-    })
-    console.log('📐 Dimensiones del canvas:', {
-      width: canvasElement.value?.width,
-      height: canvasElement.value?.height
-    })
-
-    // Mostrar preview en consola (como data URL)
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      console.log('\n🖼️  Preview de la imagen (puedes abrir en nueva pestaña):')
-      console.log(e.target.result)
-    }
-    reader.readAsDataURL(capturedImage.value)
-  } else {
-    console.error('❌ No hay imagen capturada')
-  }
-
-  console.log('\n📦 ============ FORMDATA QUE SE ENVIARÍA AL BACKEND ============')
-  const formDataToSend = new FormData()
-  formDataToSend.append('image', capturedImage.value, 'face.jpg')
-  formDataToSend.append('rut', formData.value.rut)
-  formDataToSend.append('nombres', formData.value.nombres)
-  formDataToSend.append('apellidos', formData.value.apellidos)
-  formDataToSend.append('correo', formData.value.correo)
-  formDataToSend.append('rol', formData.value.rol)
-  if (formData.value.carrera) {
-    formDataToSend.append('carrera', formData.value.carrera)
-  }
-
-  console.log('Campos en FormData:')
-  for (let [key, value] of formDataToSend.entries()) {
-    if (key === 'image') {
-      console.log(`  - ${key}:`, {
-        type: value.type,
-        size: `${(value.size / 1024).toFixed(2)} KB`,
-        name: value.name
-      })
-    } else {
-      console.log(`  - ${key}: "${value}"`)
-    }
-  }
-
-  console.log('\n🌐 ============ INFORMACIÓN PARA EL BACKEND ============')
-  console.log('Endpoint: POST http://72.60.167.16:8000/api/auth/register-face/')
-  console.log('Content-Type: multipart/form-data (automático)')
-  console.log('Método: POST')
-
-  console.log('\n📡 ============ OBJETO JSON EQUIVALENTE ============')
-  const jsonData = {
-    usuario: {
-      rut: formData.value.rut,
-      nombres: formData.value.nombres,
-      apellidos: formData.value.apellidos,
-      correo: formData.value.correo,
-      rol: formData.value.rol,
-      carrera: formData.value.carrera || null
-    },
-    imagen: {
-      tipo: capturedImage.value.type,
-      tamaño_kb: (capturedImage.value.size / 1024).toFixed(2),
-      tamaño_bytes: capturedImage.value.size,
-      formato: 'JPEG',
-      dimensiones: {
-        width: canvasElement.value?.width,
-        height: canvasElement.value?.height
-      }
-    },
-    metadata: {
-      timestamp: new Date().toISOString(),
-      user_agent: navigator.userAgent,
-      idioma: navigator.language,
-      plataforma: navigator.platform
-    }
-  }
-
-  console.log(JSON.stringify(jsonData, null, 2))
-
-  console.log('\n💾 ============ RESUMEN DE LO QUE SE GUARDARÁ EN BD ============')
-  console.log('En tabla USUARIO:')
-  console.log(`  - rut: "${formData.value.rut}"`)
-  console.log(`  - nombres: "${formData.value.nombres}"`)
-  console.log(`  - apellidos: "${formData.value.apellidos}"`)
-  console.log(`  - correo: "${formData.value.correo}"`)
-  console.log(`  - id_rol: [ID del rol "${formData.value.rol}"]`)
-  console.log(`  - id_carrera: ${formData.value.carrera ? `[ID de "${formData.value.carrera}"]` : 'NULL'}`)
-  console.log(`  - embedding: [EMBEDDING ENCRIPTADO - ~500 caracteres]`)
-  console.log(`  - created_at: ${new Date().toISOString()}`)
-
-  console.log('\n⚡ ============ FLUJO DEL BACKEND (Opción 2) ============')
-  console.log('1. ✅ Recibir FormData con imagen (~250 KB)')
-  console.log('2. ✅ Validar campos requeridos')
-  console.log('3. ✅ Verificar que RUT no exista')
-  console.log('4. ✅ Extraer embedding de imagen (face_recognition - 0.3s)')
-  console.log('5. ✅ Encriptar embedding (cryptography.Fernet - 0.05s)')
-  console.log('6. ✅ Guardar en BD (0.1s)')
-  console.log('7. ✅ Responder success con user_id')
-  console.log('   TIEMPO TOTAL ESTIMADO: ~0.8 segundos')
-
-  console.log('\n📝 ============ CÓDIGO PARA CONECTAR CON BACKEND ============')
-  console.log(`
-// En RegisterUserView.vue, reemplazar esta función con:
-
-import { authService } from '@/services/authService'
-
 const registerUser = async () => {
   if (!isFormValid.value) {
-    alert('⚠️ Completa todos los campos y captura una foto')
+    alert('⚠️ Por favor completa todos los campos requeridos y captura una foto')
     return
   }
 
@@ -571,50 +425,34 @@ const registerUser = async () => {
       formDataToSend.append('carrera', formData.value.carrera)
     }
 
+    console.log('📤 Enviando datos al backend...')
+
     // LLAMADA REAL AL BACKEND
     const result = await authService.registerUserWithFace(formDataToSend)
 
-    console.log('✅ Usuario registrado:', result)
-    alert(\`✅ Usuario registrado!\\nID: \${result.user_id}\\nRUT: \${result.rut}\`)
+    console.log('✅ Respuesta del backend:', result)
 
+    // Mensaje de éxito
+    alert(
+      `✅ ¡Usuario registrado exitosamente!\n\n` +
+      `ID: ${result.usuario_id}\n` +
+      `RUT: ${formData.value.rut}\n` +
+      `${result.created ? 'Usuario nuevo creado' : 'Usuario actualizado'}`
+    )
+
+    // Resetear formulario
     resetForm()
 
+    // Opcional: redirigir
+    // router.push('/')
+
   } catch (error) {
-    console.error('❌ Error:', error)
-    alert('❌ Error: ' + error.message)
+    console.error('❌ Error al registrar usuario:', error)
+    alert(`❌ Error al registrar usuario:\n\n${error.message}`)
   } finally {
     isSubmitting.value = false
   }
 }
-  `)
-
-  // Simulación de éxito
-  setTimeout(() => {
-    console.log('\n✅ ============ SIMULACIÓN COMPLETADA ============')
-    console.log('🎉 Todos los datos fueron mostrados en consola')
-    console.log('📌 Revisa los logs de arriba para ver TODOS los detalles')
-    console.log('🔗 Cuando estés listo, conecta con el backend usando authService')
-    console.log('=' * 70 + '\n')
-
-    isSubmitting.value = false
-
-    // Mostrar alerta con resumen
-    alert(`✅ DATOS GUARDADOS EN CONSOLA
-
-📋 Usuario: ${formData.value.nombres} ${formData.value.apellidos}
-🆔 RUT: ${formData.value.rut}
-📧 Correo: ${formData.value.correo}
-👤 Rol: ${formData.value.rol}
-📸 Imagen: ${(capturedImage.value.size / 1024).toFixed(2)} KB
-
-Revisa la consola (F12) para ver TODOS los detalles.
-Cuando estés listo, conecta el backend.`)
-
-    // NO resetear el formulario para que puedas ver los datos
-    // resetForm()
-  }, 500)
-}
-
 // Resetear formulario
 const resetForm = () => {
   console.log('🔄 Reseteando formulario...')
