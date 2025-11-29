@@ -82,14 +82,18 @@
 
                 <div class="group">
                   <label
-                    class="block text-xs font-medium text-gray-400 mb-1 ml-1 uppercase tracking-wider group-focus-within:text-red-400 transition-colors">Rol</label>
+                    class="block text-xs font-medium text-gray-400 mb-1 ml-1 uppercase tracking-wider group-focus-within:text-red-400 transition-colors">
+                    Rol
+                  </label>
                   <div class="relative">
-                    <select v-model="formData.rol"
-                      class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 focus:bg-white/10 appearance-none transition-all duration-300">
-                      <option value="" disabled class="bg-gray-900 text-gray-500">Seleccionar...</option>
-                      <option value="estudiante" class="bg-gray-900">Estudiante</option>
-                      <option value="docente" class="bg-gray-900">Docente</option>
-                      <option value="administrativo" class="bg-gray-900">Administrativo</option>
+                    <select v-model="formData.rol" :disabled="loadingData"
+                      class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 focus:bg-white/10 appearance-none transition-all duration-300 disabled:opacity-50">
+                      <option value="" disabled class="bg-gray-900 text-gray-500">
+                        {{ loadingData ? 'Cargando...' : 'Seleccionar...' }}
+                      </option>
+                      <option v-for="rol in roles" :key="rol.id" :value="rol.nombre" class="bg-gray-900">
+                        {{ rol.nombre.charAt(0).toUpperCase() + rol.nombre.slice(1) }}
+                      </option>
                     </select>
                     <div class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-gray-400">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -101,14 +105,17 @@
 
                 <div class="group">
                   <label
-                    class="block text-xs font-medium text-gray-400 mb-1 ml-1 uppercase tracking-wider group-focus-within:text-red-400 transition-colors">Carrera</label>
+                    class="block text-xs font-medium text-gray-400 mb-1 ml-1 uppercase tracking-wider group-focus-within:text-red-400 transition-colors">
+                    Carrera
+                  </label>
                   <div class="relative">
-                    <select v-model="formData.carrera" :disabled="formData.rol !== 'estudiante'"
+                    <select v-model="formData.carrera"
+                      :disabled="formData.rol.toLowerCase() !== 'estudiante' || loadingData"
                       class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 focus:bg-white/10 appearance-none transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
                       <option value="" class="bg-gray-900">N/A u Opcional</option>
-                      <option value="ingenieria" class="bg-gray-900">Ingeniería Informática</option>
-                      <option value="electronica" class="bg-gray-900">Electrónica</option>
-                      <option value="mecanica" class="bg-gray-900">Mecánica</option>
+                      <option v-for="carrera in carreras" :key="carrera.id" :value="carrera.nombre" class="bg-gray-900">
+                        {{ carrera.nombre }}
+                      </option>
                     </select>
                     <div class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-gray-400">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -243,10 +250,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, computed, watch } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { authService } from '@/services/authService'
-// Importa la imagen de fondo igual que en WelcomeScreen
 import sedeBackground from '@/assets/images/sede-background.jpg'
 
 const router = useRouter()
@@ -263,6 +269,11 @@ const capturedImage = ref(null)
 const capturedImageURL = ref(null)
 const showPreview = ref(false)
 const isSubmitting = ref(false)
+
+// Listas dinámicas desde el backend
+const carreras = ref([])
+const roles = ref([])
+const loadingData = ref(true)
 
 const formData = ref({
   rut: '',
@@ -287,6 +298,26 @@ const isFormValid = computed(() => {
     formData.value.rol &&
     capturedImage.value !== null
 })
+
+// Cargar datos del backend
+const loadInitialData = async () => {
+  loadingData.value = true
+  try {
+    const [carrerasData, rolesData] = await Promise.all([
+      authService.getCarreras(),
+      authService.getRoles()
+    ])
+    carreras.value = carrerasData
+    roles.value = rolesData
+    console.log('Carreras cargadas:', carreras.value)
+    console.log('Roles cargados:', roles.value)
+  } catch (error) {
+    console.error('Error cargando datos iniciales:', error)
+    alert('Error al cargar los datos del formulario. Por favor, recarga la página.')
+  } finally {
+    loadingData.value = false
+  }
+}
 
 // --- LÓGICA DE CÁMARA MEJORADA ---
 const startCamera = async () => {
@@ -322,16 +353,12 @@ const captureImage = () => {
   const canvas = canvasElement.value
   const video = videoElement.value
 
-  // Ajustar dimensiones para alta calidad
   canvas.width = video.videoWidth
   canvas.height = video.videoHeight
 
   const ctx = canvas.getContext('2d')
-
-  // Espejo horizontal para que la captura coincida con lo que ve el usuario
   ctx.translate(canvas.width, 0)
   ctx.scale(-1, 1)
-
   ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
 
   canvas.toBlob((blob) => {
@@ -339,7 +366,6 @@ const captureImage = () => {
     capturedImageURL.value = URL.createObjectURL(blob)
     showPreview.value = true
 
-    // Pequeño delay para asegurar que el DOM del preview existe
     setTimeout(() => {
       if (previewImage.value) previewImage.value.src = capturedImageURL.value
     }, 50)
@@ -365,24 +391,36 @@ const registerUser = async () => {
   try {
     const data = new FormData()
     data.append('image', capturedImage.value, 'face.jpg')
-    // Agregamos campos
-    Object.keys(formData.value).forEach(key => {
-      if (formData.value[key]) data.append(key, formData.value[key])
-    })
+    data.append('rut', formData.value.rut)
+    data.append('nombres', formData.value.nombres)
+    data.append('apellidos', formData.value.apellidos)
+    data.append('correo', formData.value.correo)
+    data.append('rol', formData.value.rol)
+
+    if (formData.value.carrera) {
+      data.append('carrera', formData.value.carrera)
+    }
 
     const result = await authService.registerUserWithFace(data)
+    console.log('Resultado:', result)
 
-    alert(`¡Bienvenido ${formData.value.nombres}! Registro completado.`)
+    const mensaje = result.created
+      ? `¡Bienvenido ${formData.value.nombres}! Tu registro biométrico fue completado exitosamente.`
+      : `¡Perfecto ${formData.value.nombres}! Tu información y datos biométricos fueron actualizados.`
+
+    alert(mensaje)
     router.push('/')
 
   } catch (error) {
+    console.error('Error en registro:', error)
     alert(`Error: ${error.message}`)
   } finally {
     isSubmitting.value = false
   }
 }
 
-onMounted(() => {
+onMounted(async () => {
+  await loadInitialData()
   startCamera()
 })
 
