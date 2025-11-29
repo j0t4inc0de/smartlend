@@ -4,6 +4,7 @@ const API_BASE_URL = 'http://72.60.167.16:8000'
 
 export const authService = {
   // Manejo de autenticación facial
+  // Obtiene todos los datros del formulario y los envia al server para registrar un usuario junto a su embedding facial
   async registerUserWithFace(formData) {
     try {
       const response = await axios.post(`${API_BASE_URL}/usuarios/auth/register-face/`, formData)
@@ -14,7 +15,7 @@ export const authService = {
       throw new Error(errorMessage)
     }
   },
-
+  // Inicia sesion con reconocimiento facial: Toma la imagen y la envia en un formdata al servidor para que la procese
   async loginWithFace(imageBlob) {
     try {
       const formData = new FormData()
@@ -28,7 +29,7 @@ export const authService = {
       throw new Error(errorMessage)
     }
   },
-
+  // Obtiene un usario por su id
   async getUsuarioById(usuarioId) {
     try {
       const response = await axios.get(`${API_BASE_URL}/usuarios/api/usuarios/${usuarioId}/`)
