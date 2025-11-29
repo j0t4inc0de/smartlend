@@ -18,7 +18,7 @@ const router = createRouter({
       component: RegisterUserView,
     },
     {
-      path: '/facial-recognition', // <--- RUTA NUEVA
+      path: '/facial-recognition',
       name: 'facial-recognition',
       component: FacialLoginView,
     },
@@ -27,12 +27,28 @@ const router = createRouter({
       name: 'login-bodeguero',
       component: LoginBodegueroView,
     },
+    {
+      path: '/bodeguero/dashboard',
+      component: DashboardBodegueroLayout,
+      meta: { requiresAuth: true },
+      children: [
+        {
+          path: 'prestamos',
+          name: 'Prestamos',
+          component: PrestamosView,
+        },
+        {
+          path: '',
+          redirect: 'prestamos',
+        },
+      ],
+    },
     // Ruta comodín para manejar rutas no encontradas
     {
       path: '/:pathMatch(.*)*',
       redirect: '/', // Redirige a la pantalla de bienvenida si la ruta no existe
     },
-  ]
+  ],
 })
 
 export default router
