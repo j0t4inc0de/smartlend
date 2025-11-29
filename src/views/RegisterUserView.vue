@@ -109,7 +109,8 @@
                     Carrera
                   </label>
                   <div class="relative">
-                    <select v-model="formData.carrera" :disabled="formData.rol !== 'estudiante' || loadingData"
+                    <select v-model="formData.carrera"
+                      :disabled="formData.rol.toLowerCase() !== 'estudiante' || loadingData"
                       class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 focus:bg-white/10 appearance-none transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
                       <option value="" class="bg-gray-900">N/A u Opcional</option>
                       <option v-for="carrera in carreras" :key="carrera.id" :value="carrera.nombre" class="bg-gray-900">
@@ -118,8 +119,7 @@
                     </select>
                     <div class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-gray-400">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7">
-                        </path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                       </svg>
                     </div>
                   </div>
