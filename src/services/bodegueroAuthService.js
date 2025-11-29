@@ -1,7 +1,6 @@
-import axios from 'axios'
 // Este servicio se encarga ÚNICAMENTE de la autenticación del bodeguero (correo + contraseña).
+import axios from 'axios'
 
-// Usamos la misma URL base que en authService
 const API_BASE_URL = 'http://72.60.167.16:8000'
 
 export const bodegueroAuthService = {
