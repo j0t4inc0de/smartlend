@@ -29,6 +29,16 @@ export const authService = {
     }
   },
 
+  async getUsuarioById(usuarioId) {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/usuarios/api/usuarios/${usuarioId}/`)
+      return response.data
+    } catch (error) {
+      console.error('Error al obtener usuario:', error)
+      throw new Error('No se pudieron obtener los datos del usuario')
+    }
+  },
+
   // Manejo de carreras y roles para el registro de usuarios
   async getCarreras() {
     try {
