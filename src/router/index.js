@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import WelcomeScreen from '../views/WelcomeScreen.vue'
 import RegisterUserView from '../views/RegisterUserView.vue'
+import FacialLoginView from '../views/LoginFacialView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -15,6 +16,12 @@ const router = createRouter({
       name: 'registrar-usuario',
       component: RegisterUserView,
     },
+    {
+      path: '/facial-recognition', // <--- RUTA NUEVA
+      name: 'facial-recognition',
+      component: FacialLoginView,
+    },
+
     // Ruta comodín para manejar rutas no encontradas
     {
       path: '/:pathMatch(.*)*',
