@@ -3,6 +3,7 @@ import axios from 'axios'
 const API_BASE_URL = 'http://72.60.167.16:8000'
 
 export const authService = {
+  // Manejo de autenticación facial
   async registerUserWithFace(formData) {
     try {
       const response = await axios.post(`${API_BASE_URL}/usuarios/auth/register-face/`, formData)
@@ -19,7 +20,7 @@ export const authService = {
       const formData = new FormData()
       formData.append('image', imageBlob, 'face.jpg')
 
-      const response = await axios.post(`${API_BASE_URL}/usuarios/auth/login-face/`, formData)
+      const response = await axios.post(`${API_BASE_URL}/usuarios/auth/login/`, formData)
       return response.data
     } catch (error) {
       console.error('Error completo:', error.response || error)
@@ -28,6 +29,7 @@ export const authService = {
     }
   },
 
+  // Manejo de carreras y roles para el registro de usuarios
   async getCarreras() {
     try {
       const response = await axios.get(`${API_BASE_URL}/usuarios/api/carreras/`)
