@@ -5,20 +5,21 @@ import axios from 'axios'
 const API_BASE_URL = 'http://72.60.167.16:8000'
 
 export const bodegueroAuthService = {
-  async login(email, password) {
+  async login(correo, password) {
     try {
-      // Ajusta este endpoint ('/auth/login/') según la ruta real de tu Backend Django
-      // Si el bodeguero usa el mismo login que los demás, esto servirá.
-      // Si tiene un endpoint especial, cámbialo aquí.
-      const response = await axios.post(`${API_BASE_URL}/auth/login/`, {
-        email: email, // O 'username', depende de cómo lo pida Django
-        password: password
-      }, {
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await axios.post(
+        `${API_BASE_URL}/usuarios/auth/login-bodeguero/`,
+        {
+          correo: correo,
+          password: password,
         },
-      })
-      
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
+      )
+
       return response.data
     } catch (error) {
       // Manejo de errores detallado
@@ -32,5 +33,5 @@ export const bodegueroAuthService = {
         throw new Error('Error al procesar la solicitud')
       }
     }
-  }
+  },
 }
