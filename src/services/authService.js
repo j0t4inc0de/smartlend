@@ -12,13 +12,10 @@ const api = axios.create({
 export const authService = {
   async registerUserWithFace(formData) {
     try {
-      const response = await axios.post(`${API_BASE_URL}/usuarios/api/usuarios/`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
+      const response = await axios.post(`${API_BASE_URL}/usuarios/auth/register-face/`, formData)
       return response.data
     } catch (error) {
+      console.error('Error completo:', error.response || error)
       const errorMessage = error.response?.data?.error || error.message || 'Error desconocido'
       throw new Error(errorMessage)
     }

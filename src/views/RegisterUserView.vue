@@ -353,17 +353,31 @@ const registerUser = async () => {
   try {
     const data = new FormData()
     data.append('image', capturedImage.value, 'face.jpg')
-    // Agregamos campos
-    Object.keys(formData.value).forEach(key => {
-      if (formData.value[key]) data.append(key, formData.value[key])
-    })
+    data.append('rut', formData.value.rut)
+    data.append('nombres', formData.value.nombres)
+    data.append('apellidos', formData.value.apellidos)
+    data.append('correo', formData.value.correo)
+    data.append('rol', formData.value.rol)
+
+    // Carrera es opcional
+    if (formData.value.carrera) {
+      data.append('carrera', formData.value.carrera)
+    }
+
+    // Debug: ver qué se está enviando
+    console.log('FormData entries:')
+    for (let [key, value] of data.entries()) {
+      console.log(key, ':', value)
+    }
 
     const result = await authService.registerUserWithFace(data)
+    console.log('Resultado:', result)
 
     alert(`¡Bienvenido ${formData.value.nombres}! Registro completado.`)
     router.push('/')
 
   } catch (error) {
+    console.error('Error en registro:', error)
     alert(`Error: ${error.message}`)
   } finally {
     isSubmitting.value = false
