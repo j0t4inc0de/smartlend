@@ -3,6 +3,7 @@ import WelcomeScreen from '../views/WelcomeScreen.vue'
 import RegisterUserView from '../views/RegisterUserView.vue'
 import FacialLoginView from '../views/LoginFacialView.vue'
 import LoginBodegueroView from '@/views/bodeguero/LoginBodegueroView.vue'
+import DashboardBodegueroLayout from '@/layouts/DashboardBodegueroLayout.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -29,19 +30,8 @@ const router = createRouter({
     },
     {
       path: '/bodeguero/dashboard',
+      name: 'dashboard-bodeguero',
       component: DashboardBodegueroLayout,
-      meta: { requiresAuth: true },
-      children: [
-        {
-          path: 'prestamos',
-          name: 'Prestamos',
-          component: PrestamosView,
-        },
-        {
-          path: '',
-          redirect: 'prestamos',
-        },
-      ],
     },
     // Ruta comodín para manejar rutas no encontradas
     {

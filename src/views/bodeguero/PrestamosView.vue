@@ -1,4 +1,10 @@
-// Vista de Prestamos del Bodeguero
+<!-- // Vista de Prestamos del Bodeguero -->
 <template>
-  <h1>Vista de Prestamos del Bodeguero</h1>
+  <h1>Dashboard del Bodeguero</h1>
 </template>
+
+<script>
+
+</script>
+
+<style></style>
