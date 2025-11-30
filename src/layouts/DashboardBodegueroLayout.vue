@@ -96,7 +96,7 @@
 
         <!-- Info Usuario -->
         <div :class="[
-          'flex items-center p-3 rounded-xl bg-gray-700/30 backdrop-blur-sm transition-all duration-200',
+          'flex items-center p-3 rounded-xl transition-all duration-200',
           isCollapsed ? 'justify-center' : 'gap-3'
         ]">
           <!-- Avatar -->
