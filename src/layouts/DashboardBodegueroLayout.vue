@@ -265,7 +265,7 @@
                 <div v-if="alertas.length > 0" class="px-4 py-3 border-t border-gray-700 bg-gray-900/50">
                   <div class="flex justify-between items-center">
                     <span class="text-xs text-gray-400">{{ alertas.length }} alerta{{ alertas.length !== 1 ? 's' : ''
-                    }}</span>
+                      }}</span>
                     <span class="text-xs text-gray-500">Se resuelven automáticamente al devolver</span>
                   </div>
                 </div>
@@ -332,15 +332,15 @@ const pageTitle = computed(() => {
 const cargarAlertas = async () => {
   try {
     loadingAlertas.value = true
-    console.log('🔍 Cargando alertas...')
+    console.log('Cargando alertas...')
 
     alertas.value = await alertasService.getAlertasEnriquecidas()
 
-    console.log('✅ Alertas cargadas:', alertas.value.length)
-    console.log('📊 Alertas:', alertas.value)
+    console.log('Alertas cargadas:', alertas.value.length)
+    console.log('Alertas:', alertas.value)
 
   } catch (error) {
-    console.error('❌ Error al cargar alertas:', error)
+    console.error('Error al cargar alertas:', error)
     alertas.value = []
   } finally {
     loadingAlertas.value = false
@@ -350,7 +350,7 @@ const cargarAlertas = async () => {
 // Cargar estadísticas incluyendo alertas
 const cargarEstadisticas = async () => {
   try {
-    console.log('🔄 Cargando estadísticas...')
+    console.log('Cargando estadísticas...')
 
     // Cargar alertas reales
     await cargarAlertas()

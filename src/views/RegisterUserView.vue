@@ -335,8 +335,8 @@ const startCamera = async () => {
     if (videoElement.value) {
       videoElement.value.srcObject = stream.value
       isCameraActive.value = true
-      console.log('✅ Cámara iniciada correctamente')
-      console.log('📹 Stream info:', {
+      console.log('Cámara iniciada correctamente')
+      console.log('Stream info:', {
         active: stream.value.active,
         tracks: stream.value.getTracks().length
       })

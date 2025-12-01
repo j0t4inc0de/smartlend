@@ -147,30 +147,30 @@ const handleLogin = async () => {
 
   canvas.toBlob(async (blob) => {
     try {
-      console.log('🔍 Enviando imagen para login, tamaño:', blob.size)
+      console.log('Enviando imagen para login, tamaño:', blob.size)
 
       // PASO 1: Verificar reconocimiento facial
       const loginResponse = await authService.loginWithFace(blob)
 
       // 🐛 DEBUG: Ver respuesta completa
-      console.log('📥 Respuesta completa del backend:', loginResponse)
-      console.log('📊 existe_embedding:', loginResponse.existe_embedding)
-      console.log('🆔 usuario_id:', loginResponse.usuario_id)
+      console.log('Respuesta completa del backend:', loginResponse)
+      console.log('existe_embedding:', loginResponse.existe_embedding)
+      console.log('usuario_id:', loginResponse.usuario_id)
 
       // PASO 2: Validar si existe coincidencia
       if (loginResponse.existe_embedding === false) {
-        console.log('❌ No se encontró coincidencia facial')
+        console.log('No se encontró coincidencia facial')
         alert('No se reconoció tu rostro. Por favor, regístrate primero.')
         router.push('/register')
         return
       }
 
       if (loginResponse.existe_embedding === true && loginResponse.usuario_id) {
-        console.log('✅ Coincidencia encontrada! Usuario ID:', loginResponse.usuario_id)
+        console.log('Coincidencia encontrada! Usuario ID:', loginResponse.usuario_id)
 
         // PASO 3: Obtener datos completos del usuario
         const usuario = await authService.getUsuarioById(loginResponse.usuario_id)
-        console.log('👤 Datos del usuario:', usuario)
+        console.log('Datos del usuario:', usuario)
 
         // PASO 4: Guardar sesión
         localStorage.setItem('user', JSON.stringify(usuario))
@@ -182,13 +182,13 @@ const handleLogin = async () => {
         // PASO 6: Redirigir
         router.push('/dashboard')
       } else {
-        console.log('⚠️ Respuesta inesperada del backend')
+        console.log('Respuesta inesperada del backend')
         alert('Error en la respuesta del servidor. Intenta de nuevo.')
       }
 
     } catch (error) {
-      console.error('💥 Error en login:', error)
-      console.error('💥 Detalles del error:', error.response?.data)
+      console.error('Error en login:', error)
+      console.error('Detalles del error:', error.response?.data)
       alert(error.message || 'Error al intentar iniciar sesión. Intenta de nuevo.')
     } finally {
       isSubmitting.value = false

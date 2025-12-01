@@ -322,9 +322,9 @@ const cargarPrestamos = async () => {
     loading.value = true
     error.value = ''
     prestamos.value = await prestamosService.getPrestamos()
-    console.log('✅ Préstamos cargados:', prestamos.value.length)
+    console.log('Préstamos cargados:', prestamos.value.length)
   } catch (err) {
-    console.error('❌ Error al cargar préstamos:', err)
+    console.error('Error al cargar préstamos:', err)
     error.value = err.message || 'Error al cargar los préstamos'
 
     // Si hay error, mostrar datos de ejemplo para que la interfaz no esté vacía
@@ -379,9 +379,9 @@ const confirmarDevolucion = async () => {
 
     cerrarModalDevolucion()
 
-    console.log('✅ Préstamo devuelto exitosamente')
+    console.log('Préstamo devuelto exitosamente')
   } catch (err) {
-    console.error('❌ Error al marcar devolución:', err)
+    console.error('Error al marcar devolución:', err)
     alert('Error al procesar la devolución: ' + (err.message || 'Error desconocido'))
   } finally {
     procesandoDevolucion.value = null

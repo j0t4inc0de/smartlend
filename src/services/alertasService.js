@@ -29,7 +29,6 @@ export const alertasService = {
   // Obtener información del usuario de una alerta
   async getUsuarioDeAlerta(alerta) {
     try {
-      // ✅ CORREGIDO: Usar prestamo_detalle.id_usuario
       const response = await axios.get(
         `${API_BASE_URL}/usuarios/api/usuarios/${alerta.prestamo_detalle.id_usuario}/`,
       )
@@ -43,7 +42,6 @@ export const alertasService = {
   // Obtener información de la herramienta de una alerta
   async getHerramientaDeAlerta(alerta) {
     try {
-      // ✅ CORREGIDO: Usar prestamo_detalle.id_tipo_herramienta
       const response = await axios.get(
         `${API_BASE_URL}/inventario/api/tipos-herramienta/${alerta.prestamo_detalle.id_tipo_herramienta}/`,
       )
@@ -58,7 +56,7 @@ export const alertasService = {
   async getAlertasEnriquecidas() {
     try {
       const alertas = await this.getAlertasNoResueltas()
-      console.log('🔍 Alertas sin resolver encontradas:', alertas.length)
+      console.log('Alertas sin resolver encontradas:', alertas.length)
 
       const alertasEnriquecidas = await Promise.all(
         alertas.map(async (alerta) => {
@@ -72,7 +70,6 @@ export const alertasService = {
               ...alerta,
               usuario_nombre: `${usuario.nombres} ${usuario.apellidos}`,
               herramienta_nombre: herramienta.nombre,
-              // ✅ CORREGIDO: Usar prestamo_detalle.fecha_devolucion_esperada
               dias_vencido: this.calcularDiasVencido(
                 alerta.prestamo_detalle.fecha_devolucion_esperada,
               ),
@@ -91,7 +88,7 @@ export const alertasService = {
         }),
       )
 
-      console.log('✅ Alertas enriquecidas:', alertasEnriquecidas.length)
+      console.log('Alertas enriquecidas:', alertasEnriquecidas.length)
       return alertasEnriquecidas
     } catch (error) {
       console.error('Error al obtener alertas enriquecidas:', error)
