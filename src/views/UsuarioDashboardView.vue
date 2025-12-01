@@ -1,6 +1,5 @@
 <template>
   <div class="relative min-h-screen w-full overflow-hidden flex flex-col bg-gray-900 font-sans select-none">
-
     <div class="absolute inset-0 pointer-events-none z-0">
       <div class="particles">
         <div v-for="n in 30" :key="n" class="particle"></div>
