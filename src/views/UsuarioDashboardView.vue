@@ -55,21 +55,19 @@
       </div>
     </header>
 
-    <main class="flex-1 overflow-y-auto p-4 pb-28 z-10 custom-scrollbar">
+    <main class="flex-1 overflow-y-auto p-4 pt-48 pb-28 z-10 custom-scrollbar bg-gray-900">
       <div v-if="herramientasFiltradas.length > 0" class="grid grid-cols-3 gap-3">
         <div v-for="herramienta in herramientasFiltradas" :key="herramienta.id_tipo_herramienta"
           class="group relative bg-gray-800/60 backdrop-blur-md border border-white/10 rounded-xl overflow-hidden flex flex-col h-full transition-all duration-200 active:scale-[0.98]">
 
-          <div class="aspect-video bg-gray-700/50 relative overflow-hidden">
-            <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent z-10"></div>
-            <img v-if="herramienta.imagen_url" :src="herramienta.imagen_url"
-              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
-            <div v-else class="w-full h-full flex items-center justify-center">
-              <svg class="w-10 h-10 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                  d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-              </svg>
-            </div>
+    <div class="aspect-video bg-gray-700/50 relative overflow-hidden flex items-center justify-center">
+      <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent z-10"></div> 
+      <img 
+    :src="getImagenUrl(herramienta)" 
+    :alt="herramienta.nombre"
+    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+    @error="handleImageError"
+  />
 
             <div
               class="absolute top-2 right-2 z-20 bg-black/60 backdrop-blur-md px-1.5 py-0.5 rounded-full border border-white/10 flex items-center gap-1">
@@ -229,7 +227,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, handleError } from 'vue'
 import { useRouter } from 'vue-router'
 import { inventarioService } from '@/services/inventarioService'
 // import { prestamosService } from '@/services/prestamosService' // Descomentar al integrar
@@ -336,6 +334,30 @@ onMounted(() => {
     else finalizarSesion()
   }, 1000)
 })
+
+// --- LÓGICA DE IMÁGENES ---
+const API_BASE_URL = 'http://72.60.167.16:8000'
+const PLACEHOLDER_IMG = 'data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22400%22%20height%3D%22300%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20400%20300%22%20preserveAspectRatio%3D%22none%22%3E%3Crect%20width%3D%22400%22%20height%3D%22300%22%20fill%3D%22%231f2937%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20fill%3D%22%236b7280%22%20dy%3D%22.3em%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2224%22%3ESin%20Imagen%3C%2Ftext%3E%3C%2Fsvg%3E';
+
+const getImagenUrl = (herramienta) => {
+  let url = herramienta.imagen_url || herramienta.imagen;
+  if (!url) return PLACEHOLDER_IMG;
+  const urlStr = String(url).trim();
+  
+  // Detecta "Sin url" ignorando mayúsculas/minúsculas
+  if (urlStr.toLowerCase() === 'sin url' || urlStr.toLowerCase() === 'string') return PLACEHOLDER_IMG;
+  
+  if (urlStr.startsWith('http')) return urlStr;
+  
+  const cleanBase = API_BASE_URL.replace(/\/$/, '');
+  const cleanPath = urlStr.replace(/^\//, '');
+  return `${cleanBase}/${cleanPath}`;
+}
+
+const handleImageError = (e) => {
+  if (e.target.src !== PLACEHOLDER_IMG) e.target.src = PLACEHOLDER_IMG;
+}
+// ---------------------------
 
 onUnmounted(() => clearInterval(timerInterval))
 </script>
