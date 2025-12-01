@@ -54,7 +54,7 @@
       </div>
     </header>
 
-    <main class="flex-1 overflow-y-auto p-4 pb-28 z-10 custom-scrollbar">
+    <main class="flex-1 overflow-y-auto p-4 pt-36 pb-28 z-10 custom-scrollbar">
       <div v-if="herramientasFiltradas.length > 0" class="grid grid-cols-3 gap-3">
         <div v-for="herramienta in herramientasFiltradas" :key="herramienta.id_tipo_herramienta"
           class="group relative bg-gray-800/60 backdrop-blur-md border border-white/10 rounded-xl overflow-hidden flex flex-col h-full transition-all duration-200 active:scale-[0.98]">
