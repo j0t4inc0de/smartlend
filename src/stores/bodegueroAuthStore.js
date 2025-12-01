@@ -7,7 +7,7 @@
 //    Persiste la sesión (no se pierde al recargar)
 
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { bodegueroAuthService } from '@/services/bodegueroAuthService'
 
 export const useBodegueroAuthStore = defineStore('bodegueroAuth', () => {
