@@ -265,7 +265,7 @@
                 <div v-if="alertas.length > 0" class="px-4 py-3 border-t border-gray-700 bg-gray-900/50">
                   <div class="flex justify-between items-center">
                     <span class="text-xs text-gray-400">{{ alertas.length }} alerta{{ alertas.length !== 1 ? 's' : ''
-                      }}</span>
+                    }}</span>
                     <span class="text-xs text-gray-500">Se resuelven automáticamente al devolver</span>
                   </div>
                 </div>
@@ -294,14 +294,10 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useBodegueroAuthStore } from '@/stores/bodegueroAuthStore'
 import { alertasService } from '@/services/alertasService'
-
-
-const alertas = ref([])
-const loadingAlertas = ref(false)
 
 const router = useRouter()
 const route = useRoute()
@@ -311,21 +307,15 @@ const isCollapsed = ref(false)
 
 // Estados reactivos para datos en tiempo real
 const prestamosActivos = ref(0)
-const alertasCount = ref(0)
+const alertas = ref([])
+const loadingAlertas = ref(false)
 const mostrarNotificaciones = ref(false)
 
-const cargarAlertas = async () => {
-  try {
-    loadingAlertas.value = true
-    alertas.value = await alertasService.getAlertasEnriquecidas()
-    console.log('✅ Alertas cargadas:', alertas.value.length)
-  } catch (error) {
-    console.error('❌ Error al cargar alertas:', error)
-    alertas.value = []
-  } finally {
-    loadingAlertas.value = false
-  }
-}
+// Timer para actualización automática
+let intervalId = null
+
+// Contador basado en el array real de alertas
+const alertasCount = computed(() => alertas.value.length)
 
 // Título dinámico basado en la ruta
 const pageTitle = computed(() => {
@@ -338,35 +328,68 @@ const pageTitle = computed(() => {
   return titles[route.name] || 'Dashboard'
 })
 
-const handleLogout = () => {
-  authStore.logout()
-  router.push('/bodeguero/login')
+// Cargar alertas reales
+const cargarAlertas = async () => {
+  try {
+    loadingAlertas.value = true
+    console.log('🔍 Cargando alertas...')
+
+    alertas.value = await alertasService.getAlertasEnriquecidas()
+
+    console.log('✅ Alertas cargadas:', alertas.value.length)
+    console.log('📊 Alertas:', alertas.value)
+
+  } catch (error) {
+    console.error('❌ Error al cargar alertas:', error)
+    alertas.value = []
+  } finally {
+    loadingAlertas.value = false
+  }
 }
 
-// Cargar estadísticas en tiempo real
+// Cargar estadísticas incluyendo alertas
 const cargarEstadisticas = async () => {
   try {
-    // Aquí conectarías con tus APIs para obtener datos reales
+    console.log('🔄 Cargando estadísticas...')
+
+    // Cargar alertas reales
+    await cargarAlertas()
+
+    // Cargar otros datos (préstamos activos, etc.)
     // const prestamos = await prestamosService.getPrestamos()
     // prestamosActivos.value = prestamos.filter(p => p.estado === 'activo').length
 
     // Datos mock por ahora
     prestamosActivos.value = 8
-    alertasCount.value = 2
+
+    console.log('✅ Estadísticas cargadas')
+
   } catch (error) {
-    console.error('Error al cargar estadísticas:', error)
+    console.error('❌ Error al cargar estadísticas:', error)
   }
 }
 
+const handleLogout = () => {
+  authStore.logout()
+  router.push('/bodeguero/login')
+}
+
+// ✅ LIFECYCLE CORREGIDO
 onMounted(() => {
   // Inicializar auth store
   authStore.initializeAuth()
 
-  // Cargar estadísticas
+  // Cargar estadísticas iniciales (incluye alertas)
   cargarEstadisticas()
 
   // Actualizar cada 30 segundos
-  setInterval(cargarEstadisticas, 30000)
+  intervalId = setInterval(cargarEstadisticas, 30000)
+})
+
+onUnmounted(() => {
+  if (intervalId) {
+    clearInterval(intervalId)
+  }
 })
 </script>
 

@@ -29,8 +29,9 @@ export const alertasService = {
   // Obtener información del usuario de una alerta
   async getUsuarioDeAlerta(alerta) {
     try {
+      // ✅ CORREGIDO: Usar prestamo_detalle.id_usuario
       const response = await axios.get(
-        `${API_BASE_URL}/usuarios/api/usuarios/${alerta.id_usuario}/`,
+        `${API_BASE_URL}/usuarios/api/usuarios/${alerta.prestamo_detalle.id_usuario}/`,
       )
       return response.data
     } catch (error) {
@@ -42,8 +43,9 @@ export const alertasService = {
   // Obtener información de la herramienta de una alerta
   async getHerramientaDeAlerta(alerta) {
     try {
+      // ✅ CORREGIDO: Usar prestamo_detalle.id_tipo_herramienta
       const response = await axios.get(
-        `${API_BASE_URL}/inventario/api/tipos-herramienta/${alerta.id_tipo_herramienta}/`,
+        `${API_BASE_URL}/inventario/api/tipos-herramienta/${alerta.prestamo_detalle.id_tipo_herramienta}/`,
       )
       return response.data
     } catch (error) {
@@ -52,10 +54,11 @@ export const alertasService = {
     }
   },
 
-  // Enriquecer alertas con información adicional (VERSION SIMPLIFICADA)
+  // Enriquecer alertas con información adicional
   async getAlertasEnriquecidas() {
     try {
       const alertas = await this.getAlertasNoResueltas()
+      console.log('🔍 Alertas sin resolver encontradas:', alertas.length)
 
       const alertasEnriquecidas = await Promise.all(
         alertas.map(async (alerta) => {
@@ -69,7 +72,10 @@ export const alertasService = {
               ...alerta,
               usuario_nombre: `${usuario.nombres} ${usuario.apellidos}`,
               herramienta_nombre: herramienta.nombre,
-              dias_vencido: this.calcularDiasVencido(alerta.fecha_devolucion_esperada),
+              // ✅ CORREGIDO: Usar prestamo_detalle.fecha_devolucion_esperada
+              dias_vencido: this.calcularDiasVencido(
+                alerta.prestamo_detalle.fecha_devolucion_esperada,
+              ),
               fecha_formateada: new Date(alerta.creada_en).toLocaleString('es-CL'),
             }
           } catch (error) {
@@ -85,6 +91,7 @@ export const alertasService = {
         }),
       )
 
+      console.log('✅ Alertas enriquecidas:', alertasEnriquecidas.length)
       return alertasEnriquecidas
     } catch (error) {
       console.error('Error al obtener alertas enriquecidas:', error)
