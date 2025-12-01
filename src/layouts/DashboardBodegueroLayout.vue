@@ -166,17 +166,30 @@
           <div class="flex items-center gap-4">
             <!-- Alertas -->
             <div v-if="alertasCount > 0" class="relative">
-              <button class="p-2 rounded-lg hover:bg-gray-700/50 transition-colors group">
+              <button 
+                @click="mostrarNotificaciones = !mostrarNotificaciones"
+                class="p-2 rounded-lg hover:bg-gray-700/50 transition-colors group"
+              >
                 <svg class="w-5 h-5 text-red-400 group-hover:text-red-300" fill="none" viewBox="0 0 24 24"
                   stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                 </svg>
-                <span
-                  class="absolute -top-1 -right-1 bg-red-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                <!-- Badge (Solo si hay alertas) -->
+                <span v-if="alertasCount > 0" class="absolute -top-1 -right-1 bg-red-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center border-2 border-gray-800">
                   {{ alertasCount }}
                 </span>
               </button>
+              <!-- EL MODAL VISUAL -->
+              <div v-if="mostrarNotificaciones" class="absolute right-0 mt-2 w-80 bg-gray-800 border border-gray-700 rounded-xl shadow-2xl z-50 overflow-hidden">
+                <div class="px-4 py-3 border-b border-gray-700 bg-gray-900/50 flex justify-between items-center">
+                  <h3 class="text-sm font-bold text-white">Notificaciones</h3>
+                  <button @click="mostrarNotificaciones = false" class="text-xs text-red-400 hover:text-red-300">Cerrar</button>
+                </div>
+                <!-- Aquí puedes agregar el contenido de las notificaciones -->
+              </div>
+              <!-- Fondo para cerrar al hacer clic fuera -->
+              <div v-if="mostrarNotificaciones" @click="mostrarNotificaciones = false" class="fixed inset-0 z-40"></div>
             </div>
 
             <!-- Sistema Online -->
@@ -212,6 +225,7 @@ const isCollapsed = ref(false)
 // Estados reactivos para datos en tiempo real
 const prestamosActivos = ref(0)
 const alertasCount = ref(0)
+const mostrarNotificaciones = ref(false) // Estado para abrir/cerrar el modal de notificaciones
 
 // Título dinámico basado en la ruta
 const pageTitle = computed(() => {
