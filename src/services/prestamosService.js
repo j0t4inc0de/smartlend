@@ -1,3 +1,4 @@
+// Ester Servicio manejara todas las operaciones relacionadas con los prestamos
 import axios from 'axios'
 
 const API_BASE_URL = 'http://72.60.167.16:8000'
