@@ -1,26 +1,5 @@
 <template>
   <div class="p-8">
-    <!-- HEADER -->
-    <div class="flex justify-between items-center mb-8">
-      <div>
-        <h1 class="text-3xl font-bold text-white">
-          Gestión de Préstamos
-        </h1>
-        <p class="text-gray-400 mt-1">
-          Administra todos los préstamos activos y completados
-        </p>
-      </div>
-
-      <!-- FILTRO POR ESTADO -->
-      <select v-model="filtroEstado"
-        class="bg-gray-800 text-white px-4 py-2 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500">
-        <option value="todos">Todos</option>
-        <option value="activo">Activos</option>
-        <option value="vencido">Vencidos</option>
-        <option value="completado">Completados</option>
-      </select>
-    </div>
-
     <!-- ESTADÍSTICAS RÁPIDAS -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
       <div class="bg-gray-800 rounded-xl p-6 border border-gray-700 hover:border-green-500/50 transition-colors">
@@ -66,6 +45,17 @@
           {{ contarPorEstado('completado') }}
         </p>
       </div>
+    </div>
+
+    <!-- FILTRO POR ESTADO -->
+    <div class="flex justify-between items-center mb-8">
+      <select v-model="filtroEstado"
+        class="bg-gray-800 text-white px-4 py-2 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500">
+        <option value="todos">Todos</option>
+        <option value="activo">Activos</option>
+        <option value="vencido">Vencidos</option>
+        <option value="completado">Completados</option>
+      </select>
     </div>
 
     <!-- TABLA DE PRÉSTAMOS -->

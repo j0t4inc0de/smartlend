@@ -80,9 +80,10 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { bodegueroAuthService } from '@/services/bodegueroAuthService'
+import { useBodegueroAuthStore } from '@/stores/bodegueroAuthStore'
 
 const router = useRouter()
+const authStore = useBodegueroAuthStore()
 
 // Estados del formulario
 const email = ref('')
@@ -90,12 +91,10 @@ const password = ref('')
 const errorMessage = ref('')
 const isLoading = ref(false)
 
-// Lógica de Login
+// Lógica de Login SIMPLIFICADA
 const handleLogin = async () => {
-  // Resetear error
   errorMessage.value = ''
 
-  // Validaciones básicas
   if (!email.value || !password.value) {
     errorMessage.value = 'Por favor completa todos los campos'
     return
@@ -104,28 +103,20 @@ const handleLogin = async () => {
   isLoading.value = true
 
   try {
-    // Llamada al servicio
-    const response = await bodegueroAuthService.login(email.value, password.value)
-
-    console.log('Login exitoso:', response)
-
     const success = await authStore.login(email.value, password.value)
+
     if (success) {
-      router.push('/bodeguero/dashboard')
-      alert('Login Exitoso')
+      router.push('/bodeguero/dashboard/prestamos')
     } else {
       errorMessage.value = authStore.error
     }
-    alert('Login Denegado')
-
   } catch (error) {
-    errorMessage.value = error.message
+    errorMessage.value = 'Error inesperado'
   } finally {
     isLoading.value = false
   }
 }
 
-// Volver al Welcome Screen
 const goBack = () => {
   router.push('/')
 }
