@@ -33,6 +33,7 @@
 
       <!-- MENÚ -->
       <nav class="flex-1 p-4 space-y-2">
+        <!-- Préstamos -->
         <router-link to="/bodeguero/dashboard/prestamos" v-slot="{ isActive }" class="block">
           <div :class="[
             'flex items-center px-4 py-3 rounded-xl transition-all duration-200 group relative overflow-hidden',
@@ -41,54 +42,71 @@
               ? 'bg-gradient-to-r from-red-600 to-red-500 shadow-lg shadow-red-900/50'
               : 'hover:bg-gray-700/50 hover:translate-x-1'
           ]">
-            <!-- Efecto brillo -->
-            <div v-if="isActive"
-              class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700">
-            </div>
-
             <!-- Icono -->
             <svg class="w-6 h-6 shrink-0 z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
             </svg>
-
             <!-- Texto -->
-            <span v-if="!isCollapsed" class="font-medium z-10">
-              Préstamos
-            </span>
-
-            <!-- Badge -->
-            <span v-if="!isCollapsed && isActive" class="ml-auto bg-white/20 text-xs px-2 py-1 rounded-full z-10">
-              12
+            <span v-if="!isCollapsed" class="font-medium z-10">Préstamos</span>
+            <!-- Badge con número real -->
+            <span v-if="!isCollapsed && prestamosActivos > 0"
+              class="ml-auto bg-white/20 text-xs px-2 py-1 rounded-full z-10">
+              {{ prestamosActivos }}
             </span>
           </div>
         </router-link>
 
-        <!-- Reservas (Próximamente) -->
-        <div :class="[
-          'flex items-center px-4 py-3 rounded-xl transition-all duration-200 opacity-50 cursor-not-allowed hover:bg-gray-700/30',
-          isCollapsed ? 'justify-center' : 'gap-3'
-        ]">
-          <svg class="w-6 h-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-          </svg>
-          <span v-if="!isCollapsed" class="font-medium">Reservas</span>
-          <span v-if="!isCollapsed" class="ml-auto text-xs text-gray-500">Pronto</span>
-        </div>
+        <!-- Inventario -->
+        <router-link to="/bodeguero/dashboard/inventario" v-slot="{ isActive }" class="block">
+          <div :class="[
+            'flex items-center px-4 py-3 rounded-xl transition-all duration-200 group relative overflow-hidden',
+            isCollapsed ? 'justify-center' : 'gap-3',
+            isActive
+              ? 'bg-gradient-to-r from-red-600 to-red-500 shadow-lg shadow-red-900/50'
+              : 'hover:bg-gray-700/50 hover:translate-x-1'
+          ]">
+            <svg class="w-6 h-6 shrink-0 z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+            <span v-if="!isCollapsed" class="font-medium z-10">Inventario</span>
+          </div>
+        </router-link>
 
-        <!-- Inventario (Próximamente) -->
-        <div :class="[
-          'flex items-center px-4 py-3 rounded-xl transition-all duration-200 opacity-50 cursor-not-allowed hover:bg-gray-700/30',
-          isCollapsed ? 'justify-center' : 'gap-3'
-        ]">
-          <svg class="w-6 h-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-          </svg>
-          <span v-if="!isCollapsed" class="font-medium">Inventario</span>
-          <span v-if="!isCollapsed" class="ml-auto text-xs text-gray-500">Pronto</span>
-        </div>
+        <!-- Usuarios -->
+        <router-link to="/bodeguero/dashboard/usuarios" v-slot="{ isActive }" class="block">
+          <div :class="[
+            'flex items-center px-4 py-3 rounded-xl transition-all duration-200 group relative overflow-hidden',
+            isCollapsed ? 'justify-center' : 'gap-3',
+            isActive
+              ? 'bg-gradient-to-r from-red-600 to-red-500 shadow-lg shadow-red-900/50'
+              : 'hover:bg-gray-700/50 hover:translate-x-1'
+          ]">
+            <svg class="w-6 h-6 shrink-0 z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+            </svg>
+            <span v-if="!isCollapsed" class="font-medium z-10">Usuarios</span>
+          </div>
+        </router-link>
+
+        <!-- Reportes -->
+        <router-link to="/bodeguero/dashboard/reportes" v-slot="{ isActive }" class="block">
+          <div :class="[
+            'flex items-center px-4 py-3 rounded-xl transition-all duration-200 group relative overflow-hidden',
+            isCollapsed ? 'justify-center' : 'gap-3',
+            isActive
+              ? 'bg-gradient-to-r from-red-600 to-red-500 shadow-lg shadow-red-900/50'
+              : 'hover:bg-gray-700/50 hover:translate-x-1'
+          ]">
+            <svg class="w-6 h-6 shrink-0 z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+            <span v-if="!isCollapsed" class="font-medium z-10">Reportes</span>
+          </div>
+        </router-link>
       </nav>
 
       <!-- USUARIO + LOGOUT -->
@@ -102,13 +120,17 @@
           <!-- Avatar -->
           <div
             class="w-10 h-10 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center font-bold text-white shrink-0 shadow-lg">
-            B
+            {{ authStore.user?.nombres?.charAt(0) || 'B' }}
           </div>
 
           <!-- Info -->
           <div v-if="!isCollapsed" class="flex-1 min-w-0">
-            <p class="font-semibold text-sm text-white truncate">Bodeguero</p>
-            <p class="text-xs text-gray-400 truncate">bodeguero@inacap.cl</p>
+            <p class="font-semibold text-sm text-white truncate">
+              {{ authStore.fullName || 'Bodeguero' }}
+            </p>
+            <p class="text-xs text-gray-400 truncate">
+              {{ authStore.user?.correo || 'bodeguero@inacap.cl' }}
+            </p>
           </div>
         </div>
 
@@ -138,17 +160,30 @@
       <!-- Top Bar -->
       <div class="bg-gray-800/50 backdrop-blur-sm border-b border-gray-700/50 px-8 py-4 sticky top-0 z-10">
         <div class="flex items-center justify-between">
-          <h2 class="text-xl font-semibold text-white">Dashboard</h2>
+          <h2 class="text-xl font-semibold text-white">{{ pageTitle }}</h2>
 
           <!-- Acciones rápidas -->
           <div class="flex items-center gap-4">
-            <button class="p-2 rounded-lg hover:bg-gray-700/50 transition-colors group">
-              <svg class="w-5 h-5 text-gray-400 group-hover:text-white" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-              </svg>
-            </button>
+            <!-- Alertas -->
+            <div v-if="alertasCount > 0" class="relative">
+              <button class="p-2 rounded-lg hover:bg-gray-700/50 transition-colors group">
+                <svg class="w-5 h-5 text-red-400 group-hover:text-red-300" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+                <span
+                  class="absolute -top-1 -right-1 bg-red-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                  {{ alertasCount }}
+                </span>
+              </button>
+            </div>
+
+            <!-- Sistema Online -->
+            <div class="flex items-center gap-2 bg-green-500/20 border border-green-500/30 rounded-lg px-3 py-1">
+              <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+              <span class="text-green-300 text-xs font-medium">Sistema Online</span>
+            </div>
           </div>
         </div>
       </div>
@@ -164,16 +199,61 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, computed, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import { useBodegueroAuthStore } from '@/stores/bodegueroAuthStore'
 
 const router = useRouter()
+const route = useRoute()
+const authStore = useBodegueroAuthStore()
+
 const isCollapsed = ref(false)
 
+// Estados reactivos para datos en tiempo real
+const prestamosActivos = ref(0)
+const alertasCount = ref(0)
+
+// Título dinámico basado en la ruta
+const pageTitle = computed(() => {
+  const titles = {
+    'dashboard-prestamos': 'Gestión de Préstamos',
+    'dashboard-inventario': 'Gestión de Inventario',
+    'dashboard-usuarios': 'Gestión de Usuarios',
+    'dashboard-reportes': 'Reportes y Análisis'
+  }
+  return titles[route.name] || 'Dashboard'
+})
+
 const handleLogout = () => {
-  // Aquí irá la lógica de logout del store
+  authStore.logout()
   router.push('/bodeguero/login')
 }
+
+// Cargar estadísticas en tiempo real
+const cargarEstadisticas = async () => {
+  try {
+    // Aquí conectarías con tus APIs para obtener datos reales
+    // const prestamos = await prestamosService.getPrestamos()
+    // prestamosActivos.value = prestamos.filter(p => p.estado === 'activo').length
+
+    // Datos mock por ahora
+    prestamosActivos.value = 8
+    alertasCount.value = 2
+  } catch (error) {
+    console.error('Error al cargar estadísticas:', error)
+  }
+}
+
+onMounted(() => {
+  // Inicializar auth store
+  authStore.initializeAuth()
+
+  // Cargar estadísticas
+  cargarEstadisticas()
+
+  // Actualizar cada 30 segundos
+  setInterval(cargarEstadisticas, 30000)
+})
 </script>
 
 <style scoped>
