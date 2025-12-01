@@ -166,27 +166,109 @@
           <div class="flex items-center gap-4">
             <!-- Alertas -->
             <div v-if="alertasCount > 0" class="relative">
-              <button 
-                @click="mostrarNotificaciones = !mostrarNotificaciones"
-                class="p-2 rounded-lg hover:bg-gray-700/50 transition-colors group"
-              >
+              <button @click="mostrarNotificaciones = !mostrarNotificaciones"
+                class="p-2 rounded-lg hover:bg-gray-700/50 transition-colors group">
                 <svg class="w-5 h-5 text-red-400 group-hover:text-red-300" fill="none" viewBox="0 0 24 24"
                   stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                 </svg>
                 <!-- Badge (Solo si hay alertas) -->
-                <span v-if="alertasCount > 0" class="absolute -top-1 -right-1 bg-red-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center border-2 border-gray-800">
+                <span v-if="alertasCount > 0"
+                  class="absolute -top-1 -right-1 bg-red-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center border-2 border-gray-800">
                   {{ alertasCount }}
                 </span>
               </button>
-              <!-- EL MODAL VISUAL -->
-              <div v-if="mostrarNotificaciones" class="absolute right-0 mt-2 w-80 bg-gray-800 border border-gray-700 rounded-xl shadow-2xl z-50 overflow-hidden">
-                <div class="px-4 py-3 border-b border-gray-700 bg-gray-900/50 flex justify-between items-center">
-                  <h3 class="text-sm font-bold text-white">Notificaciones</h3>
-                  <button @click="mostrarNotificaciones = false" class="text-xs text-red-400 hover:text-red-300">Cerrar</button>
+              <div v-if="mostrarNotificaciones"
+                class="absolute right-0 mt-2 w-96 bg-gray-800 border border-gray-700 rounded-xl shadow-2xl z-50 overflow-hidden">
+
+                <!-- Header del modal -->
+                <div
+                  class="px-4 py-3 border-b border-gray-700 bg-gradient-to-r from-red-900/20 to-red-800/20 flex justify-between items-center">
+                  <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                    <svg class="w-4 h-4 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.232 18.5c-.77.833.192 2.5 1.732 2.5z" />
+                    </svg>
+                    Préstamos Vencidos
+                  </h3>
+                  <button @click="mostrarNotificaciones = false"
+                    class="text-xs text-red-400 hover:text-red-300 bg-red-500/10 hover:bg-red-500/20 px-2 py-1 rounded transition-colors">
+                    Cerrar
+                  </button>
                 </div>
-                <!-- Aquí puedes agregar el contenido de las notificaciones -->
+
+                <!-- Loading de alertas -->
+                <div v-if="loadingAlertas" class="p-4">
+                  <div class="animate-pulse space-y-3">
+                    <div v-for="i in 3" :key="i" class="flex space-x-3">
+                      <div class="rounded-full bg-gray-700 h-8 w-8"></div>
+                      <div class="flex-1 space-y-2">
+                        <div class="h-4 bg-gray-700 rounded w-3/4"></div>
+                        <div class="h-3 bg-gray-700 rounded w-1/2"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Lista de alertas (SIN BOTONES DE RESOLVER) -->
+                <div v-else-if="alertas.length > 0" class="max-h-80 overflow-y-auto">
+                  <div v-for="alerta in alertas" :key="alerta.id_alerta"
+                    class="p-4 border-b border-gray-700/50 hover:bg-gray-700/30 transition-colors">
+
+                    <div class="flex items-start gap-3">
+                      <!-- Avatar del usuario -->
+                      <div
+                        class="w-8 h-8 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
+                        {{ alerta.usuario_nombre?.charAt(0) || '?' }}
+                      </div>
+
+                      <div class="flex-1 min-w-0">
+                        <!-- Usuario y herramienta -->
+                        <p class="text-white text-sm font-medium truncate">
+                          {{ alerta.usuario_nombre || 'Usuario desconocido' }}
+                        </p>
+                        <p class="text-gray-400 text-xs truncate">
+                          {{ alerta.herramienta_nombre || 'Herramienta desconocida' }}
+                        </p>
+
+                        <!-- Tiempo vencido -->
+                        <div class="flex items-center gap-2 mt-1">
+                          <span
+                            class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-red-500/20 text-red-400 border border-red-500/50">
+                            {{ alerta.dias_vencido }} días vencido{{ alerta.dias_vencido !== 1 ? 's' : '' }}
+                          </span>
+                          <span class="text-gray-500 text-xs">
+                            {{ alerta.fecha_formateada }}
+                          </span>
+                        </div>
+                      </div>
+
+                      <!-- Icono de advertencia (en lugar de botón resolver) -->
+                      <div class="text-red-400">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.232 18.5c-.77.833.192 2.5 1.732 2.5z" />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Sin alertas -->
+                <div v-else class="p-6 text-center">
+                  <p class="text-gray-400 text-sm">¡No hay alertas pendientes!</p>
+                  <p class="text-gray-500 text-xs mt-1">Todos los préstamos están al día</p>
+                </div>
+
+                <!-- Footer solo informativo (SIN BOTONES DE RESOLVER) -->
+                <div v-if="alertas.length > 0" class="px-4 py-3 border-t border-gray-700 bg-gray-900/50">
+                  <div class="flex justify-between items-center">
+                    <span class="text-xs text-gray-400">{{ alertas.length }} alerta{{ alertas.length !== 1 ? 's' : ''
+                      }}</span>
+                    <span class="text-xs text-gray-500">Se resuelven automáticamente al devolver</span>
+                  </div>
+                </div>
               </div>
               <!-- Fondo para cerrar al hacer clic fuera -->
               <div v-if="mostrarNotificaciones" @click="mostrarNotificaciones = false" class="fixed inset-0 z-40"></div>
@@ -215,6 +297,11 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useBodegueroAuthStore } from '@/stores/bodegueroAuthStore'
+import { alertasService } from '@/services/alertasService'
+
+
+const alertas = ref([])
+const loadingAlertas = ref(false)
 
 const router = useRouter()
 const route = useRoute()
@@ -225,7 +312,20 @@ const isCollapsed = ref(false)
 // Estados reactivos para datos en tiempo real
 const prestamosActivos = ref(0)
 const alertasCount = ref(0)
-const mostrarNotificaciones = ref(false) // Estado para abrir/cerrar el modal de notificaciones
+const mostrarNotificaciones = ref(false)
+
+const cargarAlertas = async () => {
+  try {
+    loadingAlertas.value = true
+    alertas.value = await alertasService.getAlertasEnriquecidas()
+    console.log('✅ Alertas cargadas:', alertas.value.length)
+  } catch (error) {
+    console.error('❌ Error al cargar alertas:', error)
+    alertas.value = []
+  } finally {
+    loadingAlertas.value = false
+  }
+}
 
 // Título dinámico basado en la ruta
 const pageTitle = computed(() => {

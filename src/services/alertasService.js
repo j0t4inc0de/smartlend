@@ -26,25 +26,11 @@ export const alertasService = {
     }
   },
 
-  // Marcar alerta como resuelta (si existe endpoint)
-  async resolverAlerta(alertaId) {
-    try {
-      const response = await axios.patch(`${API_BASE_URL}/operaciones/api/alertas/${alertaId}/`, {
-        resuelta: true,
-        resuelta_en: new Date().toISOString(),
-      })
-      return response.data
-    } catch (error) {
-      console.error('Error al resolver alerta:', error)
-      throw new Error('No se pudo resolver la alerta')
-    }
-  },
-
   // Obtener información del usuario de una alerta
   async getUsuarioDeAlerta(alerta) {
     try {
       const response = await axios.get(
-        `${API_BASE_URL}/usuarios/api/usuarios/${alerta.prestamo_detalle.id_usuario}/`,
+        `${API_BASE_URL}/usuarios/api/usuarios/${alerta.id_usuario}/`,
       )
       return response.data
     } catch (error) {
@@ -57,7 +43,7 @@ export const alertasService = {
   async getHerramientaDeAlerta(alerta) {
     try {
       const response = await axios.get(
-        `${API_BASE_URL}/inventario/api/tipos-herramienta/${alerta.prestamo_detalle.id_tipo_herramienta}/`,
+        `${API_BASE_URL}/inventario/api/tipos-herramienta/${alerta.id_tipo_herramienta}/`,
       )
       return response.data
     } catch (error) {
@@ -66,7 +52,7 @@ export const alertasService = {
     }
   },
 
-  // Enriquecer alertas con información adicional
+  // Enriquecer alertas con información adicional (VERSION SIMPLIFICADA)
   async getAlertasEnriquecidas() {
     try {
       const alertas = await this.getAlertasNoResueltas()
@@ -83,9 +69,7 @@ export const alertasService = {
               ...alerta,
               usuario_nombre: `${usuario.nombres} ${usuario.apellidos}`,
               herramienta_nombre: herramienta.nombre,
-              dias_vencido: this.calcularDiasVencido(
-                alerta.prestamo_detalle.fecha_devolucion_esperada,
-              ),
+              dias_vencido: this.calcularDiasVencido(alerta.fecha_devolucion_esperada),
               fecha_formateada: new Date(alerta.creada_en).toLocaleString('es-CL'),
             }
           } catch (error) {
