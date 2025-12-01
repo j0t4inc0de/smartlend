@@ -1,5 +1,68 @@
 <template>
   <div class="p-8">
+    <!-- HEADER CON ESTADO DE CONEXIÓN -->
+    <div class="flex justify-between items-center mb-6">
+
+      <div>
+        <div v-if="loading"
+          class="flex items-center gap-2 bg-blue-500/20 border border-blue-500/30 rounded-lg px-3 py-1">
+          <div class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
+          <span class="text-blue-300 text-xs font-medium">Cargando...</span>
+        </div>
+
+        <div v-else-if="error"
+          class="flex items-center gap-2 bg-red-500/20 border border-red-500/30 rounded-lg px-3 py-1">
+          <div class="w-2 h-2 rounded-full bg-red-500"></div>
+          <span class="text-red-300 text-xs font-medium">Error de conexión</span>
+        </div>
+
+        <div v-else class="flex items-center gap-2 bg-green-500/20 border border-green-500/30 rounded-lg px-3 py-1">
+          <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+          <span class="text-green-300 text-xs font-medium">Conectado</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+
+        <div class="text-sm text-gray-400 mr-2 hidden md:block">
+          Total: {{ prestamos.length }}
+        </div>
+
+        <select v-model="filtroEstado"
+          class="bg-gray-800 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500 text-sm">
+          <option value="todos">Todos</option>
+          <option value="activo">Activos ({{ contarPorEstado('activo') }})</option>
+          <option value="vencido">Vencidos ({{ contarPorEstado('vencido') }})</option>
+          <option value="completado">Completados ({{ contarPorEstado('completado') }})</option>
+        </select>
+
+        <button @click="cargarPrestamos" :disabled="loading"
+          class="p-2 rounded-lg bg-gray-800 border border-gray-700 hover:bg-gray-700 transition-colors disabled:opacity-50 text-gray-300 hover:text-white">
+          <svg class="w-5 h-5" :class="{ 'animate-spin': loading }" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- MENSAJE DE ERROR -->
+    <div v-if="error" class="mb-6 bg-red-500/10 border border-red-500/50 rounded-lg p-4">
+      <div class="flex items-start gap-3">
+        <svg class="w-5 h-5 text-red-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <div>
+          <h4 class="text-red-200 font-medium">Error de conexión</h4>
+          <p class="text-red-300 text-sm mt-1">{{ error }}</p>
+          <p class="text-red-400/80 text-xs mt-2">Mostrando datos de ejemplo. Verifica la conexión al servidor.</p>
+        </div>
+      </div>
+    </div>
+
     <!-- ESTADÍSTICAS RÁPIDAS -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
       <div class="bg-gray-800 rounded-xl p-6 border border-gray-700 hover:border-green-500/50 transition-colors">
@@ -47,25 +110,26 @@
       </div>
     </div>
 
-    <!-- FILTRO POR ESTADO -->
-    <div class="flex justify-between items-center mb-8">
-      <select v-model="filtroEstado"
-        class="bg-gray-800 text-white px-4 py-2 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500">
-        <option value="todos">Todos</option>
-        <option value="activo">Activos</option>
-        <option value="vencido">Vencidos</option>
-        <option value="completado">Completados</option>
-      </select>
-    </div>
-
     <!-- TABLA DE PRÉSTAMOS -->
     <div>
+      <!-- LOADING SKELETON -->
+      <div v-if="loading && prestamos.length === 0" class="bg-gray-800 rounded-xl border border-gray-700">
+        <div class="p-8 space-y-4">
+          <div v-for="i in 5" :key="i" class="animate-pulse flex space-x-4">
+            <div class="rounded-full bg-gray-700 h-10 w-10"></div>
+            <div class="flex-1 space-y-2 py-1">
+              <div class="h-4 bg-gray-700 rounded w-3/4"></div>
+              <div class="h-4 bg-gray-700 rounded w-1/2"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- SIN DATOS -->
-      <div v-if="prestamosFiltrados.length === 0"
+      <div v-else-if="prestamosFiltrados.length === 0"
         class="bg-gray-800 rounded-xl border border-gray-700 p-12 text-center">
         <div class="text-6xl mb-4">📦</div>
         <p class="text-gray-400 text-lg">No hay préstamos para mostrar</p>
-        <p class="text-gray-500 text-sm mt-2">Los préstamos aparecerán aquí cuando se realicen</p>
       </div>
 
       <!-- CON DATOS -->
@@ -98,16 +162,20 @@
                   <div class="flex items-center gap-3">
                     <div
                       class="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">
-                      {{ prestamo.usuario_nombre.charAt(0) }}
+                      {{ prestamo.usuario_nombre?.charAt(0) || '?' }}
                     </div>
-                    <div class="text-white font-medium">{{ prestamo.usuario_nombre }}</div>
+                    <div>
+                      <div class="text-white font-medium">{{ prestamo.usuario_nombre || 'Usuario desconocido' }}</div>
+                      <div v-if="prestamo.usuario_correo" class="text-gray-500 text-xs">{{ prestamo.usuario_correo }}
+                      </div>
+                    </div>
                   </div>
                 </td>
 
                 <!-- Herramienta -->
                 <td class="px-6 py-4">
-                  <div class="text-white">{{ prestamo.herramienta_nombre }}</div>
-                  <div class="text-gray-500 text-xs">{{ prestamo.codigo_barras }}</div>
+                  <div class="text-white">{{ prestamo.herramienta_nombre || 'Herramienta desconocida' }}</div>
+                  <div class="text-gray-500 text-xs">{{ prestamo.codigo_barras || 'Sin código' }}</div>
                 </td>
 
                 <!-- Fecha Préstamo -->
@@ -132,25 +200,28 @@
                     'bg-red-500/20 text-red-400 border border-red-500/50': prestamo.estado === 'vencido',
                     'bg-gray-500/20 text-gray-400 border border-gray-500/50': prestamo.estado === 'completado'
                   }">
-                    {{ prestamo.estado.toUpperCase() }}
+                    {{ prestamo.estado?.toUpperCase() || 'DESCONOCIDO' }}
                   </span>
                 </td>
 
-                <!-- Condición Devolución (NUEVA COLUMNA) -->
+                <!-- Condición Devolución -->
                 <td class="px-6 py-4">
                   <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold"
                     :class="getCondicionClass(prestamo.condicion_devolucion)">
-                    {{ prestamo.condicion_devolucion }}
+                    {{ prestamo.condicion_devolucion || 'Sin Estado' }}
                   </span>
                 </td>
 
                 <!-- Acciones -->
                 <td class="px-6 py-4">
-                  <button v-if="prestamo.estado !== 'completado'"
-                    @click="alert('Marcar como devuelto: #' + prestamo.id)"
-                    class="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all hover:scale-105 active:scale-95">
-                    Devolver
+                  <button v-if="prestamo.estado !== 'completado'" @click="abrirModalDevolucion(prestamo)"
+                    :disabled="procesandoDevolucion === prestamo.id"
+                    class="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+                    <span v-if="procesandoDevolucion === prestamo.id"
+                      class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                    <span>{{ procesandoDevolucion === prestamo.id ? 'Procesando...' : 'Devolver' }}</span>
                   </button>
+
                   <span v-else class="text-gray-500 text-sm flex items-center gap-1">
                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                       <path fill-rule="evenodd"
@@ -166,105 +237,156 @@
         </div>
       </div>
     </div>
+
+    <!-- MODAL DE DEVOLUCIÓN -->
+    <div v-if="modalDevolucion" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+      <div class="bg-gray-800 rounded-xl p-6 max-w-md w-full border border-gray-700">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-lg font-bold text-white">Registrar Devolución</h3>
+          <button @click="cerrarModalDevolucion" class="text-gray-400 hover:text-white">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <div v-if="prestamoSeleccionado" class="space-y-4">
+          <!-- Info del préstamo -->
+          <div class="bg-gray-700 rounded-lg p-4">
+            <p class="text-white font-medium">{{ prestamoSeleccionado.herramienta_nombre }}</p>
+            <p class="text-gray-400 text-sm">{{ prestamoSeleccionado.usuario_nombre }}</p>
+            <p class="text-gray-500 text-xs">Código: {{ prestamoSeleccionado.codigo_barras }}</p>
+          </div>
+
+          <!-- Estado de devolución -->
+          <div>
+            <label class="block text-sm font-medium text-white mb-2">Estado de la herramienta</label>
+            <select v-model="estadoDevolucion"
+              class="w-full bg-gray-700 text-white rounded-lg px-3 py-2 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500">
+              <option value="Excelente">Excelente</option>
+              <option value="Bueno">Bueno</option>
+              <option value="Regular">Regular</option>
+              <option value="Defectuoso">Defectuoso</option>
+              <option value="Dañado">Dañado</option>
+            </select>
+          </div>
+
+          <!-- Observaciones -->
+          <div>
+            <label class="block text-sm font-medium text-white mb-2">Observaciones (opcional)</label>
+            <textarea v-model="observaciones"
+              class="w-full bg-gray-700 text-white rounded-lg px-3 py-2 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+              rows="3" placeholder="Describe cualquier daño o problema observado..."></textarea>
+          </div>
+
+          <!-- Botones -->
+          <div class="flex gap-3 pt-4">
+            <button @click="cerrarModalDevolucion"
+              class="flex-1 px-4 py-2 rounded-lg border border-gray-600 text-gray-300 hover:bg-gray-700 transition-colors">
+              Cancelar
+            </button>
+            <button @click="confirmarDevolucion" :disabled="procesandoDevolucion"
+              class="flex-1 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-white font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+              {{ procesandoDevolucion ? 'Procesando...' : 'Confirmar Devolución' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { prestamosService } from '@/services/prestamosService'
 
-// DATOS FALSOS (MOCK DATA)
-const prestamos = ref([
-  {
-    id: 1,
-    usuario_nombre: 'Juan Pérez',
-    herramienta_nombre: 'Taladro Dewalt DCD771',
-    codigo_barras: 'TLD-001',
-    fecha_prestamo: '25/11/2024 09:30',
-    fecha_devolucion_esperada: '02/12/2024 18:00',
-    fecha_devolucion_real: null,
-    estado: 'activo',
-    condicion_devolucion: 'Sin Estado'
-  },
-  {
-    id: 2,
-    usuario_nombre: 'María González',
-    herramienta_nombre: 'Sierra Circular Makita',
-    codigo_barras: 'SRC-005',
-    fecha_prestamo: '20/11/2024 14:15',
-    fecha_devolucion_esperada: '27/11/2024 18:00',
-    fecha_devolucion_real: null,
-    estado: 'vencido',
-    condicion_devolucion: 'Sin Estado'
-  },
-  {
-    id: 3,
-    usuario_nombre: 'Carlos Rodríguez',
-    herramienta_nombre: 'Multímetro Digital',
-    codigo_barras: 'MLT-012',
-    fecha_prestamo: '15/11/2024 10:00',
-    fecha_devolucion_esperada: '22/11/2024 18:00',
-    fecha_devolucion_real: '21/11/2024 16:45',
-    estado: 'completado',
-    condicion_devolucion: 'Bueno'
-  },
-  {
-    id: 4,
-    usuario_nombre: 'Ana Martínez',
-    herramienta_nombre: 'Soldador Eléctrico',
-    codigo_barras: 'SLD-008',
-    fecha_prestamo: '26/11/2024 11:20',
-    fecha_devolucion_esperada: '03/12/2024 18:00',
-    fecha_devolucion_real: null,
-    estado: 'activo',
-    condicion_devolucion: 'Sin Estado'
-  },
-  {
-    id: 5,
-    usuario_nombre: 'Pedro Silva',
-    herramienta_nombre: 'Llave Impacto Neumática',
-    codigo_barras: 'LLV-015',
-    fecha_prestamo: '18/11/2024 08:45',
-    fecha_devolucion_esperada: '25/11/2024 18:00',
-    fecha_devolucion_real: null,
-    estado: 'vencido',
-    condicion_devolucion: 'Sin Estado'
-  },
-  {
-    id: 6,
-    usuario_nombre: 'Laura Torres',
-    herramienta_nombre: 'Pulidora Angular Bosch',
-    codigo_barras: 'PLD-020',
-    fecha_prestamo: '10/11/2024 13:30',
-    fecha_devolucion_esperada: '17/11/2024 18:00',
-    fecha_devolucion_real: '17/11/2024 15:20',
-    estado: 'completado',
-    condicion_devolucion: 'Excelente'
-  },
-  {
-    id: 7,
-    usuario_nombre: 'Diego Ramírez',
-    herramienta_nombre: 'Compresor de Aire',
-    codigo_barras: 'CMP-003',
-    fecha_prestamo: '27/11/2024 09:00',
-    fecha_devolucion_esperada: '04/12/2024 18:00',
-    fecha_devolucion_real: null,
-    estado: 'activo',
-    condicion_devolucion: 'Sin Estado'
-  },
-  {
-    id: 8,
-    usuario_nombre: 'Sofía Vargas',
-    herramienta_nombre: 'Calibrador Digital',
-    codigo_barras: 'CLB-018',
-    fecha_prestamo: '12/11/2024 10:15',
-    fecha_devolucion_esperada: '19/11/2024 18:00',
-    fecha_devolucion_real: '19/11/2024 17:30',
-    estado: 'completado',
-    condicion_devolucion: 'Regular'
-  }
-])
-
+// Estados reactivos
+const prestamos = ref([])
 const filtroEstado = ref('todos')
+const loading = ref(true)
+const error = ref('')
+const procesandoDevolucion = ref(null) // ID del préstamo que se está procesando
+
+// Estados para el modal de devolución
+const modalDevolucion = ref(false)
+const prestamoSeleccionado = ref(null)
+const estadoDevolucion = ref('Bueno')
+const observaciones = ref('')
+
+// Timer para actualización automática
+let intervalId = null
+
+// FUNCIONES PRINCIPALES
+const cargarPrestamos = async () => {
+  try {
+    loading.value = true
+    error.value = ''
+    prestamos.value = await prestamosService.getPrestamos()
+    console.log('✅ Préstamos cargados:', prestamos.value.length)
+  } catch (err) {
+    console.error('❌ Error al cargar préstamos:', err)
+    error.value = err.message || 'Error al cargar los préstamos'
+
+    // Si hay error, mostrar datos de ejemplo para que la interfaz no esté vacía
+    if (prestamos.value.length === 0) {
+      prestamos.value = [
+        {
+          id: 'mock-1',
+          usuario_nombre: 'Usuario de Ejemplo',
+          herramienta_nombre: 'Herramienta de Ejemplo',
+          codigo_barras: 'MOCK-001',
+          fecha_prestamo: '30/11/2024 10:00',
+          fecha_devolucion_esperada: '07/12/2024 18:00',
+          fecha_devolucion_real: null,
+          estado: 'activo',
+          condicion_devolucion: 'Sin Estado'
+        }
+      ]
+    }
+  } finally {
+    loading.value = false
+  }
+}
+
+const abrirModalDevolucion = (prestamo) => {
+  prestamoSeleccionado.value = prestamo
+  estadoDevolucion.value = 'Bueno'
+  observaciones.value = ''
+  modalDevolucion.value = true
+}
+
+const cerrarModalDevolucion = () => {
+  modalDevolucion.value = false
+  prestamoSeleccionado.value = null
+  estadoDevolucion.value = 'Bueno'
+  observaciones.value = ''
+}
+
+const confirmarDevolucion = async () => {
+  if (!prestamoSeleccionado.value) return
+
+  try {
+    procesandoDevolucion.value = prestamoSeleccionado.value.id
+
+    await prestamosService.marcarComoDevuelto(
+      prestamoSeleccionado.value.id,
+      estadoDevolucion.value,
+      observaciones.value
+    )
+
+    // Recargar préstamos
+    await cargarPrestamos()
+
+    cerrarModalDevolucion()
+
+    console.log('✅ Préstamo devuelto exitosamente')
+  } catch (err) {
+    console.error('❌ Error al marcar devolución:', err)
+    alert('Error al procesar la devolución: ' + (err.message || 'Error desconocido'))
+  } finally {
+    procesandoDevolucion.value = null
+  }
+}
 
 // COMPUTED
 const prestamosFiltrados = computed(() => {
@@ -278,7 +400,6 @@ const contarPorEstado = (estado) => {
   return prestamos.value.filter(p => p.estado === estado).length
 }
 
-// HELPER PARA CLASES DE CONDICIÓN DEVOLUCIÓN
 const getCondicionClass = (condicion) => {
   switch (condicion) {
     case 'Excelente':
@@ -291,7 +412,44 @@ const getCondicionClass = (condicion) => {
     case 'Dañado':
       return 'bg-red-500/20 text-red-400 border border-red-500/50'
     default:
-      return 'bg-gray-700/50 text-gray-400 border border-gray-600/50' // Sin Estado
+      return 'bg-gray-700/50 text-gray-400 border border-gray-600/50'
   }
 }
+
+// LIFECYCLE
+onMounted(async () => {
+  await cargarPrestamos()
+
+  // Actualizar cada 30 segundos
+  intervalId = setInterval(() => {
+    if (!loading.value && !modalDevolucion.value) {
+      cargarPrestamos()
+    }
+  }, 30000)
+})
+
+onUnmounted(() => {
+  if (intervalId) {
+    clearInterval(intervalId)
+  }
+})
 </script>
+
+<style scoped>
+/* Animación de pulso para el estado de conexión */
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+</style>
