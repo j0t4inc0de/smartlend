@@ -36,7 +36,7 @@
           <option value="completado">Completados ({{ contarPorEstado('completado') }})</option>
         </select>
 
-        <button @click="cargarPrestamos" :disabled="loading"
+        <button @click="recargarPrestamos" :disabled="loading"
           class="p-2 rounded-lg bg-gray-800 border border-gray-700 hover:bg-gray-700 transition-colors disabled:opacity-50 text-gray-300 hover:text-white">
           <svg class="w-5 h-5" :class="{ 'animate-spin': loading }" fill="none" viewBox="0 0 24 24"
             stroke="currentColor">
@@ -297,15 +297,15 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { prestamosService } from '@/services/prestamosService'
 
-// Estados reactivos
+// Estados reactivos (sin intervalId - eliminado el interval duplicado)
 const prestamos = ref([])
 const filtroEstado = ref('todos')
 const loading = ref(true)
 const error = ref('')
-const procesandoDevolucion = ref(null) // ID del préstamo que se está procesando
+const procesandoDevolucion = ref(null)
 
 // Estados para el modal de devolución
 const modalDevolucion = ref(false)
@@ -313,21 +313,20 @@ const prestamoSeleccionado = ref(null)
 const estadoDevolucion = ref('Bueno')
 const observaciones = ref('')
 
-// Timer para actualización automática
-let intervalId = null
-
-// FUNCIONES PRINCIPALES
-const cargarPrestamos = async () => {
+// ✅ FUNCIÓN PRINCIPAL OPTIMIZADA
+const cargarPrestamos = async (useCache = true) => {
   try {
     loading.value = true
     error.value = ''
-    prestamos.value = await prestamosService.getPrestamos()
-    console.log('Préstamos cargados:', prestamos.value.length)
+
+    // Usar el servicio optimizado con cache
+    prestamos.value = await prestamosService.getPrestamos(useCache)
+    console.log('✅ Préstamos cargados:', prestamos.value.length)
   } catch (err) {
-    console.error('Error al cargar préstamos:', err)
+    console.error('❌ Error al cargar préstamos:', err)
     error.value = err.message || 'Error al cargar los préstamos'
 
-    // Si hay error, mostrar datos de ejemplo para que la interfaz no esté vacía
+    // Solo mostrar datos de ejemplo si no hay datos en cache
     if (prestamos.value.length === 0) {
       prestamos.value = [
         {
@@ -346,6 +345,11 @@ const cargarPrestamos = async () => {
   } finally {
     loading.value = false
   }
+}
+
+// ✅ FORZAR RECARGA (sin cache)
+const recargarPrestamos = () => {
+  cargarPrestamos(false) // useCache = false
 }
 
 const abrirModalDevolucion = (prestamo) => {
@@ -374,21 +378,20 @@ const confirmarDevolucion = async () => {
       observaciones.value
     )
 
-    // Recargar préstamos
-    await cargarPrestamos()
+    // Recargar préstamos (sin cache para datos frescos)
+    await cargarPrestamos(false)
 
     cerrarModalDevolucion()
-
-    console.log('Préstamo devuelto exitosamente')
+    console.log('✅ Préstamo devuelto exitosamente')
   } catch (err) {
-    console.error('Error al marcar devolución:', err)
+    console.error('❌ Error al marcar devolución:', err)
     alert('Error al procesar la devolución: ' + (err.message || 'Error desconocido'))
   } finally {
     procesandoDevolucion.value = null
   }
 }
 
-// COMPUTED
+// COMPUTED (sin cambios)
 const prestamosFiltrados = computed(() => {
   if (filtroEstado.value === 'todos') {
     return prestamos.value
@@ -416,25 +419,18 @@ const getCondicionClass = (condicion) => {
   }
 }
 
-// LIFECYCLE
+// ✅ LIFECYCLE SIMPLIFICADO (SIN INTERVAL DUPLICADO)
 onMounted(async () => {
-  authStore.initializeAuth()
+  // Solo cargar datos iniciales
+  await cargarPrestamos()
 
-  if ('Notification' in window && Notification.permission === 'default') {
-    await Notification.requestPermission()
-  }
-
-  await cargarEstadisticas()
-
-  // ✅ INTERVAL SIMPLE SIN OPTIMIZACIONES
-  intervalId = setInterval(cargarEstadisticas, 120000) // 2 minutos FIJOS
+  // ✅ EL LAYOUT YA MANEJA LA ACTUALIZACIÓN AUTOMÁTICA
+  // No necesitamos interval aquí
 })
 
-onUnmounted(() => {
-  if (intervalId) {
-    clearInterval(intervalId)
-  }
-})
+// ✅ EXPONER FUNCIONES PARA EL TEMPLATE
+// Cambiar la función de recarga en el template:
+// @click="cargarPrestamos" → @click="recargarPrestamos"
 </script>
 
 <style scoped>
