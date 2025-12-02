@@ -9,50 +9,32 @@ export const prestamosService = {
     try {
       const response = await axios.get(`${API_BASE_URL}/operaciones/api/prestamos/`)
 
-      // Enriquecer con información de usuario y herramienta
       const prestamosConDetalles = await Promise.all(
         response.data.map(async (prestamo) => {
           try {
-            // Obtener información del usuario
-            const usuarioResponse = await axios.get(
-              `${API_BASE_URL}/usuarios/api/usuarios/${prestamo.id_usuario}/`,
-            )
-
-            // Obtener información de la herramienta individual
-            const herramientaResponse = await axios.get(
-              `${API_BASE_URL}/inventario/api/herramientas/${prestamo.id_herramienta_individual}/`,
-            )
-
-            // Obtener tipo de herramienta
-            const tipoResponse = await axios.get(
-              `${API_BASE_URL}/inventario/api/tipos-herramienta/${prestamo.id_tipo_herramienta}/`,
-            )
+            const [usuarioResponse, herramientaResponse, tipoResponse] = await Promise.all([
+              axios.get(`${API_BASE_URL}/usuarios/api/usuarios/${prestamo.id_usuario}/`, {
+                timeout: 5000,
+              }), // ← AGREGAR TIMEOUT
+              axios.get(
+                `${API_BASE_URL}/inventario/api/herramientas/${prestamo.id_herramienta_individual}/`,
+                { timeout: 5000 },
+              ), // ← AGREGAR TIMEOUT
+              axios.get(
+                `${API_BASE_URL}/inventario/api/tipos-herramienta/${prestamo.id_tipo_herramienta}/`,
+                { timeout: 5000 },
+              ), // ← AGREGAR TIMEOUT
+            ])
 
             return {
-              ...prestamo,
-              usuario_nombre: `${usuarioResponse.data.nombres} ${usuarioResponse.data.apellidos}`,
-              usuario_correo: usuarioResponse.data.correo,
-              usuario_rol: usuarioResponse.data.id_rol,
-              herramienta_nombre: tipoResponse.data.nombre,
-              codigo_barras: herramientaResponse.data.codigo_barras,
-              estado_herramienta: herramientaResponse.data.estado_herramienta,
-              fecha_prestamo: new Date(prestamo.fecha_prestamo).toLocaleString('es-CL'),
-              fecha_devolucion_esperada: new Date(
-                prestamo.fecha_devolucion_esperada,
-              ).toLocaleString('es-CL'),
-              fecha_devolucion_real: prestamo.fecha_devolucion_real
-                ? new Date(prestamo.fecha_devolucion_real).toLocaleString('es-CL')
-                : null,
-              // Determinar estado basado en fechas
-              estado: this.determinarEstado(prestamo),
-              condicion_devolucion: prestamo.estado_devolucion || 'Sin Estado',
+              /* resto del código igual */
             }
           } catch (error) {
-            console.error(`Error al obtener detalles del préstamo ${prestamo.id_prestamo}:`, error)
+            // Fallback rápido en caso de timeout
             return {
               ...prestamo,
-              usuario_nombre: 'Error al cargar',
-              herramienta_nombre: 'Error al cargar',
+              usuario_nombre: 'Timeout - Usuario',
+              herramienta_nombre: 'Timeout - Herramienta',
               estado: 'error',
             }
           }

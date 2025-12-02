@@ -418,14 +418,16 @@ const getCondicionClass = (condicion) => {
 
 // LIFECYCLE
 onMounted(async () => {
-  await cargarPrestamos()
+  authStore.initializeAuth()
 
-  // Actualizar cada 30 segundos
-  intervalId = setInterval(() => {
-    if (!loading.value && !modalDevolucion.value) {
-      cargarPrestamos()
-    }
-  }, 30000)
+  if ('Notification' in window && Notification.permission === 'default') {
+    await Notification.requestPermission()
+  }
+
+  await cargarEstadisticas()
+
+  // ✅ INTERVAL SIMPLE SIN OPTIMIZACIONES
+  intervalId = setInterval(cargarEstadisticas, 120000) // 2 minutos FIJOS
 })
 
 onUnmounted(() => {
