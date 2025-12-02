@@ -61,8 +61,11 @@
 
           <div class="aspect-video bg-gray-700/50 relative overflow-hidden">
             <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent z-10"></div>
-            <img v-if="herramienta.imagen_url" :src="herramienta.imagen_url"
+
+            <img v-if="herramienta.imagen_url" :src="herramienta.imagen_url" loading="lazy" decoding="async"
+              @error="herramienta.imagen_url = null"
               class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+
             <div v-else class="w-full h-full flex items-center justify-center">
               <svg class="w-10 h-10 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
@@ -166,8 +169,8 @@
             <div v-for="item in carrito" :key="item.id_tipo_herramienta"
               class="bg-gray-800/50 border border-white/5 p-3 rounded-xl flex justify-between items-center">
               <div class="flex items-center gap-3">
-                <img v-if="item.imagen_url" :src="item.imagen_url"
-                  class="w-10 h-10 rounded-lg object-cover bg-gray-700" />
+                <img v-if="item.imagen_url" :src="item.imagen_url" loading="lazy" decoding="async"
+                  @error="item.imagen_url = null" class="w-10 h-10 rounded-lg object-cover bg-gray-700" />
                 <div>
                   <h4 class="text-white font-bold text-sm">{{ item.nombre }}</h4>
                   <p class="text-xs text-gray-400">{{ item.categoria }}</p>
@@ -315,14 +318,24 @@ const cargarDatos = async () => {
     categorias.value = await inventarioService.getCategorias()
     const tipos = await inventarioService.getTiposHerramienta()
 
-    // Mock stocks e imágenes para demo
-    herramientas.value = tipos.map(t => ({
-      ...t,
-      stock: Math.floor(Math.random() * 10),
-      imagen_url: null // Aquí iría la URL real si existiera
-    }))
+    herramientas.value = tipos.map(t => {
+      // Validamos si la URL es útil (no es nula y no dice "Sin url")
+      // Si la URL contiene "Sin url", se asume que NO hay imagen, devolviendo null
+      // Esto hará que el v-if del template sea false y muestre el SVG
+      const urlValida = t.imagen_url && !t.imagen_url.includes('Sin%20url')
+        ? t.imagen_url
+        : null
+
+      return {
+        ...t,
+        // Asignamos la URL validada
+        imagen_url: urlValida,
+        // Mantenemos el stock aleatorio si el backend no lo envía
+        stock: t.stock !== undefined ? t.stock : Math.floor(Math.random() * 10)
+      }
+    })
   } catch (e) {
-    console.error(e)
+    console.error('Error al cargar datos del dashboard:', e)
   }
 }
 
