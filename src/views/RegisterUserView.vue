@@ -54,7 +54,7 @@
                 <div class="col-span-1 md:col-span-2 group">
                   <label
                     class="block text-xs font-medium text-gray-400 mb-1 ml-1 uppercase tracking-wider group-focus-within:text-red-400 transition-colors">RUT</label>
-                  <input v-model="formData.rut" type="text" placeholder="12.345.678-9"
+                  <input v-model="formData.rut" type="text" placeholder="12345678-9"
                     class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 focus:bg-white/10 transition-all duration-300" />
                 </div>
 
