@@ -63,8 +63,13 @@
 
           <div class="mt-8 flex gap-4 w-full max-w-lg">
             <button @click="goBack"
-              class="px-6 py-3 rounded-xl text-gray-300 font-medium hover:text-white hover:bg-white/5 transition-all border border-transparent hover:border-white/10">
+              class="px-6 py-3 rounded-xl text-gray-400 font-medium hover:text-white hover:bg-white/5 transition-all border border-transparent hover:border-white/10">
               Volver
+            </button>
+
+            <button @click="openEmailLoginModal"
+              class="px-6 py-3 rounded-xl text-gray-300 font-medium hover:text-white hover:bg-white/5 transition-all border border-white/10">
+              Usar Correo y Contraseña
             </button>
 
             <button @click="handleLogin" :disabled="!isCameraActive || isSubmitting"
@@ -95,6 +100,55 @@
 
       </div>
     </div>
+
+    <!-- MODAL DE LOGIN CON CORREO -->
+    <div v-if="showEmailLoginModal" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+      <div class="bg-gray-800 rounded-xl p-6 max-w-sm w-full border border-gray-700 animate-fade-in-up">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-lg font-bold text-white">Iniciar Sesión</h3>
+          <button @click="closeEmailLoginModal" class="text-gray-400 hover:text-white">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <form @submit.prevent="handleEmailLogin" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-white mb-2">Correo Institucional</label>
+            <input v-model="email" type="email" required placeholder="nombre@inacapmail.cl"
+              class="w-full bg-gray-700 text-white rounded-lg px-3 py-2 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500" />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-white mb-2">Contraseña</label>
+            <input v-model="password" type="password" required placeholder="••••••••"
+              class="w-full bg-gray-700 text-white rounded-lg px-3 py-2 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500" />
+          </div>
+
+          <div class="flex gap-3 pt-4">
+            <button type="button" @click="closeEmailLoginModal"
+              class="flex-1 px-4 py-2 rounded-lg border border-gray-600 text-gray-300 hover:bg-gray-700 transition-colors">
+              Cancelar
+            </button>
+            <button type="submit" :disabled="isEmailSubmitting"
+              class="flex-1 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-white font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+              <span v-if="isEmailSubmitting"
+                class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+              <span>{{ isEmailSubmitting ? 'Ingresando...' : 'Ingresar' }}</span>
+            </button>
+          </div>
+        </form>
+
+        <div class="mt-6 text-center">
+          <button @click="goBack" class="text-sm text-gray-400 hover:text-red-400 transition-colors">
+            Volver a la pantalla de inicio
+          </button>
+        </div>
+
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -110,6 +164,13 @@ const canvasElement = ref(null)
 const stream = ref(null)
 const isCameraActive = ref(false)
 const isSubmitting = ref(false)
+
+// Estado para el modal de login con correo
+const showEmailLoginModal = ref(false)
+const email = ref('')
+const password = ref('')
+const isEmailSubmitting = ref(false)
+
 
 const startCamera = async () => {
   try {
@@ -129,6 +190,47 @@ const startCamera = async () => {
     alert('No se pudo acceder a la cámara.')
   }
 }
+
+const openEmailLoginModal = () => {
+  showEmailLoginModal.value = true
+  // Pausamos el stream de la cámara para ahorrar recursos
+  if (stream.value) {
+    stream.value.getTracks().forEach(track => track.enabled = false)
+  }
+}
+
+const closeEmailLoginModal = () => {
+  showEmailLoginModal.value = false
+  // Reanudamos el stream de la cámara
+  if (stream.value) {
+    stream.value.getTracks().forEach(track => track.enabled = true)
+  }
+}
+
+const handleEmailLogin = async () => {
+  if (!email.value || !password.value) {
+    alert('Por favor, ingresa tu correo y contraseña.')
+    return
+  }
+  isEmailSubmitting.value = true
+  try {
+    // Asumimos que authService tendrá un método loginWithEmail
+    const usuario = await authService.loginWithEmail(email.value, password.value)
+
+    // Guardar sesión y redirigir (lógica similar a handleLogin)
+    localStorage.setItem('user', JSON.stringify(usuario))
+    localStorage.setItem('isAuthenticated', 'true')
+    alert(`¡Bienvenido ${usuario.nombres} ${usuario.apellidos}!`)
+    router.push('/dashboard')
+
+  } catch (error) {
+    console.error('Error en login con correo:', error)
+    alert(error.message || 'Correo o contraseña incorrectos. Intenta de nuevo.')
+  } finally {
+    isEmailSubmitting.value = false
+  }
+}
+
 
 const handleLogin = async () => {
   if (!videoElement.value || !canvasElement.value) return
@@ -201,7 +303,7 @@ const goBack = () => {
 }
 
 onMounted(() => {
-  startCamera()
+  startCamera() // La cámara se inicia al montar el componente
 })
 
 onUnmounted(() => {
