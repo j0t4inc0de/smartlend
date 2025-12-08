@@ -69,7 +69,7 @@
 
             <button @click="openEmailLoginModal"
               class="px-6 py-3 rounded-xl text-gray-300 font-medium hover:text-white hover:bg-white/5 transition-all border border-white/10">
-              Usar Correo y Contraseña
+              Usar Correo
             </button>
 
             <button @click="handleLogin" :disabled="!isCameraActive || isSubmitting"
