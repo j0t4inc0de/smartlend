@@ -54,8 +54,10 @@
                 <div class="col-span-1 md:col-span-2 group">
                   <label
                     class="block text-xs font-medium text-gray-400 mb-1 ml-1 uppercase tracking-wider group-focus-within:text-red-400 transition-colors">RUT</label>
-                  <input v-model="formData.rut" type="text" placeholder="12345678-9"
-                    class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 focus:bg-white/10 transition-all duration-300" />
+                  <input v-model="formData.rut" type="text" placeholder="12345678-9" maxlength="10"
+                    class="w-full bg-white/5 border rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 focus:bg-white/10 transition-all duration-300"
+                    :class="rutError ? 'border-red-500/80' : 'border-white/10'" />
+                  <p v-if="rutError" class="text-red-400 text-xs mt-2 ml-1 h-4">{{ rutError }}</p>
                 </div>
 
                 <div class="group">
@@ -76,8 +78,12 @@
                   <label
                     class="block text-xs font-medium text-gray-400 mb-1 ml-1 uppercase tracking-wider group-focus-within:text-red-400 transition-colors">Correo
                     Institucional</label>
-                  <input v-model="formData.correo" type="email" placeholder="nombre@inacapmail.cl"
-                    class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 focus:bg-white/10 transition-all duration-300" />
+                  <div class="relative">
+                    <input v-model="formData.correo" type="email" placeholder="nombre.apellido@inacapmail.cl"
+                      class="w-full bg-white/5 border rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 focus:bg-white/10 transition-all duration-300"
+                      :class="emailError ? 'border-red-500/80' : 'border-white/10'" />
+                  </div>
+                  <p v-if="emailError" class="text-red-400 text-xs mt-2 ml-1 h-4">{{ emailError }}</p>
                 </div>
 
                 <div class="group">
@@ -250,7 +256,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { ref, onMounted, onUnmounted, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { authService } from '@/services/authService'
 import sedeBackground from '@/assets/images/sede-background.jpg'
@@ -269,12 +275,13 @@ const capturedImage = ref(null)
 const capturedImageURL = ref(null)
 const showPreview = ref(false)
 const isSubmitting = ref(false)
+const rutError = ref('')
+const emailError = ref('')
 
 // Listas dinámicas desde el backend
 const carreras = ref([])
 const roles = ref([])
 const loadingData = ref(true)
-
 const formData = ref({
   rut: '',
   nombres: '',
@@ -296,6 +303,8 @@ const isFormValid = computed(() => {
     formData.value.apellidos &&
     formData.value.correo &&
     formData.value.rol &&
+    !rutError.value &&
+    !emailError.value &&
     capturedImage.value !== null
 })
 
@@ -318,6 +327,87 @@ const loadInitialData = async () => {
     loadingData.value = false
   }
 }
+
+// --- VALIDACIONES ---
+const validateRut = (rut) => {
+  if (!rut) return "El RUT es obligatorio."
+
+  // Limpiar RUT de puntos y guión
+  const cleanRut = rut.replace(/[^0-9kK]/g, '').toLowerCase();
+  if (cleanRut.length < 2) return "El RUT es muy corto.";
+
+  const body = cleanRut.slice(0, -1);
+  const dv = cleanRut.slice(-1);
+
+  if (!/^[0-9]+$/.test(body)) return "Formato de RUT inválido.";
+
+  // Bloquear RUTs con números repetidos (ej: 11.111.111-1) para evitar datos falsos
+  if (/^(\d)\1+$/.test(body)) {
+    return "RUT no válido (secuencia repetida).";
+  }
+
+  // Algoritmo de validación Módulo 11
+  let suma = 0;
+  let multiplo = 2;
+  for (let i = body.length - 1; i >= 0; i--) {
+    suma += multiplo * body.charAt(i);
+    if (multiplo < 7) {
+      multiplo++;
+    } else {
+      multiplo = 2;
+    }
+  }
+
+  const dvEsperado = 11 - (suma % 11);
+  let dvFinal = dvEsperado.toString();
+
+  if (dvEsperado === 11) dvFinal = '0';
+  else if (dvEsperado === 10) dvFinal = 'k';
+
+  if (dvFinal !== dv) {
+    return "El RUT es inválido (dígito verificador no coincide).";
+  }
+
+  return ""; // No hay error
+};
+
+const validateEmail = (email) => {
+  if (!email) return "El correo es obligatorio.";
+  if (!email.endsWith('@inacapmail.cl')) {
+    return "Debe ser un correo institucional (@inacapmail.cl).";
+  }
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@inacapmail\.cl$/;
+  if (!emailRegex.test(email)) {
+    return "Formato de correo inválido.";
+  }
+  return ""; // No hay error
+};
+
+const formatRut = (value) => {
+  if (!value) return '';
+  // Si es muy corto, no hay nada que formatear con guion.
+  if (value.length < 2) {
+    return value;
+  }
+  // Inserta un guion antes del último caracter.
+  return `${value.slice(0, -1)}-${value.slice(-1)}`;
+};
+
+watch(() => formData.value.rut, (newValue, oldValue) => {
+  // Si el usuario está borrando, no reformatear para evitar comportamientos extraños.
+  if (oldValue && newValue.length < oldValue.length) {
+    rutError.value = validateRut(newValue);
+    return;
+  }
+
+  const cleanRut = (newValue || '').replace(/[^0-9kK]/gi, '');
+  const formattedRut = formatRut(cleanRut);
+
+  formData.value.rut = formattedRut;
+  rutError.value = validateRut(formattedRut);
+});
+
+watch(() => formData.value.correo, (newEmail) => { emailError.value = validateEmail(newEmail) });
 
 // --- LÓGICA DE CÁMARA MEJORADA ---
 const startCamera = async () => {
