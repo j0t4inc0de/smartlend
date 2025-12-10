@@ -63,14 +63,14 @@
                 <div class="group">
                   <label
                     class="block text-xs font-medium text-gray-400 mb-1 ml-1 uppercase tracking-wider group-focus-within:text-red-400 transition-colors">Nombres</label>
-                  <input v-model="formData.nombres" type="text"
+                  <input v-model="formData.nombres" type="text" maxlength="30"
                     class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 focus:bg-white/10 transition-all duration-300" />
                 </div>
 
                 <div class="group">
                   <label
                     class="block text-xs font-medium text-gray-400 mb-1 ml-1 uppercase tracking-wider group-focus-within:text-red-400 transition-colors">Apellidos</label>
-                  <input v-model="formData.apellidos" type="text"
+                  <input v-model="formData.apellidos" type="text" maxlength="30"
                     class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 focus:bg-white/10 transition-all duration-300" />
                 </div>
 
@@ -79,7 +79,7 @@
                     class="block text-xs font-medium text-gray-400 mb-1 ml-1 uppercase tracking-wider group-focus-within:text-red-400 transition-colors">Correo
                     Institucional</label>
                   <div class="relative">
-                    <input v-model="formData.correo" type="email" placeholder="nombre.apellido@inacapmail.cl"
+                    <input v-model="formData.correo" type="email" placeholder="nombre.apellido@inacapmail.cl" maxlength="50"
                       class="w-full bg-white/5 border rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 focus:bg-white/10 transition-all duration-300"
                       :class="emailError ? 'border-red-500/80' : 'border-white/10'" />
                   </div>
@@ -373,12 +373,9 @@ const validateRut = (rut) => {
 
 const validateEmail = (email) => {
   if (!email) return "El correo es obligatorio.";
-  if (!email.endsWith('@inacapmail.cl')) {
-    return "Debe ser un correo institucional (@inacapmail.cl).";
-  }
   const emailRegex = /^[a-zA-Z0-9._%+-]+@inacapmail\.cl$/;
   if (!emailRegex.test(email)) {
-    return "Formato de correo inválido.";
+    return "Debe ser un correo @inacapmail.cl válido.";
   }
   return ""; // No hay error
 };
