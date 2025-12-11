@@ -15,6 +15,28 @@ export const inventarioService = {
     }
   },
 
+  async getTiposHerramientaResumen() {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/inventario/api/tipos-herramienta/resumen/`)
+      return response.data
+    } catch (error) {
+      console.error('Error al obtener resumen:', error)
+      throw new Error('No se pudieron cargar los tipos de herramientas')
+    }
+  },
+
+  async getHerramientasDisponiblesPorTipo(tipoHerramientaId) {
+    try {
+      const response = await axios.get(
+        `${API_BASE_URL}/inventario/api/herramientas/?id_tipo_herramienta=${tipoHerramientaId}&solo_disponibles=true`
+      )
+      return response.data
+    } catch (error) {
+      console.error('Error al obtener herramientas disponibles:', error)
+      throw new Error('No se pudieron cargar las herramientas disponibles')
+    }
+  },
+
   // Obtener tipos de herramientas por categoría
   async getTiposHerramienta(categoriaId = null) {
     try {

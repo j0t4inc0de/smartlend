@@ -297,13 +297,37 @@ const yaEnCarrito = (id) => carrito.value.some(i => i.id_tipo_herramienta === id
 // Acciones
 const confirmarPrestamo = async () => {
   procesando.value = true
-  // Simulación de API
-  setTimeout(() => {
-    codigoPrestamo.value = `SL-${Math.floor(Math.random() * 10000)}`
+  try {
+    // 1. Obtener herramientas individuales disponibles para cada tipo
+    const herramientasIndividuales = []
+    for (const item of carrito.value) {
+      const disponibles = await inventarioService.getHerramientasDisponiblesPorTipo(
+        item.id_tipo_herramienta
+      )
+      if (disponibles.length > 0) {
+        herramientasIndividuales.push(disponibles[0].id_herramienta)
+      }
+    }
+
+    // 2. Crear el préstamo
+    const prestamo = await prestamosService.crearPrestamo({
+      fecha_prestamo: new Date().toISOString(),
+      fecha_devolucion_esperada: new Date(fechaDevolucion.value).toISOString(),
+      estado_prestamo: 'Activo',
+      id_usuario: usuario.value.id,
+      id_tipo_herramienta: carrito.value[0].id_tipo_herramienta,
+      herramientas: herramientasIndividuales
+    })
+
+    codigoPrestamo.value = prestamo.codigo
     procesando.value = false
     carritoVisible.value = false
     mostrarConfirmacion.value = true
-  }, 1500)
+  } catch (error) {
+    console.error('Error:', error)
+    alert('Error al crear préstamo: ' + error.message)
+    procesando.value = false
+  }
 }
 
 const finalizarSesion = () => {
@@ -316,26 +340,17 @@ const finalizarSesion = () => {
 const cargarDatos = async () => {
   try {
     categorias.value = await inventarioService.getCategorias()
-    const tipos = await inventarioService.getTiposHerramienta()
+    const resumen = await inventarioService.getTiposHerramientaResumen()
 
-    herramientas.value = tipos.map(t => {
-      // Validamos si la URL es útil (no es nula y no dice "Sin url")
-      // Si la URL contiene "Sin url", se asume que NO hay imagen, devolviendo null
-      // Esto hará que el v-if del template sea false y muestre el SVG
-      const urlValida = t.imagen_url && !t.imagen_url.includes('Sin%20url')
-        ? t.imagen_url
-        : null
-
-      return {
-        ...t,
-        // Asignamos la URL validada
-        imagen_url: urlValida,
-        // Mantenemos el stock aleatorio si el backend no lo envía
-        stock: t.stock !== undefined ? t.stock : Math.floor(Math.random() * 10)
-      }
-    })
+    herramientas.value = resumen.map(tipo => ({
+      id_tipo_herramienta: tipo.id_tipo_herramienta,
+      id_categoria: tipo.id_categoria || categorias.value[0]?.id_categoria,
+      nombre: tipo.nombre,
+      imagen_url: tipo.imagen,
+      stock: tipo.herramientas_disponibles // ← ESTO ES CLAVE
+    }))
   } catch (e) {
-    console.error('Error al cargar datos del dashboard:', e)
+    console.error('Error al cargar datos:', e)
   }
 }
 

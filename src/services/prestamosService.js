@@ -306,28 +306,12 @@ export const prestamosService = {
   },
 
   // CREAR NUEVO PRÉSTAMO
-  async crearPrestamo(
-    usuarioId,
-    herramientaIndividualId,
-    tipoHerramientaId,
-    fechaDevolucionEsperada,
-  ) {
+  async crearPrestamo(data) {
     try {
-      const prestamoData = {
-        fecha_prestamo: new Date().toISOString(),
-        fecha_devolucion_esperada: fechaDevolucionEsperada,
-        estado_prestamo: 'activo',
-        id_usuario: usuarioId,
-        id_herramienta_individual: herramientaIndividualId,
-        id_tipo_herramienta: tipoHerramientaId,
-      }
-
       const response = await axios.post(
         `${API_BASE_URL}/operaciones/api/prestamos/`,
-        prestamoData,
-        {
-          timeout: 10000,
-        },
+        data,
+        { timeout: 10000 }
       )
 
       // Invalidar cache para forzar recarga
