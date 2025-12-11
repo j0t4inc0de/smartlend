@@ -346,8 +346,10 @@ const cargarDatos = async () => {
       id_tipo_herramienta: tipo.id_tipo_herramienta,
       id_categoria: tipo.id_categoria || categorias.value[0]?.id_categoria,
       nombre: tipo.nombre,
-      imagen_url: tipo.imagen,
-      stock: tipo.herramientas_disponibles // ← ESTO ES CLAVE
+      imagen_url: tipo.imagen
+        ? `http://72.60.167.16:8000${tipo.imagen}`
+        : null, // ← CONSTRUIR URL COMPLETA
+      stock: tipo.herramientas_disponibles
     }))
   } catch (e) {
     console.error('Error al cargar datos:', e)
