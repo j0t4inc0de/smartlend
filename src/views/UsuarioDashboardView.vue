@@ -234,7 +234,7 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { inventarioService } from '@/services/inventarioService'
-// import { prestamosService } from '@/services/prestamosService' // Descomentar al integrar
+import { prestamosService } from '@/services/prestamosService'
 import inacapLogo from '../assets/images/inacap-logo.png'
 import sedeBackground from '../assets/images/sede-background.jpg'
 
