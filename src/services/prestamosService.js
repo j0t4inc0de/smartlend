@@ -102,6 +102,18 @@ export const prestamosService = {
     }
   },
 
+  async getTodosLosTipos() {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/inventario/api/tipos-herramienta/`, {
+        timeout: 5000,
+      })
+      return response.data
+    } catch (error) {
+      console.error('Error al obtener tipos de herramienta:', error)
+      return []
+    }
+  },
+
   // CREAR NUEVO PRÉSTAMO
   async crearPrestamo(data) {
     try {

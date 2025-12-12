@@ -239,7 +239,7 @@
 
     <!-- MODAL DE HERRAMIENTAS -->
     <div v-if="modalHerramientas" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-      <div class="bg-gray-800 rounded-xl p-6 max-w-2xl w-full border border-gray-700 max-h-[80vh] overflow-y-auto">
+      <div class="bg-gray-800 rounded-xl p-6 max-w-lg w-full border border-gray-700 max-h-[80vh] overflow-y-auto">
         <div class="flex justify-between items-center mb-4">
           <h3 class="text-lg font-bold text-white">Herramientas del Préstamo</h3>
           <button @click="cerrarModalHerramientas" class="text-gray-400 hover:text-white">
@@ -250,23 +250,72 @@
         </div>
 
         <div v-if="prestamoSeleccionadoHerramientas" class="space-y-3">
-          <div v-for="herramienta in prestamoSeleccionadoHerramientas.herramientas_detalle"
-            :key="herramienta.id_herramienta" class="bg-gray-700 rounded-lg p-4 flex items-center gap-4">
-            <img v-if="herramienta.imagen" :src="herramienta.imagen"
-              class="w-16 h-16 rounded-lg object-cover bg-gray-600" @error="herramienta.imagen = null" />
-            <div v-else class="w-16 h-16 rounded-lg bg-gray-600 flex items-center justify-center">
-              <svg class="w-8 h-8 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-              </svg>
+          <!-- Info general del préstamo -->
+          <div class="bg-gray-700/50 rounded-lg p-3 mb-4">
+            <p class="text-gray-400 text-xs uppercase tracking-wider mb-1">Código del Préstamo</p>
+            <p class="text-white font-mono font-bold text-lg">
+              {{ prestamoSeleccionadoHerramientas.codigo }}
+            </p>
+            <p class="text-gray-500 text-sm mt-1">
+              Total: {{ prestamoSeleccionadoHerramientas.herramientas_detalle?.length || 0 }} herramienta(s)
+            </p>
+          </div>
+
+          <!-- Lista de herramientas -->
+          <div v-for="(herramienta, index) in prestamoSeleccionadoHerramientas.herramientas_detalle"
+            :key="herramienta.id_herramienta"
+            class="bg-gray-700 rounded-lg p-4 border border-gray-600 hover:border-gray-500 transition-colors">
+
+            <div class="flex items-start justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <span class="bg-gray-600 text-gray-300 px-2 py-1 rounded text-xs font-bold">
+                  #{{ index + 1 }}
+                </span>
+                <span class="text-white font-medium">
+                  {{ getNombreTipo(herramienta.id_tipo_herramienta) }}
+                </span>
+              </div>
+              <span :class="[
+                'px-2 py-1 rounded text-xs font-semibold whitespace-nowrap',
+                herramienta.estado_herramienta === 'Nuevo' ? 'bg-green-500/20 text-green-400 border border-green-500/50' :
+                  herramienta.estado_herramienta === 'Excelente' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/50' :
+                    herramienta.estado_herramienta === 'Bueno' ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/50' :
+                      herramienta.estado_herramienta === 'Regular' ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/50' :
+                        'bg-red-500/20 text-red-400 border border-red-500/50'
+              ]">
+                {{ herramienta.estado_herramienta }}
+              </span>
             </div>
-            <div class="flex-1">
-              <p class="text-white font-medium">Código: {{ herramienta.codigo_barras }}</p>
-              <p class="text-gray-400 text-sm">Estado: {{ herramienta.estado_herramienta }}</p>
-              <p class="text-gray-500 text-xs">Adquirida: {{ new
-                Date(herramienta.fecha_adquisicion).toLocaleDateString('es-CL') }}</p>
+
+            <div class="space-y-1">
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+                </svg>
+                <span class="text-gray-400 text-sm">Código:</span>
+                <span class="text-white font-mono font-bold">{{ herramienta.codigo_barras }}</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <span class="text-gray-400 text-sm">Adquirida:</span>
+                <span class="text-gray-300 text-sm">
+                  {{ new Date(herramienta.fecha_adquisicion).toLocaleDateString('es-CL') }}
+                </span>
+              </div>
             </div>
           </div>
+        </div>
+
+        <div v-if="!prestamoSeleccionadoHerramientas?.herramientas_detalle?.length" class="text-center py-8">
+          <svg class="w-12 h-12 text-gray-600 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+          </svg>
+          <p class="text-gray-500">No hay herramientas registradas</p>
         </div>
       </div>
     </div>
@@ -341,6 +390,9 @@ const loading = ref(true)
 const error = ref('')
 const procesandoDevolucion = ref(null)
 
+const tiposHerramienta = ref([])
+const tiposMap = ref({})
+
 // Estados para modal de herramientas
 const modalHerramientas = ref(false)
 const prestamoSeleccionadoHerramientas = ref(null)
@@ -358,7 +410,7 @@ const enriquecerPrestamos = async () => {
     if (!prestamo.usuario_data) {
       prestamo.usuario_data = await prestamosService.getUsuario(prestamo.id_usuario)
     }
-    // Cargar tipo de herramienta
+    // Cargar tipo de herramienta principal (para mostrar en la tabla)
     if (!prestamo.tipo_herramienta_data) {
       prestamo.tipo_herramienta_data = await prestamosService.getTipoHerramienta(prestamo.id_tipo_herramienta)
     }
@@ -386,6 +438,22 @@ const cargarPrestamos = async (useCache = true) => {
 // Forzar recarga
 const recargarPrestamos = () => {
   cargarPrestamos(false)
+}
+
+const cargarTiposHerramienta = async () => {
+  tiposHerramienta.value = await prestamosService.getTodosLosTipos()
+
+  // Crear mapa para acceso rápido
+  tiposMap.value = {}
+  tiposHerramienta.value.forEach(tipo => {
+    tiposMap.value[tipo.id_tipo_herramienta] = tipo
+  })
+
+  console.log('✅ Tipos de herramienta cargados:', tiposHerramienta.value.length)
+}
+
+const getNombreTipo = (idTipo) => {
+  return tiposMap.value[idTipo]?.nombre || 'Tipo Desconocido'
 }
 
 // Modal de herramientas
