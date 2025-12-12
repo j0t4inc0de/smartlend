@@ -39,19 +39,6 @@ export const alertasService = {
     }
   },
 
-  // Obtener información de la herramienta de una alerta
-  async getHerramientaDeAlerta(alerta) {
-    try {
-      const response = await axios.get(
-        `${API_BASE_URL}/inventario/api/tipos-herramienta/${alerta.prestamo_detalle.id_tipo_herramienta}/`,
-      )
-      return response.data
-    } catch (error) {
-      console.error('Error al obtener herramienta:', error)
-      return { nombre: 'Herramienta Desconocida' }
-    }
-  },
-
   // Enriquecer alertas con información adicional
   async getAlertasEnriquecidas() {
     try {
@@ -61,15 +48,12 @@ export const alertasService = {
       const alertasEnriquecidas = await Promise.all(
         alertas.map(async (alerta) => {
           try {
-            const [usuario, herramienta] = await Promise.all([
-              this.getUsuarioDeAlerta(alerta),
-              this.getHerramientaDeAlerta(alerta),
-            ])
+            const usuario = await this.getUsuarioDeAlerta(alerta)
 
             return {
               ...alerta,
               usuario_nombre: `${usuario.nombres} ${usuario.apellidos}`,
-              herramienta_nombre: herramienta.nombre,
+              codigo_prestamo: alerta.prestamo_detalle.codigo, // ← CÓDIGO DEL PRÉSTAMO
               dias_vencido: this.calcularDiasVencido(
                 alerta.prestamo_detalle.fecha_devolucion_esperada,
               ),
@@ -80,7 +64,7 @@ export const alertasService = {
             return {
               ...alerta,
               usuario_nombre: 'Error al cargar',
-              herramienta_nombre: 'Error al cargar',
+              codigo_prestamo: 'N/A',
               dias_vencido: 0,
               fecha_formateada: 'Error',
             }
