@@ -253,9 +253,33 @@
           <!-- Info general del préstamo -->
           <div class="bg-gray-700/50 rounded-lg p-3 mb-4">
             <p class="text-gray-400 text-xs uppercase tracking-wider mb-1">Código del Préstamo</p>
-            <p class="text-white font-mono font-bold text-lg">
-              {{ prestamoSeleccionadoHerramientas.codigo }}
-            </p>
+
+            <div class="flex items-center justify-between gap-3">
+              <p class="text-white font-mono font-bold text-lg">
+                {{ prestamoSeleccionadoHerramientas.codigo }}
+              </p>
+
+              <button @click="copiarCodigo(prestamoSeleccionadoHerramientas.codigo)" :class="[
+                'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all',
+                codigoCopiado
+                  ? 'bg-green-500/20 text-green-400 border border-green-500/50'
+                  : 'bg-gray-600 text-gray-300 hover:bg-gray-500 border border-gray-500'
+              ]">
+                <!-- Icono de check cuando está copiado -->
+                <svg v-if="codigoCopiado" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+
+                <!-- Icono de copiar cuando no está copiado -->
+                <svg v-else class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+
+                <span>{{ codigoCopiado ? '¡Copiado!' : 'Copiar' }}</span>
+              </button>
+            </div>
+
             <p class="text-gray-500 text-sm mt-1">
               Total: {{ prestamoSeleccionadoHerramientas.herramientas_detalle?.length || 0 }} herramienta(s)
             </p>
@@ -386,6 +410,7 @@ const tiposMap = ref({})
 // Estados para modal de herramientas
 const modalHerramientas = ref(false)
 const prestamoSeleccionadoHerramientas = ref(null)
+const codigoCopiado = ref(false)
 
 // Estados para modal de devolución
 const modalDevolucion = ref(false)
@@ -449,12 +474,28 @@ const getNombreTipo = (idTipo) => {
 // Modal de herramientas
 const abrirModalHerramientas = (prestamo) => {
   prestamoSeleccionadoHerramientas.value = prestamo
+  codigoCopiado.value = false
   modalHerramientas.value = true
 }
 
 const cerrarModalHerramientas = () => {
   modalHerramientas.value = false
   prestamoSeleccionadoHerramientas.value = null
+}
+
+const copiarCodigo = async (codigo) => {
+  try {
+    await navigator.clipboard.writeText(codigo)
+    codigoCopiado.value = true
+
+    // Resetear después de 2 segundos
+    setTimeout(() => {
+      codigoCopiado.value = false
+    }, 2000)
+  } catch (err) {
+    console.error('Error al copiar:', err)
+    alert('No se pudo copiar el código')
+  }
 }
 
 // Modal de devolución
