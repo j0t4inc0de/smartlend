@@ -296,16 +296,6 @@
                 <span class="text-gray-400 text-sm">Código:</span>
                 <span class="text-white font-mono font-bold">{{ herramienta.codigo_barras }}</span>
               </div>
-              <div class="flex items-center gap-2">
-                <svg class="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                <span class="text-gray-400 text-sm">Adquirida:</span>
-                <span class="text-gray-300 text-sm">
-                  {{ new Date(herramienta.fecha_adquisicion).toLocaleDateString('es-CL') }}
-                </span>
-              </div>
             </div>
           </div>
         </div>
@@ -534,6 +524,7 @@ const contarPorEstado = (estado) => {
 
 // Lifecycle
 onMounted(async () => {
+  await cargarTiposHerramienta()
   await cargarPrestamos()
 })
 </script>
