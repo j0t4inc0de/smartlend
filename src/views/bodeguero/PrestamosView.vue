@@ -541,27 +541,15 @@ const cerrarModalDevolucion = () => {
 }
 
 const confirmarDevolucion = async () => {
-  if (!prestamoSeleccionado.value) return
-
-  try {
-    procesandoDevolucion.value = prestamoSeleccionado.value.id_prestamo
-
-    await prestamosService.marcarComoDevuelto(
-      prestamoSeleccionado.value.id_prestamo,
-      estadoDevolucion.value,
-      observaciones.value
-    )
-
-    await cargarPrestamos(false)
-    cerrarModalDevolucion()
-
-    console.log('✅ Préstamo devuelto exitosamente')
-  } catch (err) {
-    console.error('❌ Error al marcar devolución:', err)
-    alert('Error al procesar la devolución: ' + (err.message || 'Error desconocido'))
-  } finally {
-    procesandoDevolucion.value = null
-  }
+  await axios.post(
+    `/operaciones/api/prestamos/${prestamo.id_prestamo}/devolver_herramientas/`,
+    {
+      codigos: codigosEscaneados.value,
+      estados: {  // ← OPCIONAL
+        "135791": estadosHerramientas.value["135791"] || "Bueno"
+      }
+    }
+  )
 }
 
 // Computed - Filtrado y búsqueda
