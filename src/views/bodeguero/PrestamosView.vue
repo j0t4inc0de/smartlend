@@ -41,9 +41,11 @@
         <select v-model="filtroEstado"
           class="bg-gray-800 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500 text-sm">
           <option value="todos">Todos ({{ prestamos.length }})</option>
-          <option value="activo">Activos ({{ contarPorEstado('activo') }})</option>
-          <option value="vencido">Vencidos ({{ contarPorEstado('vencido') }})</option>
-          <option value="completado">Completados ({{ contarPorEstado('completado') }})</option>
+          <option value="Pendiente">Pendientes ({{ contarPorEstado('Pendiente') }})</option>
+          <option value="Entregado">Entregados ({{ contarPorEstado('Entregado') }})</option>
+          <option value="Vencido">Vencidos ({{ contarPorEstado('Vencido') }})</option>
+          <option value="Finalizado">Finalizados ({{ contarPorEstado('Finalizado') }})</option>
+          <option value="Expirado">Expirados ({{ contarPorEstado('Expirado') }})</option>
         </select>
 
         <!-- Botón recargar -->
@@ -73,20 +75,36 @@
     </div>
 
     <!-- ESTADÍSTICAS RÁPIDAS -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-      <div class="bg-gray-800 rounded-xl p-6 border border-gray-700 hover:border-green-500/50 transition-colors">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+      <!-- Pendientes -->
+      <div class="bg-gray-800 rounded-xl p-6 border border-gray-700 hover:border-yellow-500/50 transition-colors">
         <div class="flex items-center justify-between mb-2">
-          <p class="text-gray-400 text-sm">Activos</p>
-          <div class="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
-            <svg class="w-6 h-6 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <p class="text-gray-400 text-sm">Pendientes</p>
+          <div class="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center">
+            <svg class="w-6 h-6 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
         </div>
-        <p class="text-green-400 text-3xl font-bold">{{ contarPorEstado('activo') }}</p>
+        <p class="text-yellow-400 text-3xl font-bold">{{ contarPorEstado('Pendiente') }}</p>
       </div>
 
+      <!-- Entregados -->
+      <div class="bg-gray-800 rounded-xl p-6 border border-gray-700 hover:border-blue-500/50 transition-colors">
+        <div class="flex items-center justify-between mb-2">
+          <p class="text-gray-400 text-sm">Entregados</p>
+          <div class="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+            <svg class="w-6 h-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+            </svg>
+          </div>
+        </div>
+        <p class="text-blue-400 text-3xl font-bold">{{ contarPorEstado('Entregado') }}</p>
+      </div>
+
+      <!-- Vencidos -->
       <div class="bg-gray-800 rounded-xl p-6 border border-gray-700 hover:border-red-500/50 transition-colors">
         <div class="flex items-center justify-between mb-2">
           <p class="text-gray-400 text-sm">Vencidos</p>
@@ -97,19 +115,20 @@
             </svg>
           </div>
         </div>
-        <p class="text-red-400 text-3xl font-bold">{{ contarPorEstado('vencido') }}</p>
+        <p class="text-red-400 text-3xl font-bold">{{ contarPorEstado('Vencido') }}</p>
       </div>
 
-      <div class="bg-gray-800 rounded-xl p-6 border border-gray-700 hover:border-gray-500/50 transition-colors">
+      <!-- Finalizados -->
+      <div class="bg-gray-800 rounded-xl p-6 border border-gray-700 hover:border-green-500/50 transition-colors">
         <div class="flex items-center justify-between mb-2">
-          <p class="text-gray-400 text-sm">Completados</p>
-          <div class="w-10 h-10 bg-gray-500/20 rounded-lg flex items-center justify-center">
-            <svg class="w-6 h-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <p class="text-gray-400 text-sm">Finalizados</p>
+          <div class="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+            <svg class="w-6 h-6 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
             </svg>
           </div>
         </div>
-        <p class="text-gray-400 text-3xl font-bold">{{ contarPorEstado('completado') }}</p>
+        <p class="text-green-400 text-3xl font-bold">{{ contarPorEstado('Finalizado') }}</p>
       </div>
     </div>
 
@@ -203,31 +222,39 @@
                 <!-- Estado -->
                 <td class="px-6 py-4">
                   <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold" :class="{
-                    'bg-green-500/20 text-green-400 border border-green-500/50': prestamo.estado === 'activo',
-                    'bg-red-500/20 text-red-400 border border-red-500/50': prestamo.estado === 'vencido',
-                    'bg-gray-500/20 text-gray-400 border border-gray-500/50': prestamo.estado === 'completado'
+                    'bg-yellow-500/20 text-yellow-400 border border-yellow-500/50': prestamo.estado_prestamo === 'Pendiente',
+                    'bg-blue-500/20 text-blue-400 border border-blue-500/50': prestamo.estado_prestamo === 'Entregado',
+                    'bg-red-500/20 text-red-400 border border-red-500/50': prestamo.estado_prestamo === 'Vencido',
+                    'bg-green-500/20 text-green-400 border border-green-500/50': prestamo.estado_prestamo === 'Finalizado',
+                    'bg-gray-500/20 text-gray-400 border border-gray-500/50': prestamo.estado_prestamo === 'Expirado'
                   }">
-                    {{ prestamo.estado?.toUpperCase() || 'DESCONOCIDO' }}
+                    {{ prestamo.estado_prestamo?.toUpperCase() || 'DESCONOCIDO' }}
                   </span>
                 </td>
 
                 <!-- Acciones -->
                 <td class="px-6 py-4">
-                  <button v-if="prestamo.estado !== 'completado'" @click="abrirModalDevolucion(prestamo)"
-                    :disabled="procesandoDevolucion === prestamo.id_prestamo"
-                    class="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
-                    <span v-if="procesandoDevolucion === prestamo.id_prestamo"
-                      class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-                    <span>{{ procesandoDevolucion === prestamo.id_prestamo ? 'Procesando...' : 'Devolver' }}</span>
+                  <!-- Pendiente: Marcar como entregado -->
+                  <button v-if="prestamo.estado_prestamo === 'Pendiente'" @click="abrirModalEntrega(prestamo)"
+                    class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-medium">
+                    Entregar
                   </button>
 
+                  <!-- Entregado o Vencido: Devolver -->
+                  <button v-else-if="['Entregado', 'Vencido'].includes(prestamo.estado_prestamo)"
+                    @click="abrirModalDevolucion(prestamo)"
+                    class="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-medium">
+                    Devolver
+                  </button>
+
+                  <!-- Finalizado o Expirado: Sin acciones -->
                   <span v-else class="text-gray-500 text-sm flex items-center gap-1">
                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                       <path fill-rule="evenodd"
                         d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                         clip-rule="evenodd" />
                     </svg>
-                    Completado
+                    {{ prestamo.estado_prestamo }}
                   </span>
                 </td>
               </tr>
@@ -543,7 +570,7 @@ const prestamosFiltrados = computed(() => {
 
   // Filtrar por estado
   if (filtroEstado.value !== 'todos') {
-    resultado = resultado.filter(p => p.estado === filtroEstado.value)
+    resultado = resultado.filter(p => p.estado_prestamo === filtroEstado.value)
   }
 
   // Buscar por código o usuario
@@ -560,7 +587,7 @@ const prestamosFiltrados = computed(() => {
 })
 
 const contarPorEstado = (estado) => {
-  return prestamos.value.filter(p => p.estado === estado).length
+  return prestamos.value.filter(p => p.estado_prestamo === estado).length
 }
 
 // Lifecycle
