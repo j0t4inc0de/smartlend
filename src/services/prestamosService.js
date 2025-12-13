@@ -116,22 +116,44 @@ export const prestamosService = {
 
   // CREAR NUEVO PRÉSTAMO
   async crearPrestamo(data) {
-    try {
-      const response = await axios.post(`${API_BASE_URL}/operaciones/api/prestamos/`, data, {
-        timeout: 10000,
-      })
-
-      // Invalidar cache para forzar recarga
-      this._cache.lastUpdate = null
-
-      return response.data
-    } catch (error) {
-      console.error('Error al crear préstamo:', error)
-      throw new Error('No se pudo crear el préstamo')
-    }
+    const response = await axios.post(`${API_BASE_URL}/operaciones/api/prestamos/`, {
+      fecha_prestamo: data.fecha_prestamo,
+      fecha_devolucion_esperada: data.fecha_devolucion_esperada,
+      estado_prestamo: 'Pendiente',
+      id_usuario: data.id_usuario,
+      tipos: data.tipos,
+    })
+    return response.data
   },
 
-  // MARCAR COMO DEVUELTO
+  async buscarPorCodigo(codigo) {
+    const response = await axios.get(
+      `${API_BASE_URL}/operaciones/api/prestamos/buscar/?codigo=${codigo}`,
+    )
+    return response.data
+  },
+
+  async getPendientes() {
+    const response = await axios.get(`${API_BASE_URL}/operaciones/api/prestamos/pendientes/`)
+    return response.data
+  },
+
+  async asignarHerramientas(prestamoId, codigos) {
+    const response = await axios.post(
+      `${API_BASE_URL}/operaciones/api/prestamos/${prestamoId}/asignar_herramientas/`,
+      { codigos },
+    )
+    return response.data
+  },
+
+  async devolverHerramientas(prestamoId, codigos, estados = {}) {
+    const response = await axios.post(
+      `${API_BASE_URL}/operaciones/api/prestamos/${prestamoId}/devolver_herramientas/`,
+      { codigos, estados },
+    )
+    return response.data
+  },
+
   async marcarComoDevuelto(prestamoId, estadoDevolucion = 'Bueno', observaciones = '') {
     try {
       const updateData = {
