@@ -57,7 +57,7 @@
     <main class="flex-1 overflow-y-auto p-4 pt-36 pb-28 z-10 custom-scrollbar">
       <div v-if="herramientasFiltradas.length > 0" class="grid grid-cols-3 gap-3">
         <div v-for="herramienta in herramientasFiltradas" :key="herramienta.id_tipo_herramienta"
-          class="group relative bg-gray-800/60 backdrop-blur-md border border-white/10 rounded-xl overflow-hidden flex flex-col h-full transition-all duration-200 active:scale-[0.98]">
+          class="group relative bg-gray-800/60 backdrop-blur-md border border-white/10 rounded-xl overflow-hidden flex flex-col h-full transition-all duration-200">
 
           <div class="aspect-video bg-gray-700/50 relative overflow-hidden">
             <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent z-10"></div>
@@ -84,19 +84,33 @@
           <div class="p-2.5 flex-1 flex flex-col">
             <h3 class="text-xs font-bold text-white leading-tight mb-1 line-clamp-2 h-8">{{ herramienta.nombre }}</h3>
 
-            <button @click="agregarAlCarrito(herramienta)"
-              :disabled="herramienta.stock === 0 || yaEnCarrito(herramienta.id_tipo_herramienta)" :class="[
-                'w-full py-2 mt-auto rounded-lg font-bold text-xs shadow-md flex items-center justify-center gap-1 transition-all',
-                yaEnCarrito(herramienta.id_tipo_herramienta)
-                  ? 'bg-green-600/20 text-green-400 border border-green-500/50'
-                  : herramienta.stock === 0
-                    ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
-                    : 'bg-white text-gray-900 hover:bg-gray-200 active:scale-95'
-              ]">
-              <span v-if="yaEnCarrito(herramienta.id_tipo_herramienta)">✓ Listo</span>
-              <span v-else-if="herramienta.stock === 0">Agotado</span>
-              <span v-else>Agregar</span>
-            </button>
+            <!-- NUEVO: Selector de cantidad -->
+            <div v-if="herramienta.stock > 0" class="mt-auto flex items-center gap-1">
+              <button @click="decrementarCantidad(herramienta.id_tipo_herramienta)"
+                :disabled="!cantidadesPorTipo[herramienta.id_tipo_herramienta]"
+                class="flex-1 bg-gray-700 hover:bg-gray-600 text-white py-2 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed active:scale-95 transition-all">
+                <span class="text-lg font-bold">−</span>
+              </button>
+
+              <div class="flex-1 bg-black/40 border border-gray-600 rounded-lg py-2 text-center">
+                <span class="text-white font-bold text-sm">
+                  {{ cantidadesPorTipo[herramienta.id_tipo_herramienta] || 0 }}
+                </span>
+              </div>
+
+              <button @click="incrementarCantidad(herramienta.id_tipo_herramienta, herramienta.stock)"
+                :disabled="(cantidadesPorTipo[herramienta.id_tipo_herramienta] || 0) >= herramienta.stock"
+                class="flex-1 bg-red-600 hover:bg-red-500 text-white py-2 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed active:scale-95 transition-all">
+                <span class="text-lg font-bold">+</span>
+              </button>
+            </div>
+
+            <!-- Agotado -->
+            <div v-else class="mt-auto">
+              <div class="w-full py-2 bg-gray-700 text-gray-500 rounded-lg font-bold text-xs text-center">
+                Agotado
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -111,9 +125,9 @@
     </main>
 
     <div class="fixed bottom-0 left-0 right-0 p-3 z-40 bg-gradient-to-t from-black via-black/90 to-transparent pb-6">
-      <button @click="carrito.length > 0 ? carritoVisible = true : null" :disabled="carrito.length === 0" :class="[
+      <button @click="totalHerramientas > 0 ? carritoVisible = true : null" :disabled="totalHerramientas === 0" :class="[
         'w-full h-16 rounded-xl flex items-center justify-between px-5 shadow-2xl border transition-all duration-300',
-        carrito.length > 0
+        totalHerramientas > 0
           ? 'bg-red-600 border-red-400 text-white shadow-[0_0_30px_rgba(220,38,38,0.4)] active:scale-98'
           : 'bg-gray-800 border-gray-700 text-gray-500 cursor-not-allowed'
       ]">
@@ -123,14 +137,14 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 6M7 13l-1.5 6m4.5-6h8m-8 0V9a3 3 0 116 0v4M9 19a1 1 0 102 0 1 1 0 00-2 0zm10 0a1 1 0 102 0 1 1 0 00-2 0z" />
             </svg>
-            <span v-if="carrito.length > 0"
+            <span v-if="totalHerramientas > 0"
               class="absolute -top-2 -right-2 w-5 h-5 bg-white text-red-600 rounded-full flex items-center justify-center text-xs font-bold shadow-sm">
-              {{ carrito.length }}
+              {{ totalHerramientas }}
             </span>
           </div>
           <div class="flex flex-col items-start">
-            <span class="text-base font-bold">{{ carrito.length > 0 ? 'Ver Mi Pedido' : 'Carrito Vacío' }}</span>
-            <span class="text-[10px] opacity-80 font-medium">{{ carrito.length }} Items</span>
+            <span class="text-base font-bold">{{ totalHerramientas > 0 ? 'Ver Mi Pedido' : 'Carrito Vacío' }}</span>
+            <span class="text-[10px] opacity-80 font-medium">{{ totalHerramientas }} Items</span>
           </div>
         </div>
         <div class="bg-white/20 rounded-full p-1.5">
@@ -165,27 +179,42 @@
             </button>
           </div>
 
+          <!-- Lista de herramientas con cantidades -->
           <div class="flex-1 overflow-y-auto space-y-2 mb-5 custom-scrollbar pr-1">
-            <div v-for="item in carrito" :key="item.id_tipo_herramienta"
-              class="bg-gray-800/50 border border-white/5 p-3 rounded-xl flex justify-between items-center">
-              <div class="flex items-center gap-3">
-                <img v-if="item.imagen_url" :src="item.imagen_url" loading="lazy" decoding="async"
-                  @error="item.imagen_url = null" class="w-10 h-10 rounded-lg object-cover bg-gray-700" />
-                <div>
-                  <h4 class="text-white font-bold text-sm">{{ item.nombre }}</h4>
-                  <p class="text-xs text-gray-400">{{ item.categoria }}</p>
+            <div v-for="(cantidad, idTipo) in cantidadesPorTipo" :key="idTipo">
+              <div v-if="cantidad > 0"
+                class="bg-gray-800/50 border border-white/5 p-3 rounded-xl flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                  <img v-if="getHerramienta(idTipo)?.imagen_url" :src="getHerramienta(idTipo).imagen_url" loading="lazy"
+                    decoding="async" @error="getHerramienta(idTipo).imagen_url = null"
+                    class="w-10 h-10 rounded-lg object-cover bg-gray-700" />
+                  <div>
+                    <h4 class="text-white font-bold text-sm">{{ getHerramienta(idTipo)?.nombre }}</h4>
+                    <p class="text-xs text-gray-400">Cantidad: {{ cantidad }}</p>
+                  </div>
                 </div>
+                <button @click="removerDelCarrito(idTipo)"
+                  class="p-2 text-red-500 bg-red-500/10 rounded-lg hover:bg-red-500/20 active:scale-95 transition-all">
+                  <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
               </div>
-              <button @click="removerDelCarrito(item.id_tipo_herramienta)"
-                class="p-2 text-red-500 bg-red-500/10 rounded-lg hover:bg-red-500/20 active:scale-95 transition-all">
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
-              </button>
             </div>
           </div>
 
+          <!-- Mensaje informativo -->
+          <div class="bg-blue-500/10 border border-blue-500/50 rounded-lg p-3 mb-4">
+            <p class="text-blue-300 text-xs">
+              📧 Recibirás un código por correo electrónico
+            </p>
+            <p class="text-blue-300 text-xs mt-1">
+              ⏰ Tendrás 30 minutos para retirar las herramientas
+            </p>
+          </div>
+
+          <!-- Fecha de devolución -->
           <div class="bg-gray-800/50 p-3 rounded-xl mb-5 border border-white/5">
             <label class="block text-xs font-bold text-gray-300 mb-2 uppercase tracking-wider">Fecha de
               Devolución</label>
@@ -193,7 +222,7 @@
               class="w-full bg-black/40 border border-gray-600 text-white rounded-lg px-3 py-3 text-base focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none appearance-none" />
           </div>
 
-          <button @click="confirmarPrestamo" :disabled="procesando || !fechaDevolucion"
+          <button @click="confirmarPrestamo" :disabled="procesando || !fechaDevolucion || totalHerramientas === 0"
             class="w-full bg-green-600 hover:bg-green-500 text-white font-bold text-lg py-4 rounded-xl shadow-lg shadow-green-900/30 transition-all active:scale-98 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
             <span v-if="procesando"
               class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
@@ -216,10 +245,11 @@
           </svg>
         </div>
         <h2 class="text-2xl font-bold text-white mb-2">¡Solicitud Exitosa!</h2>
-        <p class="text-gray-400 text-base mb-6">Dirígete al pañol y presenta este código:</p>
-        <div class="bg-white/10 border border-white/20 rounded-2xl p-6 mb-6">
+        <p class="text-gray-400 text-base mb-2">Dirígete al pañol y presenta este código:</p>
+        <div class="bg-white/10 border border-white/20 rounded-2xl p-6 mb-4">
           <span class="text-4xl font-mono font-bold text-green-400 tracking-widest">{{ codigoPrestamo }}</span>
         </div>
+        <p class="text-yellow-300 text-sm mb-6">⏰ Tienes 30 minutos para retirar</p>
         <button @click="finalizarSesion"
           class="w-full bg-gray-800 hover:bg-gray-700 text-white font-bold py-4 rounded-xl border border-gray-600 text-base transition-all active:scale-95">
           Cerrar Sesión
@@ -244,7 +274,7 @@ const usuario = ref(JSON.parse(localStorage.getItem('user') || '{"nombres": "Est
 // Estados
 const categorias = ref([])
 const herramientas = ref([])
-const carrito = ref([])
+const cantidadesPorTipo = ref({})
 const categoriaSeleccionada = ref(null)
 const carritoVisible = ref(false)
 const procesando = ref(false)
@@ -268,64 +298,88 @@ const maxDate = computed(() => {
   const d = new Date(); d.setDate(d.getDate() + 7); return d.toISOString().split('T')[0]
 })
 
-// Lógica de Filtrado
+// Computed
 const herramientasFiltradas = computed(() => {
   if (categoriaSeleccionada.value === null) return herramientas.value
   return herramientas.value.filter(h => h.id_categoria === categoriaSeleccionada.value)
 })
 
-const filtrarPorCategoria = (id) => {
-  categoriaSeleccionada.value = id
-}
+const totalHerramientas = computed(() => {
+  return Object.values(cantidadesPorTipo.value).reduce((sum, cant) => sum + (cant || 0), 0)
+})
 
-// Carrito
-const agregarAlCarrito = (item) => {
-  if (!yaEnCarrito(item.id_tipo_herramienta) && item.stock > 0) {
-    carrito.value.push(item)
-    // Feedback vibración en móviles si es soportado
+// Funciones de cantidad
+const incrementarCantidad = (idTipo, max) => {
+  const actual = cantidadesPorTipo.value[idTipo] || 0
+  if (actual < max) {
+    cantidadesPorTipo.value[idTipo] = actual + 1
     if (navigator.vibrate) navigator.vibrate(50)
   }
 }
 
-const removerDelCarrito = (id) => {
-  carrito.value = carrito.value.filter(i => i.id_tipo_herramienta !== id)
-  if (carrito.value.length === 0) carritoVisible.value = false
+const decrementarCantidad = (idTipo) => {
+  const actual = cantidadesPorTipo.value[idTipo] || 0
+  if (actual > 0) {
+    cantidadesPorTipo.value[idTipo] = actual - 1
+  }
 }
 
-const yaEnCarrito = (id) => carrito.value.some(i => i.id_tipo_herramienta === id)
+const removerDelCarrito = (idTipo) => {
+  cantidadesPorTipo.value[idTipo] = 0
+  if (totalHerramientas.value === 0) {
+    carritoVisible.value = false
+  }
+}
 
-// Acciones
+const getHerramienta = (idTipo) => {
+  return herramientas.value.find(h => h.id_tipo_herramienta === parseInt(idTipo))
+}
+
+const filtrarPorCategoria = (id) => {
+  categoriaSeleccionada.value = id
+}
+
+// Confirmar préstamo con NUEVO formato
 const confirmarPrestamo = async () => {
   procesando.value = true
   try {
-    // 1. Obtener herramientas individuales disponibles para cada tipo
-    const herramientasIndividuales = []
-    for (const item of carrito.value) {
-      const disponibles = await inventarioService.getHerramientasDisponiblesPorTipo(
-        item.id_tipo_herramienta
-      )
-      if (disponibles.length > 0) {
-        herramientasIndividuales.push(disponibles[0].id_herramienta)
-      }
+    // Convertir objeto de cantidades a array de tipos
+    const tipos = Object.entries(cantidadesPorTipo.value)
+      .filter(([_, cantidad]) => cantidad > 0)
+      .map(([idTipo, cantidad]) => ({
+        tipo_herramienta: parseInt(idTipo),
+        cantidad: cantidad
+      }))
+
+    if (tipos.length === 0) {
+      alert('Selecciona al menos una herramienta')
+      procesando.value = false
+      return
     }
 
-    // 2. Crear el préstamo
+    // Crear préstamo con NUEVO formato
     const prestamo = await prestamosService.crearPrestamo({
       fecha_prestamo: new Date().toISOString(),
-      fecha_devolucion_esperada: new Date(fechaDevolucion.value).toISOString(),
-      estado_prestamo: 'Activo',
+      fecha_devolucion_esperada: new Date(fechaDevolucion.value + 'T23:59:59').toISOString(),
+      estado_prestamo: 'Pendiente',
       id_usuario: usuario.value.id,
-      id_tipo_herramienta: carrito.value[0].id_tipo_herramienta,
-      herramientas: herramientasIndividuales
+      tipos: tipos
     })
 
     codigoPrestamo.value = prestamo.codigo
     procesando.value = false
     carritoVisible.value = false
     mostrarConfirmacion.value = true
+
+    // Limpiar cantidades
+    cantidadesPorTipo.value = {}
+
+    // Recargar datos
+    await cargarDatos()
   } catch (error) {
     console.error('Error:', error)
-    alert('Error al crear préstamo: ' + error.message)
+    const mensaje = error.response?.data?.tipos || error.response?.data?.detail || 'Error al crear el préstamo'
+    alert(mensaje)
     procesando.value = false
   }
 }
@@ -346,9 +400,7 @@ const cargarDatos = async () => {
       id_tipo_herramienta: tipo.id_tipo_herramienta,
       id_categoria: tipo.id_categoria || categorias.value[0]?.id_categoria,
       nombre: tipo.nombre,
-      imagen_url: tipo.imagen
-        ? `http://72.60.167.16:8000${tipo.imagen}`
-        : null, // ← CONSTRUIR URL COMPLETA
+      imagen_url: tipo.imagen ? `http://72.60.167.16:8000${tipo.imagen}` : null,
       stock: tipo.herramientas_disponibles
     }))
   } catch (e) {
@@ -370,7 +422,6 @@ onUnmounted(() => clearInterval(timerInterval))
 </script>
 
 <style scoped>
-/* Ocultar scrollbars pero mantener funcionalidad */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
@@ -380,7 +431,6 @@ onUnmounted(() => clearInterval(timerInterval))
   scrollbar-width: none;
 }
 
-/* Animaciones */
 @keyframes ken-burns {
   0% {
     transform: scale(1);
@@ -395,7 +445,6 @@ onUnmounted(() => clearInterval(timerInterval))
   animation: ken-burns 40s infinite alternate;
 }
 
-/* Transiciones del Drawer */
 .slide-up-enter-active,
 .slide-up-leave-active {
   transition: transform 0.3s ease-out, opacity 0.3s;
