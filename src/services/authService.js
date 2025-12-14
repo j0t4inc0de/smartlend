@@ -16,7 +16,7 @@ export const authService = {
     }
   },
 
-  // Registro alternativo con correo y contraseña (sin biometría).
+  // Registro alternativo con correo y contraseña (sin biometría)
   async registerUserWithEmail(payload) {
     try {
       const response = await axios.post(`${API_BASE_URL}/usuarios/api/usuarios/`, payload)
@@ -41,30 +41,15 @@ export const authService = {
       throw new Error(errorMessage)
     }
   },
-  // Inicia sesión con correo y contraseña (modal de correo).
+  // Inicia sesión con correo y contraseña (modal de correo)
   async loginWithEmail(correo, password) {
     try {
-      const response = await axios.post(`${API_BASE_URL}/usuarios/auth/login-email/`, {
+      const response = await axios.post(`${API_BASE_URL}/usuarios/auth/login-usuario/`, {
         correo,
         password,
       })
       return response.data
     } catch (error) {
-      // Fallback por si el backend expone el login email en otra ruta.
-      if (error.response?.status === 404) {
-        try {
-          const response = await axios.post(`${API_BASE_URL}/usuarios/auth/login/`, {
-            correo,
-            password,
-          })
-          return response.data
-        } catch (error2) {
-          console.error('Error completo:', error2.response || error2)
-          const errorMessage = error2.response?.data?.error || error2.message || 'Error desconocido'
-          throw new Error(errorMessage)
-        }
-      }
-
       console.error('Error completo:', error.response || error)
       const errorMessage = error.response?.data?.error || error.message || 'Error desconocido'
       throw new Error(errorMessage)
