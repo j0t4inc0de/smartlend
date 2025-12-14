@@ -26,9 +26,10 @@
       <!-- Controles -->
       <div class="flex flex-col md:flex-row items-stretch md:items-center gap-3 w-full md:w-auto">
 
-        <!-- Buscador -->
+        <!-- Buscador de código -->
         <div class="relative flex-1 md:w-64">
-          <input v-model="busqueda" type="text" placeholder="Buscar por código o usuario..."
+          <input v-model="codigoBusqueda" @keyup.enter="buscarPrestamo" type="text"
+            placeholder="Buscar por código (FI-JE111210)..."
             class="w-full bg-gray-800 text-white pl-10 pr-4 py-2 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500 text-sm" />
           <svg class="w-5 h-5 text-gray-400 absolute left-3 top-2.5" fill="none" viewBox="0 0 24 24"
             stroke="currentColor">
@@ -162,7 +163,7 @@
               <tr>
                 <th class="px-6 py-4 text-left text-gray-300 font-semibold text-sm">Código</th>
                 <th class="px-6 py-4 text-left text-gray-300 font-semibold text-sm">Usuario</th>
-                <th class="px-6 py-4 text-left text-gray-300 font-semibold text-sm">Herramienta</th>
+                <th class="px-6 py-4 text-left text-gray-300 font-semibold text-sm">Herramientas</th>
                 <th class="px-6 py-4 text-left text-gray-300 font-semibold text-sm">Fecha Préstamo</th>
                 <th class="px-6 py-4 text-left text-gray-300 font-semibold text-sm">Fecha Esperada</th>
                 <th class="px-6 py-4 text-left text-gray-300 font-semibold text-sm">Estado</th>
@@ -197,16 +198,18 @@
                   <div v-else class="text-gray-500 text-sm">Cargando...</div>
                 </td>
 
-                <!-- Herramienta -->
+                <!-- Herramientas -->
                 <td class="px-6 py-4">
-                  <div v-if="prestamo.tipo_herramienta_data" class="flex items-center gap-2">
-                    <div class="text-white">{{ prestamo.tipo_herramienta_data.nombre }}</div>
+                  <div class="flex items-center gap-2">
+                    <span class="text-white text-sm">
+                      {{ calcularTotalHerramientas(prestamo) }} herramienta{{ calcularTotalHerramientas(prestamo) !== 1
+                        ? 's' : '' }}
+                    </span>
                     <button @click="abrirModalHerramientas(prestamo)"
                       class="text-xs text-blue-400 hover:text-blue-300 underline">
-                      ({{ prestamo.herramientas_detalle?.length || 0 }})
+                      Ver detalle
                     </button>
                   </div>
-                  <div v-else class="text-gray-500 text-sm">Cargando...</div>
                 </td>
 
                 <!-- Fecha Préstamo -->
@@ -234,16 +237,16 @@
 
                 <!-- Acciones -->
                 <td class="px-6 py-4">
-                  <!-- Pendiente: Marcar como entregado -->
+                  <!-- Pendiente: Entregar -->
                   <button v-if="prestamo.estado_prestamo === 'Pendiente'" @click="abrirModalEntrega(prestamo)"
-                    class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-medium">
+                    class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
                     Entregar
                   </button>
 
                   <!-- Entregado o Vencido: Devolver -->
                   <button v-else-if="['Entregado', 'Vencido'].includes(prestamo.estado_prestamo)"
                     @click="abrirModalDevolucion(prestamo)"
-                    class="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-medium">
+                    class="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
                     Devolver
                   </button>
 
@@ -268,7 +271,7 @@
     <div v-if="modalHerramientas" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
       <div class="bg-gray-800 rounded-xl p-6 max-w-lg w-full border border-gray-700 max-h-[80vh] overflow-y-auto">
         <div class="flex justify-between items-center mb-4">
-          <h3 class="text-lg font-bold text-white">Herramientas del Préstamo</h3>
+          <h3 class="text-lg font-bold text-white">Detalle del Préstamo</h3>
           <button @click="cerrarModalHerramientas" class="text-gray-400 hover:text-white">
             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -277,68 +280,69 @@
         </div>
 
         <div v-if="prestamoSeleccionadoHerramientas" class="space-y-3">
-          <!-- Info general del préstamo -->
+          <!-- Info general -->
           <div class="bg-gray-700/50 rounded-lg p-3 mb-4">
             <p class="text-gray-400 text-xs uppercase tracking-wider mb-1">Código del Préstamo</p>
-
             <div class="flex items-center justify-between gap-3">
               <p class="text-white font-mono font-bold text-lg">
                 {{ prestamoSeleccionadoHerramientas.codigo }}
               </p>
-
               <button @click="copiarCodigo(prestamoSeleccionadoHerramientas.codigo)" :class="[
                 'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all',
                 codigoCopiado
                   ? 'bg-green-500/20 text-green-400 border border-green-500/50'
                   : 'bg-gray-600 text-gray-300 hover:bg-gray-500 border border-gray-500'
               ]">
-                <!-- Icono de check cuando está copiado -->
                 <svg v-if="codigoCopiado" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                 </svg>
-
-                <!-- Icono de copiar cuando no está copiado -->
                 <svg v-else class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                 </svg>
-
                 <span>{{ codigoCopiado ? '¡Copiado!' : 'Copiar' }}</span>
               </button>
             </div>
-
-            <p class="text-gray-500 text-sm mt-1">
-              Total: {{ prestamoSeleccionadoHerramientas.herramientas_detalle?.length || 0 }} herramienta(s)
-            </p>
           </div>
 
-          <!-- Lista de herramientas -->
-          <div v-for="(herramienta, index) in prestamoSeleccionadoHerramientas.herramientas_detalle"
-            :key="herramienta.id_herramienta"
-            class="bg-gray-700 rounded-lg p-4 border border-gray-600 hover:border-gray-500 transition-colors">
-
-            <div class="flex items-start justify-between mb-3">
-              <div class="flex items-center gap-2">
-                <span class="bg-gray-600 text-gray-300 px-2 py-1 rounded text-xs font-bold">
-                  #{{ index + 1 }}
-                </span>
-                <span class="text-white font-medium">
-                  {{ getNombreTipo(herramienta.id_tipo_herramienta) }}
-                </span>
-              </div>
-              <span :class="[
-                'px-2 py-1 rounded text-xs font-semibold whitespace-nowrap',
-                herramienta.estado_herramienta === 'Nuevo' ? 'bg-green-500/20 text-green-400 border border-green-500/50' :
-                  herramienta.estado_herramienta === 'Excelente' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/50' :
-                    herramienta.estado_herramienta === 'Bueno' ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/50' :
-                      herramienta.estado_herramienta === 'Regular' ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/50' :
-                        'bg-red-500/20 text-red-400 border border-red-500/50'
-              ]">
-                {{ herramienta.estado_herramienta }}
+          <!-- Tipos solicitados -->
+          <div class="bg-gray-700/50 rounded-lg p-3 mb-3">
+            <p class="text-gray-400 text-xs uppercase tracking-wider mb-2">Tipos Solicitados</p>
+            <div v-for="tipo in prestamoSeleccionadoHerramientas.tipos_detalle" :key="tipo.tipo_herramienta"
+              class="flex items-center justify-between py-1">
+              <span class="text-white text-sm">{{ tipo.tipo_herramienta_nombre }}</span>
+              <span class="bg-blue-500/20 text-blue-400 px-2 py-1 rounded text-sm font-bold">
+                {{ tipo.cantidad }}x
               </span>
             </div>
+          </div>
 
-            <div class="space-y-1">
+          <!-- Herramientas asignadas -->
+          <div v-if="prestamoSeleccionadoHerramientas.herramientas_detalle?.length > 0">
+            <p class="text-gray-400 text-xs uppercase tracking-wider mb-2">Herramientas Asignadas</p>
+            <div v-for="(herramienta, index) in prestamoSeleccionadoHerramientas.herramientas_detalle"
+              :key="herramienta.id_herramienta"
+              class="bg-gray-700 rounded-lg p-4 border border-gray-600 hover:border-gray-500 transition-colors mb-2">
+              <div class="flex items-start justify-between mb-3">
+                <div class="flex items-center gap-2">
+                  <span class="bg-gray-600 text-gray-300 px-2 py-1 rounded text-xs font-bold">
+                    #{{ index + 1 }}
+                  </span>
+                  <span class="text-white font-medium">
+                    {{ getNombreTipo(herramienta.id_tipo_herramienta) }}
+                  </span>
+                </div>
+                <span :class="[
+                  'px-2 py-1 rounded text-xs font-semibold whitespace-nowrap',
+                  herramienta.estado_herramienta === 'Nuevo' ? 'bg-green-500/20 text-green-400 border border-green-500/50' :
+                    herramienta.estado_herramienta === 'Excelente' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/50' :
+                      herramienta.estado_herramienta === 'Bueno' ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/50' :
+                        herramienta.estado_herramienta === 'Regular' ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/50' :
+                          'bg-red-500/20 text-red-400 border border-red-500/50'
+                ]">
+                  {{ herramienta.estado_herramienta }}
+                </span>
+              </div>
               <div class="flex items-center gap-2">
                 <svg class="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -349,21 +353,117 @@
               </div>
             </div>
           </div>
-        </div>
-
-        <div v-if="!prestamoSeleccionadoHerramientas?.herramientas_detalle?.length" class="text-center py-8">
-          <svg class="w-12 h-12 text-gray-600 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-          </svg>
-          <p class="text-gray-500">No hay herramientas registradas</p>
+          <div v-else class="text-center py-4 text-gray-500 text-sm">
+            Sin herramientas asignadas aún
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- MODAL DE DEVOLUCIÓN -->
+    <!-- MODAL DE ENTREGA (NUEVO) -->
+    <div v-if="modalEntrega" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+      <div class="bg-gray-800 rounded-xl p-6 max-w-lg w-full border border-gray-700 max-h-[85vh] overflow-y-auto">
+
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-lg font-bold text-white">Entregar Herramientas</h3>
+          <button @click="cerrarModalEntrega" class="text-gray-400 hover:text-white">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Info del préstamo -->
+        <div v-if="prestamoEntrega" class="space-y-4">
+          <div class="bg-gray-700/50 rounded-lg p-3">
+            <p class="text-gray-400 text-xs uppercase tracking-wider mb-1">Código</p>
+            <p class="text-white font-mono font-bold text-lg">{{ prestamoEntrega.codigo }}</p>
+            <p class="text-gray-500 text-sm mt-1">
+              Usuario: {{ prestamoEntrega.usuario_data?.nombres }} {{ prestamoEntrega.usuario_data?.apellidos }}
+            </p>
+          </div>
+
+          <!-- Tipos solicitados -->
+          <div class="bg-gray-700/50 rounded-lg p-3">
+            <p class="text-gray-400 text-xs uppercase tracking-wider mb-2">Herramientas Solicitadas</p>
+            <div v-for="tipo in prestamoEntrega.tipos_detalle" :key="tipo.tipo_herramienta"
+              class="flex items-center justify-between py-1">
+              <span class="text-white text-sm">{{ tipo.tipo_herramienta_nombre }}</span>
+              <span class="bg-blue-500/20 text-blue-400 px-2 py-1 rounded text-sm font-bold">
+                {{ tipo.cantidad }}x
+              </span>
+            </div>
+          </div>
+
+          <!-- Scanner -->
+          <div class="bg-blue-500/10 border border-blue-500/50 rounded-lg p-4">
+            <label class="block text-sm font-medium text-white mb-2">
+              Escanear Código de Barras
+            </label>
+            <input ref="scannerInput" type="text" @keyup.enter="escanearCodigo"
+              placeholder="Escanea o escribe el código..."
+              class="w-full bg-gray-700 text-white rounded-lg px-3 py-2 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <p class="text-xs text-gray-400 mt-1">Presiona Enter después de escanear</p>
+          </div>
+
+          <!-- Códigos escaneados -->
+          <div v-if="codigosEscaneados.length > 0" class="space-y-2">
+            <p class="text-sm font-medium text-white">Códigos Escaneados:</p>
+            <div v-for="(codigo, index) in codigosEscaneados" :key="codigo"
+              class="flex items-center justify-between bg-green-500/20 border border-green-500/50 rounded-lg p-3">
+              <div class="flex items-center gap-2">
+                <svg class="w-5 h-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <span class="text-white font-mono">{{ codigo }}</span>
+                <span class="text-xs text-gray-400">#{{ index + 1 }}</span>
+              </div>
+              <button @click="quitarCodigo(codigo)" class="text-red-400 hover:text-red-300">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Progreso -->
+          <div class="bg-gray-700/50 rounded-lg p-3">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm text-gray-400">Progreso</span>
+              <span class="text-sm font-bold" :class="codigosEscaneados.length === totalHerramientasRequeridas
+                ? 'text-green-400'
+                : 'text-yellow-400'
+                ">
+                {{ codigosEscaneados.length }} / {{ totalHerramientasRequeridas }}
+              </span>
+            </div>
+            <div class="w-full bg-gray-600 rounded-full h-2">
+              <div class="h-2 rounded-full transition-all duration-300"
+                :class="codigosEscaneados.length === totalHerramientasRequeridas ? 'bg-green-500' : 'bg-yellow-500'"
+                :style="{ width: `${(codigosEscaneados.length / totalHerramientasRequeridas) * 100}%` }"></div>
+            </div>
+          </div>
+
+          <!-- Botones -->
+          <div class="flex gap-3 pt-4">
+            <button @click="cerrarModalEntrega"
+              class="flex-1 px-4 py-2 rounded-lg border border-gray-600 text-gray-300 hover:bg-gray-700 transition-colors">
+              Cancelar
+            </button>
+            <button @click="confirmarEntrega"
+              :disabled="codigosEscaneados.length !== totalHerramientasRequeridas || procesandoEntrega"
+              class="flex-1 px-4 py-2 rounded-lg bg-green-600 hover:bg-green-500 text-white font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+              {{ procesandoEntrega ? 'Procesando...' : 'Confirmar Entrega' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL DE DEVOLUCIÓN (ACTUALIZADO) -->
     <div v-if="modalDevolucion" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-      <div class="bg-gray-800 rounded-xl p-6 max-w-md w-full border border-gray-700">
+      <div class="bg-gray-800 rounded-xl p-6 max-w-lg w-full border border-gray-700 max-h-[85vh] overflow-y-auto">
         <div class="flex justify-between items-center mb-4">
           <h3 class="text-lg font-bold text-white">Registrar Devolución</h3>
           <button @click="cerrarModalDevolucion" class="text-gray-400 hover:text-white">
@@ -377,24 +477,50 @@
           <!-- Info del préstamo -->
           <div class="bg-gray-700 rounded-lg p-4">
             <p class="text-white font-medium mb-2">Código: {{ prestamoSeleccionado.codigo }}</p>
-            <p class="text-gray-400 text-sm">{{ prestamoSeleccionado.herramientas_detalle?.length || 0 }} herramienta(s)
+            <p class="text-gray-400 text-sm">
+              Total: {{ prestamoSeleccionado.herramientas_detalle?.length || 0 }} herramienta(s)
             </p>
           </div>
 
-          <!-- Estado de devolución -->
-          <div>
-            <label class="block text-sm font-medium text-white mb-2">Estado de devolución</label>
-            <select v-model="estadoDevolucion"
-              class="w-full bg-gray-700 text-white rounded-lg px-3 py-2 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500">
-              <option value="Excelente">Excelente</option>
-              <option value="Bueno">Bueno</option>
-              <option value="Regular">Regular</option>
-              <option value="Defectuoso">Defectuoso</option>
-              <option value="Dañado">Dañado</option>
-            </select>
+          <!-- Scanner para devolución -->
+          <div class="bg-red-500/10 border border-red-500/50 rounded-lg p-4">
+            <label class="block text-sm font-medium text-white mb-2">
+              Escanear Herramientas a Devolver
+            </label>
+            <input ref="scannerDevolucionInput" type="text" @keyup.enter="escanearDevolucion"
+              placeholder="Escanea código de barras..."
+              class="w-full bg-gray-700 text-white rounded-lg px-3 py-2 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500" />
           </div>
 
-          <!-- Observaciones -->
+          <!-- Códigos escaneados para devolución -->
+          <div v-if="codigosDevolucion.length > 0" class="space-y-2">
+            <p class="text-sm font-medium text-white">Escaneados ({{ codigosDevolucion.length }}/{{
+              prestamoSeleccionado.herramientas_detalle?.length || 0 }}):</p>
+            <div v-for="codigo in codigosDevolucion" :key="codigo"
+              class="bg-gray-700 rounded-lg p-3 border border-gray-600">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-white font-mono text-sm">{{ codigo }}</span>
+                <button @click="quitarCodigoDevolucion(codigo)" class="text-red-400 hover:text-red-300">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              <!-- Selector de estado individual -->
+              <select v-model="estadosHerramientas[codigo]"
+                class="w-full bg-gray-600 text-white rounded px-2 py-1 text-sm border border-gray-500">
+                <option value="Nuevo">Nuevo</option>
+                <option value="Excelente">Excelente</option>
+                <option value="Bueno">Bueno</option>
+                <option value="Regular">Regular</option>
+                <option value="Defectuoso">Defectuoso</option>
+                <option value="Dañado">Dañado</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Observaciones generales -->
           <div>
             <label class="block text-sm font-medium text-white mb-2">Observaciones (opcional)</label>
             <textarea v-model="observaciones"
@@ -408,7 +534,8 @@
               class="flex-1 px-4 py-2 rounded-lg border border-gray-600 text-gray-300 hover:bg-gray-700 transition-colors">
               Cancelar
             </button>
-            <button @click="confirmarDevolucion" :disabled="procesandoDevolucion"
+            <button @click="confirmarDevolucion"
+              :disabled="procesandoDevolucion || codigosDevolucion.length !== (prestamoSeleccionado.herramientas_detalle?.length || 0)"
               class="flex-1 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-white font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
               {{ procesandoDevolucion ? 'Procesando...' : 'Confirmar Devolución' }}
             </button>
@@ -420,16 +547,16 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
 import { prestamosService } from '@/services/prestamosService'
 
 // Estados reactivos
 const prestamos = ref([])
 const filtroEstado = ref('todos')
 const busqueda = ref('')
+const codigoBusqueda = ref('')
 const loading = ref(true)
 const error = ref('')
-const procesandoDevolucion = ref(null)
 
 const tiposHerramienta = ref([])
 const tiposMap = ref({})
@@ -439,22 +566,27 @@ const modalHerramientas = ref(false)
 const prestamoSeleccionadoHerramientas = ref(null)
 const codigoCopiado = ref(false)
 
-// Estados para modal de devolución
+// Estados para modal de entrega (NUEVO)
+const modalEntrega = ref(false)
+const prestamoEntrega = ref(null)
+const codigosEscaneados = ref([])
+const scannerInput = ref(null)
+const procesandoEntrega = ref(false)
+
+// Estados para modal de devolución (ACTUALIZADO)
 const modalDevolucion = ref(false)
 const prestamoSeleccionado = ref(null)
-const estadoDevolucion = ref('Bueno')
+const codigosDevolucion = ref([])
+const estadosHerramientas = ref({})
+const scannerDevolucionInput = ref(null)
 const observaciones = ref('')
+const procesandoDevolucion = ref(false)
 
 // Cargar datos de usuario y tipo de herramienta para cada préstamo
 const enriquecerPrestamos = async () => {
   for (const prestamo of prestamos.value) {
-    // Cargar usuario
     if (!prestamo.usuario_data) {
       prestamo.usuario_data = await prestamosService.getUsuario(prestamo.id_usuario)
-    }
-    // Cargar tipo de herramienta principal (para mostrar en la tabla)
-    if (!prestamo.tipo_herramienta_data) {
-      prestamo.tipo_herramienta_data = await prestamosService.getTipoHerramienta(prestamo.id_tipo_herramienta)
     }
   }
 }
@@ -494,11 +626,212 @@ const cargarTiposHerramienta = async () => {
   console.log('✅ Tipos de herramienta cargados:', tiposHerramienta.value.length)
 }
 
+const calcularTotalHerramientas = (prestamo) => {
+  if (!prestamo.tipos_detalle || prestamo.tipos_detalle.length === 0) {
+    return 0
+  }
+  return prestamo.tipos_detalle.reduce((total, tipo) => total + tipo.cantidad, 0)
+}
+
 const getNombreTipo = (idTipo) => {
   return tiposMap.value[idTipo]?.nombre || 'Tipo Desconocido'
 }
 
-// Modal de herramientas
+// BÚSQUEDA POR CÓDIGO (NUEVO)
+const buscarPrestamo = async () => {
+  if (!codigoBusqueda.value.trim()) {
+    alert('Ingresa un código de préstamo')
+    return
+  }
+
+  try {
+    loading.value = true
+    const resultado = await prestamosService.buscarPorCodigo(codigoBusqueda.value.trim())
+
+    if (!resultado || resultado.length === 0) {
+      alert('No se encontró el préstamo o ya fue finalizado/expirado')
+      return
+    }
+
+    const prestamo = resultado[0]
+
+    // Enriquecer datos
+    prestamo.usuario_data = await prestamosService.getUsuario(prestamo.id_usuario)
+
+    if (prestamo.estado_prestamo === 'Pendiente') {
+      abrirModalEntrega(prestamo)
+    } else if (['Entregado', 'Vencido'].includes(prestamo.estado_prestamo)) {
+      abrirModalDevolucion(prestamo)
+    } else {
+      alert(`El préstamo está ${prestamo.estado_prestamo}`)
+    }
+  } catch (error) {
+    console.error('Error al buscar:', error)
+    alert('Error al buscar el préstamo')
+  } finally {
+    loading.value = false
+  }
+}
+
+// MODAL DE ENTREGA (NUEVO)
+const totalHerramientasRequeridas = computed(() => {
+  if (!prestamoEntrega.value?.tipos_detalle) return 0
+  return prestamoEntrega.value.tipos_detalle.reduce((sum, t) => sum + t.cantidad, 0)
+})
+
+const abrirModalEntrega = (prestamo) => {
+  prestamoEntrega.value = prestamo
+  codigosEscaneados.value = []
+  modalEntrega.value = true
+
+  // Autofocus en el scanner
+  nextTick(() => {
+    scannerInput.value?.focus()
+  })
+}
+
+const cerrarModalEntrega = () => {
+  modalEntrega.value = false
+  prestamoEntrega.value = null
+  codigosEscaneados.value = []
+}
+
+const escanearCodigo = (event) => {
+  const codigo = event.target.value.trim()
+
+  if (!codigo) return
+
+  if (codigosEscaneados.value.includes(codigo)) {
+    alert(`El código ${codigo} ya fue escaneado`)
+    event.target.value = ''
+    return
+  }
+
+  codigosEscaneados.value.push(codigo)
+  event.target.value = ''
+
+  // Mantener focus
+  scannerInput.value?.focus()
+}
+
+const quitarCodigo = (codigo) => {
+  codigosEscaneados.value = codigosEscaneados.value.filter(c => c !== codigo)
+}
+
+const confirmarEntrega = async () => {
+  if (codigosEscaneados.value.length !== totalHerramientasRequeridas.value) {
+    alert(`Faltan códigos. Necesitas ${totalHerramientasRequeridas.value}, tienes ${codigosEscaneados.value.length}`)
+    return
+  }
+
+  procesandoEntrega.value = true
+
+  try {
+    await prestamosService.asignarHerramientas(
+      prestamoEntrega.value.id_prestamo,
+      codigosEscaneados.value
+    )
+
+    alert('¡Herramientas entregadas exitosamente!')
+    cerrarModalEntrega()
+    await cargarPrestamos(false)
+  } catch (error) {
+    console.error('Error al entregar:', error)
+    const mensaje = error.response?.data?.detail || 'Error al asignar herramientas'
+    alert(mensaje)
+  } finally {
+    procesandoEntrega.value = false
+  }
+}
+
+// MODAL DE DEVOLUCIÓN (ACTUALIZADO)
+const abrirModalDevolucion = (prestamo) => {
+  prestamoSeleccionado.value = prestamo
+  codigosDevolucion.value = []
+  estadosHerramientas.value = {}
+  observaciones.value = ''
+  modalDevolucion.value = true
+
+  // Inicializar estados por defecto
+  prestamo.herramientas_detalle?.forEach(h => {
+    estadosHerramientas.value[h.codigo_barras] = 'Bueno'
+  })
+
+  nextTick(() => {
+    scannerDevolucionInput.value?.focus()
+  })
+}
+
+const cerrarModalDevolucion = () => {
+  modalDevolucion.value = false
+  prestamoSeleccionado.value = null
+  codigosDevolucion.value = []
+  estadosHerramientas.value = {}
+  observaciones.value = ''
+}
+
+const escanearDevolucion = (event) => {
+  const codigo = event.target.value.trim()
+
+  if (!codigo) return
+
+  if (codigosDevolucion.value.includes(codigo)) {
+    alert(`El código ${codigo} ya fue escaneado`)
+    event.target.value = ''
+    return
+  }
+
+  // Verificar que pertenece al préstamo
+  const perteneceAlPrestamo = prestamoSeleccionado.value.herramientas_detalle?.some(
+    h => h.codigo_barras === codigo
+  )
+
+  if (!perteneceAlPrestamo) {
+    alert('Este código no pertenece al préstamo')
+    event.target.value = ''
+    return
+  }
+
+  codigosDevolucion.value.push(codigo)
+  event.target.value = ''
+
+  scannerDevolucionInput.value?.focus()
+}
+
+const quitarCodigoDevolucion = (codigo) => {
+  codigosDevolucion.value = codigosDevolucion.value.filter(c => c !== codigo)
+  delete estadosHerramientas.value[codigo]
+}
+
+const confirmarDevolucion = async () => {
+  const totalHerramientas = prestamoSeleccionado.value.herramientas_detalle?.length || 0
+
+  if (codigosDevolucion.value.length !== totalHerramientas) {
+    alert(`Debes escanear todas las herramientas (${totalHerramientas})`)
+    return
+  }
+
+  procesandoDevolucion.value = true
+
+  try {
+    await prestamosService.devolverHerramientas(
+      prestamoSeleccionado.value.id_prestamo,
+      codigosDevolucion.value,
+      estadosHerramientas.value
+    )
+
+    alert('¡Herramientas devueltas exitosamente!')
+    cerrarModalDevolucion()
+    await cargarPrestamos(false)
+  } catch (error) {
+    console.error('Error:', error)
+    alert(error.response?.data?.detail || 'Error al devolver herramientas')
+  } finally {
+    procesandoDevolucion.value = false
+  }
+}
+
+// Modal de herramientas (existente)
 const abrirModalHerramientas = (prestamo) => {
   prestamoSeleccionadoHerramientas.value = prestamo
   codigoCopiado.value = false
@@ -514,8 +847,6 @@ const copiarCodigo = async (codigo) => {
   try {
     await navigator.clipboard.writeText(codigo)
     codigoCopiado.value = true
-
-    // Resetear después de 2 segundos
     setTimeout(() => {
       codigoCopiado.value = false
     }, 2000)
@@ -523,33 +854,6 @@ const copiarCodigo = async (codigo) => {
     console.error('Error al copiar:', err)
     alert('No se pudo copiar el código')
   }
-}
-
-// Modal de devolución
-const abrirModalDevolucion = (prestamo) => {
-  prestamoSeleccionado.value = prestamo
-  estadoDevolucion.value = 'Bueno'
-  observaciones.value = ''
-  modalDevolucion.value = true
-}
-
-const cerrarModalDevolucion = () => {
-  modalDevolucion.value = false
-  prestamoSeleccionado.value = null
-  estadoDevolucion.value = 'Bueno'
-  observaciones.value = ''
-}
-
-const confirmarDevolucion = async () => {
-  await axios.post(
-    `/operaciones/api/prestamos/${prestamo.id_prestamo}/devolver_herramientas/`,
-    {
-      codigos: codigosEscaneados.value,
-      estados: {  // ← OPCIONAL
-        "135791": estadosHerramientas.value["135791"] || "Bueno"
-      }
-    }
-  )
 }
 
 // Computed - Filtrado y búsqueda
