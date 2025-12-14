@@ -30,7 +30,8 @@
             </div>
           </div>
 
-          <div class="flex items-center gap-2 bg-white/5 rounded-full px-4 py-2 border border-white/5">
+          <div v-if="registrationMethod === 'face'"
+            class="flex items-center gap-2 bg-white/5 rounded-full px-4 py-2 border border-white/5">
             <span
               :class="['px-3 py-1 rounded-full text-xs font-bold transition-colors', currentStep === 1 ? 'bg-red-600 text-white shadow-lg' : 'text-gray-400']">1.
               Datos</span>
@@ -38,6 +39,10 @@
             <span
               :class="['px-3 py-1 rounded-full text-xs font-bold transition-colors', currentStep === 2 ? 'bg-red-600 text-white shadow-lg' : 'text-gray-400']">2.
               Rostro</span>
+          </div>
+          <div v-else class="flex items-center gap-2 bg-white/5 rounded-full px-4 py-2 border border-white/5">
+            <span class="px-3 py-1 rounded-full text-xs font-bold bg-red-600 text-white shadow-lg">Registro por
+              correo</span>
           </div>
         </div>
 
@@ -49,6 +54,30 @@
                 <span class="w-1 h-6 bg-red-500 rounded-full mr-3"></span>
                 Información Personal
               </h3>
+
+              <!-- Método de registro: Facial (principal) / Correo (opcional) -->
+              <div class="flex items-center justify-between gap-3">
+                <p class="text-xs font-semibold text-gray-300 uppercase tracking-wider">
+                  Método de registro
+                </p>
+
+                <!-- Selector compacto -->
+                <div class="inline-flex items-center rounded-full border border-white/10 bg-white/5 p-1">
+                  <button type="button" @click="registrationMethod = 'face'"
+                    class="px-3 py-1.5 rounded-full text-xs font-semibold transition-all" :class="registrationMethod === 'face'
+                      ? 'bg-red-600/70 text-white shadow'
+                      : 'text-gray-300 hover:text-white'" aria-pressed="registrationMethod === 'face'">
+                    Facial
+                  </button>
+
+                  <button type="button" @click="registrationMethod = 'email'"
+                    class="px-3 py-1.5 rounded-full text-xs font-semibold transition-all" :class="registrationMethod === 'email'
+                      ? 'bg-red-600/70 text-white shadow'
+                      : 'text-gray-300 hover:text-white'" aria-pressed="registrationMethod === 'email'">
+                    Correo
+                  </button>
+                </div>
+              </div>
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div class="col-span-1 md:col-span-2 group">
@@ -79,12 +108,38 @@
                     class="block text-xs font-medium text-gray-400 mb-1 ml-1 uppercase tracking-wider group-focus-within:text-red-400 transition-colors">Correo
                     Institucional</label>
                   <div class="relative">
-                    <input v-model="formData.correo" type="email" placeholder="nombre.apellido@inacapmail.cl" maxlength="50"
+                    <input v-model="formData.correo" type="email" placeholder="nombre.apellido@inacapmail.cl"
+                      maxlength="50"
                       class="w-full bg-white/5 border rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 focus:bg-white/10 transition-all duration-300"
                       :class="emailError ? 'border-red-500/80' : 'border-white/10'" />
                   </div>
                   <p v-if="emailError" class="text-red-400 text-xs mt-2 ml-1 h-4">{{ emailError }}</p>
                 </div>
+
+                <!-- Campos opcionales para registro por correo -->
+                <template v-if="registrationMethod === 'email'">
+                  <div class="group">
+                    <label
+                      class="block text-xs font-medium text-gray-400 mb-1 ml-1 uppercase tracking-wider group-focus-within:text-red-400 transition-colors">Contraseña</label>
+                    <input v-model="password" type="password" autocomplete="new-password"
+                      class="w-full bg-white/5 border rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 focus:bg-white/10 transition-all duration-300"
+                      :class="passwordError ? 'border-red-500/80' : 'border-white/10'"
+                      placeholder="Mínimo 8 caracteres" />
+                    <p v-if="passwordError" class="text-red-400 text-xs mt-2 ml-1 h-4">{{ passwordError }}</p>
+                  </div>
+
+                  <div class="group">
+                    <label
+                      class="block text-xs font-medium text-gray-400 mb-1 ml-1 uppercase tracking-wider group-focus-within:text-red-400 transition-colors">Confirmar
+                      contraseña</label>
+                    <input v-model="passwordConfirm" type="password" autocomplete="new-password"
+                      class="w-full bg-white/5 border rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 focus:bg-white/10 transition-all duration-300"
+                      :class="passwordConfirmError ? 'border-red-500/80' : 'border-white/10'"
+                      placeholder="Repite la contraseña" />
+                    <p v-if="passwordConfirmError" class="text-red-400 text-xs mt-2 ml-1 h-4">{{ passwordConfirmError }}
+                    </p>
+                  </div>
+                </template>
 
                 <div class="group">
                   <label
@@ -139,7 +194,17 @@
                 Captura Biométrica
               </h3>
 
-              <div
+              <!-- Si se registra por correo, se deshabilita la sección de cámara -->
+              <div v-if="registrationMethod === 'email'"
+                class="flex-1 bg-black/40 rounded-2xl border border-white/10 p-6 flex items-center justify-center">
+                <div class="text-center">
+                  <div class="text-white font-semibold">Te estas registrando con correo y contraseña</div>
+                  <div class="text-gray-400 text-sm mt-1">La captura facial es opcional aunque 3 veces más rápida.
+                  </div>
+                </div>
+              </div>
+
+              <div v-else
                 class="flex-1 bg-black/60 rounded-2xl border border-white/10 overflow-hidden relative shadow-inner group">
                 <video ref="videoElement" class="w-full h-full object-cover transform scale-x-[-1]" autoplay
                   playsinline></video>
@@ -191,7 +256,7 @@
                 </div>
               </div>
 
-              <div class="mt-4 flex gap-3">
+              <div class="mt-4 flex gap-3" v-if="registrationMethod === 'face'">
                 <button @click="captureImage" :disabled="!isCameraActive || capturedImage"
                   class="flex-1 group relative overflow-hidden rounded-xl bg-white text-gray-900 font-bold py-3 px-4 transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100">
                   <div
@@ -203,7 +268,8 @@
                         d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z">
                       </path>
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        d="M15 13a3 3 0 11-6 0 3 3 0 016 0z">
+                      </path>
                     </svg>
                     Capturar
                   </span>
@@ -277,6 +343,13 @@ const showPreview = ref(false)
 const isSubmitting = ref(false)
 const rutError = ref('')
 const emailError = ref('')
+const passwordError = ref('')
+const passwordConfirmError = ref('')
+
+// Método de registro: por defecto facial
+const registrationMethod = ref('face')
+const password = ref('')
+const passwordConfirm = ref('')
 
 // Listas dinámicas desde el backend
 const carreras = ref([])
@@ -293,19 +366,31 @@ const formData = ref({
 
 // Control visual de "Pasos" basado en qué campos están llenos
 const currentStep = computed(() => {
+  // En modo correo no hay paso biométrico
+  if (registrationMethod.value === 'email') return 1
   if (formData.value.rut && formData.value.nombres && formData.value.rol) return 2
   return 1
 })
 
 const isFormValid = computed(() => {
-  return formData.value.rut &&
+  const baseOk = formData.value.rut &&
     formData.value.nombres &&
     formData.value.apellidos &&
     formData.value.correo &&
     formData.value.rol &&
     !rutError.value &&
-    !emailError.value &&
-    capturedImage.value !== null
+    !emailError.value
+
+  if (!baseOk) return false
+
+  if (registrationMethod.value === 'email') {
+    return !!password.value &&
+      !!passwordConfirm.value &&
+      !passwordError.value &&
+      !passwordConfirmError.value
+  }
+
+  return capturedImage.value !== null
 })
 
 // Cargar datos del backend
@@ -406,6 +491,49 @@ watch(() => formData.value.rut, (newValue, oldValue) => {
 
 watch(() => formData.value.correo, (newEmail) => { emailError.value = validateEmail(newEmail) });
 
+const validatePassword = (pwd) => {
+  if (registrationMethod.value !== 'email') return ''
+  if (!pwd) return 'La contraseña es obligatoria.'
+  if (pwd.length < 8) return 'La contraseña debe tener al menos 8 caracteres.'
+  return ''
+}
+
+const validatePasswordConfirm = (pwd2) => {
+  if (registrationMethod.value !== 'email') return ''
+  if (!pwd2) return 'Confirma la contraseña.'
+  if (pwd2 !== password.value) return 'Las contraseñas no coinciden.'
+  return ''
+}
+
+watch(password, (newPwd) => {
+  passwordError.value = validatePassword(newPwd)
+  // Revalidar confirmación
+  passwordConfirmError.value = validatePasswordConfirm(passwordConfirm.value)
+})
+
+watch(passwordConfirm, (newPwd2) => {
+  passwordConfirmError.value = validatePasswordConfirm(newPwd2)
+})
+
+watch(registrationMethod, async (mode) => {
+  // Limpieza y control de cámara al cambiar el modo
+  passwordError.value = ''
+  passwordConfirmError.value = ''
+
+  if (mode === 'email') {
+    // Detener cámara y limpiar captura
+    if (stream.value) stream.value.getTracks().forEach(t => t.stop())
+    stream.value = null
+    isCameraActive.value = false
+    retryCapture()
+  } else {
+    // Limpiar contraseñas y activar cámara
+    password.value = ''
+    passwordConfirm.value = ''
+    await startCamera()
+  }
+})
+
 // --- LÓGICA DE CÁMARA MEJORADA ---
 const startCamera = async () => {
   try {
@@ -476,6 +604,28 @@ const registerUser = async () => {
   isSubmitting.value = true
 
   try {
+    let result
+
+    if (registrationMethod.value === 'email') {
+      // Registro alternativo por correo/contraseña
+      const payload = {
+        rut: formData.value.rut,
+        nombres: formData.value.nombres,
+        apellidos: formData.value.apellidos,
+        correo: formData.value.correo,
+        rol: formData.value.rol,
+        carrera: formData.value.carrera || '',
+        password: password.value,
+      }
+
+      result = await authService.registerUserWithEmail(payload)
+      console.log('Resultado:', result)
+      alert(`Registro completado. Ya puedes iniciar sesión con tu correo.`)
+      router.push('/')
+      return
+    }
+
+    // Registro principal por reconocimiento facial
     const data = new FormData()
     data.append('image', capturedImage.value, 'face.jpg')
     data.append('rut', formData.value.rut)
@@ -488,7 +638,7 @@ const registerUser = async () => {
       data.append('carrera', formData.value.carrera)
     }
 
-    const result = await authService.registerUserWithFace(data)
+    result = await authService.registerUserWithFace(data)
     console.log('Resultado:', result)
 
     const mensaje = result.created
@@ -508,7 +658,7 @@ const registerUser = async () => {
 
 onMounted(async () => {
   await loadInitialData()
-  startCamera()
+  if (registrationMethod.value === 'face') startCamera()
 })
 
 onUnmounted(() => {

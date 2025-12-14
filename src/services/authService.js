@@ -15,6 +15,29 @@ export const authService = {
       throw new Error(errorMessage)
     }
   },
+
+  // Registro alternativo con correo y contraseña (sin biometría).
+  async registerUserWithEmail(payload) {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/usuarios/api/usuarios/`, payload)
+      return response.data
+    } catch (error) {
+      if (error.response?.status === 404) {
+        try {
+          const response = await axios.post(`${API_BASE_URL}/usuarios/api/usuarios/`, payload)
+          return response.data
+        } catch (error2) {
+          console.error('Error completo:', error2.response || error2)
+          const errorMessage = error2.response?.data?.error || error2.message || 'Error desconocido'
+          throw new Error(errorMessage)
+        }
+      }
+
+      console.error('Error completo:', error.response || error)
+      const errorMessage = error.response?.data?.error || error.message || 'Error desconocido'
+      throw new Error(errorMessage)
+    }
+  },
   // Inicia sesion con reconocimiento facial: Toma la imagen y la envia en un formdata al servidor para que la procese
   async loginWithFace(imageBlob) {
     try {
