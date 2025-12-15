@@ -343,43 +343,52 @@ const filtrarPorCategoria = (id) => {
 const confirmarPrestamo = async () => {
   procesando.value = true
   try {
+    // Obtener usuario autenticado
+    const stored = localStorage.getItem('user')
+    const user = stored ? JSON.parse(stored) : null
+    const idUsuario = user?.id ?? user?.id_usuario
+
+    if (!idUsuario) {
+      alert('No se encontró el id del usuario autenticado. Vuelve a iniciar sesión.')
+      return
+    }
+
     // Convertir objeto de cantidades a array de tipos
     const tipos = Object.entries(cantidadesPorTipo.value)
       .filter(([_, cantidad]) => cantidad > 0)
       .map(([idTipo, cantidad]) => ({
-        tipo_herramienta: parseInt(idTipo),
-        cantidad: cantidad
+        tipo_herramienta: parseInt(idTipo, 10),
+        cantidad,
       }))
 
     if (tipos.length === 0) {
       alert('Selecciona al menos una herramienta')
-      procesando.value = false
       return
     }
 
-    // Crear préstamo con NUEVO formato
+    // Crear préstamo
     const prestamo = await prestamosService.crearPrestamo({
       fecha_prestamo: new Date().toISOString(),
       fecha_devolucion_esperada: new Date(fechaDevolucion.value + 'T23:59:59').toISOString(),
       estado_prestamo: 'Pendiente',
-      id_usuario: usuario.value.id,
-      tipos: tipos
+      id_usuario: idUsuario,
+      tipos,
     })
 
     codigoPrestamo.value = prestamo.codigo
-    procesando.value = false
     carritoVisible.value = false
     mostrarConfirmacion.value = true
-
-    // Limpiar cantidades
     cantidadesPorTipo.value = {}
-
-    // Recargar datos
     await cargarDatos()
   } catch (error) {
     console.error('Error:', error)
-    const mensaje = error.response?.data?.tipos || error.response?.data?.detail || 'Error al crear el préstamo'
+    const mensaje =
+      error.response?.data?.id_usuario?.[0] ||
+      error.response?.data?.tipos ||
+      error.response?.data?.detail ||
+      'Error al crear el préstamo'
     alert(mensaje)
+  } finally {
     procesando.value = false
   }
 }

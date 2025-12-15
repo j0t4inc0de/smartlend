@@ -212,15 +212,29 @@ const handleEmailLogin = async () => {
     alert('Por favor, ingresa tu correo y contraseña.')
     return
   }
+
   isEmailSubmitting.value = true
   try {
-    // Asumimos que authService tendrá un método loginWithEmail
-    const usuario = await authService.loginWithEmail(email.value, password.value)
+    const response = await authService.loginWithEmail(email.value, password.value)
+    // console.log('LOGIN EMAIL RESPONSE:', response)
 
-    // Guardar sesión y redirigir (lógica similar a handleLogin)
-    localStorage.setItem('user', JSON.stringify(usuario))
+    // Normalizar usuario (clave)
+    const u = response.usuario ?? response.user ?? response
+
+    const normalizedUser = {
+      ...u,
+      id: u.id ?? u.id_usuario ?? u.usuario_id,
+    }
+
+    if (!normalizedUser.id) {
+      alert('Error: el servidor no devolvió el id del usuario.')
+      return
+    }
+
+    localStorage.setItem('user', JSON.stringify(normalizedUser))
     localStorage.setItem('isAuthenticated', 'true')
-    alert(`¡Bienvenido ${usuario.nombres} ${usuario.apellidos}!`)
+
+    alert(`¡Bienvenido ${normalizedUser.nombres} ${normalizedUser.apellidos}!`)
     router.push('/dashboard')
 
   } catch (error) {
@@ -230,6 +244,7 @@ const handleEmailLogin = async () => {
     isEmailSubmitting.value = false
   }
 }
+
 
 
 const handleLogin = async () => {
@@ -251,15 +266,15 @@ const handleLogin = async () => {
     try {
       console.log('Enviando imagen para login, tamaño:', blob.size)
 
-      // PASO 1: Verificar reconocimiento facial
+      // Verificar reconocimiento facial
       const loginResponse = await authService.loginWithFace(blob)
 
-      // 🐛 DEBUG: Ver respuesta completa
+      // debug
       console.log('Respuesta completa del backend:', loginResponse)
       console.log('existe_embedding:', loginResponse.existe_embedding)
       console.log('usuario_id:', loginResponse.usuario_id)
 
-      // PASO 2: Validar si existe coincidencia
+      // Validar si existe coincidencia
       if (loginResponse.existe_embedding === false) {
         console.log('No se encontró coincidencia facial')
         alert('No se reconoció tu rostro. Por favor, regístrate primero.')
@@ -270,18 +285,18 @@ const handleLogin = async () => {
       if (loginResponse.existe_embedding === true && loginResponse.usuario_id) {
         console.log('Coincidencia encontrada! Usuario ID:', loginResponse.usuario_id)
 
-        // PASO 3: Obtener datos completos del usuario
+        // Obtener datos completos del usuario
         const usuario = await authService.getUsuarioById(loginResponse.usuario_id)
         console.log('Datos del usuario:', usuario)
 
-        // PASO 4: Guardar sesión
+        // Guardar sesión
         localStorage.setItem('user', JSON.stringify(usuario))
         localStorage.setItem('isAuthenticated', 'true')
 
-        // PASO 5: Mostrar bienvenida
+        // Mostrar bienvenida
         alert(`¡Bienvenido ${usuario.nombres} ${usuario.apellidos}!`)
 
-        // PASO 6: Redirigir
+        // Redirigir
         router.push('/dashboard')
       } else {
         console.log('Respuesta inesperada del backend')
