@@ -375,34 +375,41 @@ const cargarDatos = async () => {
   try {
     loading.value = true
 
-    // ✅ SOLUCIÓN: Cargar AMBOS endpoints
-    const [cats, tiposResumen, tiposCompletos] = await Promise.all([
+    // ✅ Cargar categorías, tipos y herramientas individuales
+    const [cats, tipos, todasLasHerramientas] = await Promise.all([
       inventarioService.getCategorias(),
-      inventarioService.getTiposHerramientaResumen(),  // Para contadores
-      inventarioService.getTiposHerramienta()          // Para categorías
+      inventarioService.getTiposHerramienta(),        // ✅ Tiene stock REAL
+      inventarioService.getHerramientasDisponibles()  // ✅ Para contar total
     ])
 
     categorias.value = cats
 
-    // ✅ Combinar ambos: contadores de /resumen/ + categorías de /tipos-herramienta/
-    tiposHerramienta.value = tiposResumen.map(tipoResumen => {
-      // Buscar el tipo completo para obtener id_categoria
-      const tipoCompleto = tiposCompletos.find(
-        tc => tc.id_tipo_herramienta === tipoResumen.id_tipo_herramienta
-      )
+    // ✅ Mapear con stock correcto y total calculado
+    tiposHerramienta.value = tipos.map(tipo => {
+      const idTipo = tipo.id_tipo_herramienta || tipo.id
 
       return {
-        ...tipoResumen,
-        // Agregar id_categoria del endpoint completo
-        id_categoria: tipoCompleto?.id_categoria || null,
-        // Arreglar URL de imagen
-        imagen: tipoResumen.imagen && !tipoResumen.imagen.startsWith('http')
-          ? `http://72.60.167.16:8000${tipoResumen.imagen}`
-          : tipoResumen.imagen
+        ...tipo,
+        id_tipo_herramienta: idTipo,
+        // ✅ DISPONIBLES: usa 'stock' que considera préstamos
+        herramientas_disponibles: tipo.stock || 0,
+        // ✅ TOTAL: cuenta todas las herramientas físicas de este tipo
+        total_herramientas: todasLasHerramientas.filter(
+          h => h.id_tipo_herramienta === idTipo
+        ).length,
+        // ✅ Arreglar URL de imagen
+        imagen: tipo.imagen && !tipo.imagen.startsWith('http')
+          ? `http://72.60.167.16:8000${tipo.imagen}`
+          : tipo.imagen
       }
     })
 
-    console.log('✅ Tipos cargados con contadores Y categorías:', tiposHerramienta.value)
+    console.log('✅ Inventario cargado con stock REAL:', tiposHerramienta.value.map(t => ({
+      nombre: t.nombre,
+      disponibles: t.herramientas_disponibles,
+      total: t.total_herramientas
+    })))
+
   } catch (error) {
     console.error('Error al cargar datos:', error)
     alert('Error al cargar el inventario')
