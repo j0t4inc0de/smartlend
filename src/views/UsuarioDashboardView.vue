@@ -393,6 +393,7 @@ const confirmarPrestamo = async () => {
   }
 }
 
+
 const finalizarSesion = () => {
   localStorage.removeItem('user')
   localStorage.removeItem('isAuthenticated')
@@ -403,14 +404,16 @@ const finalizarSesion = () => {
 const cargarDatos = async () => {
   try {
     categorias.value = await inventarioService.getCategorias()
-    const resumen = await inventarioService.getTiposHerramientaResumen()
 
-    herramientas.value = resumen.map(tipo => ({
-      id_tipo_herramienta: tipo.id_tipo_herramienta,
+    // Este endpoint trae stock (disponible real) y reservado
+    const tipos = await inventarioService.getTiposHerramienta()
+
+    herramientas.value = tipos.map((tipo) => ({
+      id_tipo_herramienta: tipo.id_tipo_herramienta ?? tipo.id,
       id_categoria: tipo.id_categoria || categorias.value[0]?.id_categoria,
       nombre: tipo.nombre,
-      imagen_url: tipo.imagen ? `http://72.60.167.16:8000${tipo.imagen}` : null,
-      stock: tipo.herramientas_disponibles
+      imagen_url: tipo.imagen ? tipo.imagen : null,
+      stock: tipo.stock, // DISPONIBLE real para pedir
     }))
   } catch (e) {
     console.error('Error al cargar datos:', e)
