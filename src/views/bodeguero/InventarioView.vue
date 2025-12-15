@@ -7,13 +7,23 @@
         <p class="text-gray-400">Gestiona el stock y añade nuevas herramientas</p>
       </div>
 
-      <button @click="abrirModalNuevaHerramienta"
-        class="bg-red-600 hover:bg-red-500 text-white px-6 py-3 rounded-lg font-medium transition-all flex items-center gap-2 shadow-lg shadow-red-900/30">
-        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-        </svg>
-        Añadir Herramienta
-      </button>
+      <div class="flex gap-3">
+        <button @click="abrirModalNuevoTipo"
+          class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-lg font-medium transition-all flex items-center gap-2 shadow-lg shadow-blue-900/30">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+          </svg>
+          Nuevo Tipo
+        </button>
+        <button @click="abrirModalNuevaHerramienta"
+          class="bg-red-600 hover:bg-red-500 text-white px-6 py-3 rounded-lg font-medium transition-all flex items-center gap-2 shadow-lg shadow-red-900/30">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+          Añadir Herramienta
+        </button>
+      </div>
     </div>
 
     <!-- FILTROS -->
@@ -107,6 +117,89 @@
     <div v-else class="bg-gray-800 rounded-xl border border-gray-700 p-12 text-center">
       <div class="text-6xl mb-4">📦</div>
       <p class="text-gray-400 text-lg">No hay tipos de herramientas en esta categoría</p>
+    </div>
+
+    <!-- MODAL NUEVO TIPO DE HERRAMIENTA -->
+    <div v-if="modalNuevoTipo" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+      <div class="bg-gray-800 rounded-xl p-6 max-w-lg w-full border border-gray-700">
+        <div class="flex justify-between items-center mb-6">
+          <h3 class="text-xl font-bold text-white">Crear Nuevo Tipo de Herramienta</h3>
+          <button @click="cerrarModalNuevoTipo" class="text-gray-400 hover:text-white">
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <form @submit.prevent="crearTipoHerramienta" class="space-y-4">
+          <!-- Nombre -->
+          <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2">Nombre *</label>
+            <input v-model="nuevoTipo.nombre" type="text" required placeholder="Ej: Martillo de Goma"
+              class="w-full bg-gray-700 text-white rounded-lg px-4 py-3 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+
+          <!-- Descripción -->
+          <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2">Descripción *</label>
+            <textarea v-model="nuevoTipo.descripcion" required placeholder="Describe el tipo de herramienta..." rows="3"
+              class="w-full bg-gray-700 text-white rounded-lg px-4 py-3 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+          </div>
+
+          <!-- Categoría -->
+          <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2">Categoría *</label>
+            <select v-model="nuevoTipo.id_categoria" required
+              class="w-full bg-gray-700 text-white rounded-lg px-4 py-3 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="">Seleccionar categoría...</option>
+              <option v-for="categoria in categorias" :key="categoria.id_categoria" :value="categoria.id_categoria">
+                {{ categoria.nombre }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Imagen -->
+          <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2">Imagen</label>
+            <div class="relative">
+              <input ref="imageInput" type="file" accept="image/*" @change="handleImageUpload" class="hidden" />
+              <button type="button" @click="$refs.imageInput.click()"
+                class="w-full bg-gray-700 hover:bg-gray-600 text-white rounded-lg px-4 py-3 border border-gray-600 transition-colors flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                {{ imagenSeleccionada ? 'Cambiar imagen' : 'Seleccionar imagen' }}
+              </button>
+              <p v-if="imagenSeleccionada" class="text-sm text-green-400 mt-2 flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                {{ imagenSeleccionada.name }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Preview de imagen -->
+          <div v-if="imagenPreview" class="mt-4">
+            <p class="text-sm text-gray-400 mb-2">Vista previa:</p>
+            <img :src="imagenPreview" alt="Preview"
+              class="w-full h-48 object-cover rounded-lg border border-gray-600" />
+          </div>
+
+          <!-- Botones -->
+          <div class="flex gap-3 pt-4">
+            <button type="button" @click="cerrarModalNuevoTipo"
+              class="flex-1 px-4 py-3 rounded-lg border border-gray-600 text-gray-300 hover:bg-gray-700 transition-colors">
+              Cancelar
+            </button>
+            <button type="submit" :disabled="procesandoTipo"
+              class="flex-1 px-4 py-3 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+              {{ procesandoTipo ? 'Creando...' : 'Crear Tipo' }}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
 
     <!-- MODAL NUEVA HERRAMIENTA -->
@@ -243,14 +336,19 @@ import { inventarioService } from '@/services/inventarioService'
 // Estados
 const loading = ref(true)
 const procesando = ref(false)
+const procesandoTipo = ref(false)
 const categorias = ref([])
 const tiposHerramienta = ref([])
 const categoriaSeleccionada = ref(null)
 const modalNuevaHerramienta = ref(false)
+const modalNuevoTipo = ref(false)
 const modalDetalles = ref(false)
 const tipoSeleccionado = ref(null)
 const herramientasDetalle = ref([])
 const loadingDetalles = ref(false)
+const imageInput = ref(null)
+const imagenSeleccionada = ref(null)
+const imagenPreview = ref(null)
 
 const nuevaHerramienta = ref({
   codigo_barras: '',
@@ -258,6 +356,12 @@ const nuevaHerramienta = ref({
   id_tipo_herramienta: '',
   fecha_adquisicion: new Date().toISOString(),
   disponible: true
+})
+
+const nuevoTipo = ref({
+  nombre: '',
+  descripcion: '',
+  id_categoria: '',
 })
 
 // Computed
@@ -275,7 +379,6 @@ const cargarDatos = async () => {
       inventarioService.getTiposHerramientaResumen()
     ])
     categorias.value = cats
-    // Arreglar URLs de imágenes agregando BASE_URL si es necesario
     tiposHerramienta.value = tipos.map(tipo => ({
       ...tipo,
       imagen: tipo.imagen && !tipo.imagen.startsWith('http')
@@ -293,6 +396,60 @@ const cargarDatos = async () => {
 const handleImageError = (event) => {
   console.warn('Error cargando imagen:', event.target.src)
   event.target.style.display = 'none'
+}
+
+const handleImageUpload = (event) => {
+  const file = event.target.files[0]
+  if (file) {
+    imagenSeleccionada.value = file
+    // Crear preview
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      imagenPreview.value = e.target.result
+    }
+    reader.readAsDataURL(file)
+  }
+}
+
+const abrirModalNuevoTipo = () => {
+  nuevoTipo.value = {
+    nombre: '',
+    descripcion: '',
+    id_categoria: '',
+  }
+  imagenSeleccionada.value = null
+  imagenPreview.value = null
+  modalNuevoTipo.value = true
+}
+
+const cerrarModalNuevoTipo = () => {
+  modalNuevoTipo.value = false
+  imagenSeleccionada.value = null
+  imagenPreview.value = null
+}
+
+const crearTipoHerramienta = async () => {
+  procesandoTipo.value = true
+  try {
+    const formData = new FormData()
+    formData.append('nombre', nuevoTipo.value.nombre)
+    formData.append('descripcion', nuevoTipo.value.descripcion)
+    formData.append('id_categoria', nuevoTipo.value.id_categoria)
+
+    if (imagenSeleccionada.value) {
+      formData.append('imagen', imagenSeleccionada.value)
+    }
+
+    await inventarioService.crearTipoHerramienta(formData)
+    alert('Tipo de herramienta creado exitosamente')
+    cerrarModalNuevoTipo()
+    await cargarDatos()
+  } catch (error) {
+    console.error('Error:', error)
+    alert(error.message || 'Error al crear el tipo de herramienta')
+  } finally {
+    procesandoTipo.value = false
+  }
 }
 
 const abrirModalNuevaHerramienta = () => {
@@ -340,7 +497,6 @@ const verDetalles = async (tipo) => {
     const response = await inventarioService.getTiposHerramienta()
     const tipoCompleto = response.find(t => t.id_tipo_herramienta === tipo.id_tipo_herramienta)
 
-    // Cargar herramientas individuales
     const todas = await inventarioService.getHerramientasDisponibles()
     herramientasDetalle.value = todas.filter(h => h.id_tipo_herramienta === tipo.id_tipo_herramienta)
   } catch (error) {
@@ -364,7 +520,6 @@ const formatFecha = (fecha) => {
   })
 }
 
-// Lifecycle
 onMounted(() => {
   cargarDatos()
 })

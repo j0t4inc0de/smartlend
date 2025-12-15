@@ -129,4 +129,31 @@ export const inventarioService = {
       throw new Error(errorMsg)
     }
   },
+
+  // Crea un nuevo TIPO de herramienta con imagen.
+  // Útil para: bodeguero añadiendo nuevos tipos al catálogo.
+  // Parámetros:
+  // - formData: FormData con { nombre, descripcion, id_categoria, imagen (archivo) }
+  // Retorna: el objeto tipo de herramienta creado.
+  async crearTipoHerramienta(formData) {
+    try {
+      const response = await axios.post(
+        `${API_BASE_URL}/inventario/api/tipos-herramienta/`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        },
+      )
+      return response.data
+    } catch (error) {
+      console.error('Error al crear tipo de herramienta:', error)
+      const errorMsg =
+        error.response?.data?.nombre?.[0] ||
+        error.response?.data?.detail ||
+        'No se pudo crear el tipo de herramienta'
+      throw new Error(errorMsg)
+    }
+  },
 }
