@@ -62,15 +62,13 @@ export const inventarioService = {
     }
   },
 
-  // Obtiene herramientas individuales (unidades físicas) y filtra por estado "saludable".
+  // Obtiene herramientas individuales (unidades físicas) - TODAS sin filtrar por estado.
   // Útil para: vistas técnicas/administrativas donde te interese ver unidades físicas.
-  // Retorna: Array de herramientas individuales con estado en: Nuevo/Excelente/Bueno.
+  // Retorna: Array de todas las herramientas individuales registradas.
   async getHerramientasDisponibles() {
     try {
       const response = await axios.get(`${API_BASE_URL}/inventario/api/herramientas/`)
-      return response.data.filter((herramienta) =>
-        ['Nuevo', 'Excelente', 'Bueno'].includes(herramienta.estado_herramienta),
-      )
+      return response.data
     } catch (error) {
       console.error('Error al obtener herramientas:', error)
       throw new Error('No se pudieron cargar las herramientas disponibles')
@@ -109,6 +107,26 @@ export const inventarioService = {
     } catch (error) {
       console.error('Error al verificar stock:', error)
       throw new Error('No se pudo verificar el stock')
+    }
+  },
+
+  // Crea una nueva herramienta individual en el inventario.
+  // Útil para: bodeguero añadiendo nuevas unidades al stock.
+  // Parámetros:
+  // - data: objeto con { codigo_barras, estado_herramienta, id_tipo_herramienta, fecha_adquisicion, disponible }
+  // Retorna: el objeto herramienta creado con su ID asignado.
+  async crearHerramienta(data) {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/inventario/api/herramientas/`, data)
+      return response.data
+    } catch (error) {
+      console.error('Error al crear herramienta:', error)
+      // Manejo de errores específicos del backend
+      const errorMsg =
+        error.response?.data?.codigo_barras?.[0] ||
+        error.response?.data?.detail ||
+        'No se pudo crear la herramienta'
+      throw new Error(errorMsg)
     }
   },
 }
