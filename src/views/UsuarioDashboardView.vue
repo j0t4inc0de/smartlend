@@ -77,7 +77,7 @@
               class="absolute top-2 right-2 z-20 bg-black/60 backdrop-blur-md px-1.5 py-0.5 rounded-full border border-white/10 flex items-center gap-1">
               <span
                 :class="['w-1.5 h-1.5 rounded-full animate-pulse', herramienta.stock > 0 ? 'bg-green-500' : 'bg-red-500']"></span>
-              <span class="text-[9px] font-bold text-white">{{ herramienta.stock }}</span>
+              <span class="text-[11px] font-bold text-white">{{ herramienta.stock }}</span>
             </div>
           </div>
 
