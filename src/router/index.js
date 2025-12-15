@@ -73,6 +73,11 @@ const router = createRouter({
           path: '', // /bodeguero/dashboard solo
           redirect: 'prestamos',
         },
+        {
+          path: 'inventario',
+          name: 'BodegueroInventario',
+          component: () => import('@/views/bodeguero/InventarioView.vue'),
+        },
       ],
     },
 
