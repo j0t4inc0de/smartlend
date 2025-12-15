@@ -55,7 +55,8 @@
         <!-- Imagen -->
         <div class="aspect-video bg-gray-700 relative overflow-hidden">
           <img v-if="tipo.imagen" :src="tipo.imagen" :alt="tipo.nombre"
-            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
+            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+            @error="handleImageError" />
           <div v-else class="w-full h-full flex items-center justify-center">
             <svg class="w-16 h-16 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
@@ -274,13 +275,24 @@ const cargarDatos = async () => {
       inventarioService.getTiposHerramientaResumen()
     ])
     categorias.value = cats
-    tiposHerramienta.value = tipos
+    // Arreglar URLs de imágenes agregando BASE_URL si es necesario
+    tiposHerramienta.value = tipos.map(tipo => ({
+      ...tipo,
+      imagen: tipo.imagen && !tipo.imagen.startsWith('http')
+        ? `http://72.60.167.16:8000${tipo.imagen}`
+        : tipo.imagen
+    }))
   } catch (error) {
     console.error('Error al cargar datos:', error)
     alert('Error al cargar el inventario')
   } finally {
     loading.value = false
   }
+}
+
+const handleImageError = (event) => {
+  console.warn('Error cargando imagen:', event.target.src)
+  event.target.style.display = 'none'
 }
 
 const abrirModalNuevaHerramienta = () => {
