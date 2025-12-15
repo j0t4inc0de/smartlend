@@ -374,17 +374,35 @@ const tiposFiltrados = computed(() => {
 const cargarDatos = async () => {
   try {
     loading.value = true
-    const [cats, tipos] = await Promise.all([
+
+    // ✅ SOLUCIÓN: Cargar AMBOS endpoints
+    const [cats, tiposResumen, tiposCompletos] = await Promise.all([
       inventarioService.getCategorias(),
-      inventarioService.getTiposHerramientaResumen()
+      inventarioService.getTiposHerramientaResumen(),  // Para contadores
+      inventarioService.getTiposHerramienta()          // Para categorías
     ])
+
     categorias.value = cats
-    tiposHerramienta.value = tipos.map(tipo => ({
-      ...tipo,
-      imagen: tipo.imagen && !tipo.imagen.startsWith('http')
-        ? `http://72.60.167.16:8000${tipo.imagen}`
-        : tipo.imagen
-    }))
+
+    // ✅ Combinar ambos: contadores de /resumen/ + categorías de /tipos-herramienta/
+    tiposHerramienta.value = tiposResumen.map(tipoResumen => {
+      // Buscar el tipo completo para obtener id_categoria
+      const tipoCompleto = tiposCompletos.find(
+        tc => tc.id_tipo_herramienta === tipoResumen.id_tipo_herramienta
+      )
+
+      return {
+        ...tipoResumen,
+        // Agregar id_categoria del endpoint completo
+        id_categoria: tipoCompleto?.id_categoria || null,
+        // Arreglar URL de imagen
+        imagen: tipoResumen.imagen && !tipoResumen.imagen.startsWith('http')
+          ? `http://72.60.167.16:8000${tipoResumen.imagen}`
+          : tipoResumen.imagen
+      }
+    })
+
+    console.log('✅ Tipos cargados con contadores Y categorías:', tiposHerramienta.value)
   } catch (error) {
     console.error('Error al cargar datos:', error)
     alert('Error al cargar el inventario')
@@ -402,7 +420,6 @@ const handleImageUpload = (event) => {
   const file = event.target.files[0]
   if (file) {
     imagenSeleccionada.value = file
-    // Crear preview
     const reader = new FileReader()
     reader.onload = (e) => {
       imagenPreview.value = e.target.result
@@ -494,9 +511,6 @@ const verDetalles = async (tipo) => {
   herramientasDetalle.value = []
 
   try {
-    const response = await inventarioService.getTiposHerramienta()
-    const tipoCompleto = response.find(t => t.id_tipo_herramienta === tipo.id_tipo_herramienta)
-
     const todas = await inventarioService.getHerramientasDisponibles()
     herramientasDetalle.value = todas.filter(h => h.id_tipo_herramienta === tipo.id_tipo_herramienta)
   } catch (error) {
