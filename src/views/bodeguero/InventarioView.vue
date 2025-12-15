@@ -21,7 +21,7 @@
           <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
           </svg>
-          Añadir Herramienta
+          Añadir Existencia
         </button>
       </div>
     </div>
@@ -58,14 +58,14 @@
 
     <!-- GRID DE HERRAMIENTAS -->
     <div v-else-if="tiposFiltrados.length > 0"
-      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3">
       <div v-for="tipo in tiposFiltrados" :key="tipo.id_tipo_herramienta"
         class="bg-gray-800 rounded-xl overflow-hidden border border-gray-700 hover:border-gray-600 transition-all group">
 
         <!-- Imagen -->
         <div class="aspect-video bg-gray-700 relative overflow-hidden">
           <img v-if="tipo.imagen" :src="tipo.imagen" :alt="tipo.nombre"
-            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+            class="w-full h-full object-cover scale-95 group-hover:scale-105 transition-transform duration-300"
             @error="handleImageError" />
           <div v-else class="w-full h-full flex items-center justify-center">
             <svg class="w-16 h-16 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
