@@ -59,10 +59,11 @@
     <!-- GRID DE HERRAMIENTAS -->
     <div v-else-if="tiposFiltrados.length > 0"
       class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3">
+      <!-- Tarjeta completa -->
       <div v-for="tipo in tiposFiltrados" :key="tipo.id_tipo_herramienta"
-        class="bg-gray-800 rounded-xl overflow-hidden border border-gray-700 hover:border-gray-600 transition-all group">
+        class="bg-gray-800 rounded-xl overflow-hidden border border-gray-700 hover:border-gray-600 transition-all group flex flex-col">
 
-        <!-- Imagen -->
+        <!-- Imagen  -->
         <div class="aspect-video bg-gray-700 relative overflow-hidden">
           <img v-if="tipo.imagen" :src="tipo.imagen" :alt="tipo.nombre"
             class="w-full h-full object-cover scale-95 group-hover:scale-105 transition-transform duration-300"
@@ -73,31 +74,15 @@
                 d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
             </svg>
           </div>
-
-          <!-- Badge de stock -->
-          <div
-            class="absolute top-3 right-3 bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/20">
-            <div class="flex items-center gap-2">
-              <span :class="[
-                'w-2 h-2 rounded-full',
-                tipo.herramientas_disponibles > 5 ? 'bg-green-500 animate-pulse' :
-                  tipo.herramientas_disponibles > 0 ? 'bg-yellow-500 animate-pulse' :
-                    'bg-red-500'
-              ]"></span>
-              <span class="text-white text-sm font-bold">
-                {{ tipo.herramientas_disponibles }}/{{ tipo.total_herramientas }}
-              </span>
-            </div>
-          </div>
         </div>
 
-        <!-- Info -->
-        <div class="p-4">
+        <!-- Info - AGREGAR flex flex-col flex-1 -->
+        <div class="p-4 flex flex-col flex-1">
           <h3 class="text-white font-bold text-lg mb-2 line-clamp-2">{{ tipo.nombre }}</h3>
           <p class="text-gray-400 text-sm mb-4 line-clamp-2">{{ tipo.descripcion }}</p>
 
-          <!-- Acciones -->
-          <div class="flex gap-2">
+          <!-- Acciones - AGREGAR mt-auto -->
+          <div class="flex gap-2 mt-auto">
             <button @click="verDetalles(tipo)"
               class="flex-1 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all">
               Ver Detalles
