@@ -235,7 +235,7 @@
                 <div v-if="alertas.length > 0" class="px-4 py-3 border-t border-gray-700 bg-gray-900/50">
                   <div class="flex justify-between items-center">
                     <span class="text-xs text-gray-400">{{ alertas.length }} alerta{{ alertas.length !== 1 ? 's' : ''
-                      }}</span>
+                    }}</span>
                     <span class="text-xs text-gray-500">Se resuelven automáticamente al devolver</span>
                   </div>
                 </div>
@@ -329,7 +329,7 @@ const cargarEstadisticas = async () => {
     // Datos mock por ahora
     prestamosActivos.value = 8
 
-    console.log('✅ Estadísticas cargadas')
+    console.log(' Estadísticas cargadas')
 
   } catch (error) {
     console.error('❌ Error al cargar estadísticas:', error)
@@ -341,7 +341,7 @@ const handleLogout = () => {
   router.push('/bodeguero/login')
 }
 
-// ✅ LIFECYCLE CORREGIDO
+//  LIFECYCLE CORREGIDO
 onMounted(() => {
   // Inicializar auth store
   authStore.initializeAuth()

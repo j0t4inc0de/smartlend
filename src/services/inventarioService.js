@@ -157,7 +157,7 @@ export const inventarioService = {
     }
   },
 
-  // ✅ NUEVO: Obtiene el historial completo de una herramienta específica.
+  //  NUEVO: Obtiene el historial completo de una herramienta específica.
   // Útil para: trazabilidad, ver quién usó la herramienta, cambios de estado, etc.
   // Parámetros:
   // - idHerramienta: ID de la herramienta individual

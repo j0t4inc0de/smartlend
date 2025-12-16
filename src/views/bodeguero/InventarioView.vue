@@ -318,7 +318,7 @@
                 herramienta.disponible ? 'bg-green-500' : 'bg-red-500'
               ]" :title="herramienta.disponible ? 'Disponible' : 'En préstamo'"></span>
 
-              <!-- ✅ BOTÓN HISTORIAL -->
+              <!--  BOTÓN HISTORIAL -->
               <button @click="verHistorial(herramienta)"
                 class="p-2 bg-purple-500/20 hover:bg-purple-500/30 rounded-lg border border-purple-500/50 transition-colors group"
                 title="Ver historial">
@@ -338,7 +338,7 @@
       </div>
     </div>
 
-    <!-- ✅ MODAL HISTORIAL -->
+    <!--  MODAL HISTORIAL -->
     <div v-if="modalHistorial" class="fixed inset-0 bg-black/90 flex items-center justify-center z-[60] p-4">
       <div class="bg-gray-800 rounded-xl p-6 max-w-3xl w-full border border-gray-700 max-h-[85vh] overflow-y-auto">
         <div class="flex justify-between items-center mb-6">
@@ -423,15 +423,12 @@
                     Préstamo: <span class="font-mono text-blue-400">#{{ registro.prestamo }}</span>
                   </p>
                   <p class="text-gray-400 text-xs mt-1">
-                    Usuario ID: {{ registro.usuario }}
+                    Usuario: <span class="font-mono text-cyan-400">{{ getRutUsuario(registro.usuario) }}</span>
                   </p>
                 </div>
                 <div class="text-right">
                   <p class="text-gray-300 text-sm font-medium">
                     {{ formatFechaHora(registro.registrada_en) }}
-                  </p>
-                  <p class="text-gray-500 text-xs mt-1">
-                    {{ formatFechaRelativa(registro.registrada_en) }}
                   </p>
                 </div>
               </div>
@@ -463,7 +460,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { inventarioService } from '@/services/inventarioService'
-
+import { usuariosService } from '@/services/usuariosService'
 // Estados
 const loading = ref(true)
 const procesando = ref(false)
@@ -484,6 +481,7 @@ const loadingHistorial = ref(false)
 const imageInput = ref(null)
 const imagenSeleccionada = ref(null)
 const imagenPreview = ref(null)
+const usuarios = ref([])
 
 const nuevaHerramienta = ref({
   codigo_barras: '',
@@ -542,15 +540,22 @@ const cargarDatos = async () => {
   }
 }
 
-// ✅ NUEVA FUNCIÓN: Ver historial
+// Obtener RUT del usuario por ID
+const getRutUsuario = (idUsuario) => {
+  const usuario = usuarios.value.find(u => u.id === idUsuario)
+  return usuario?.rut || `ID: ${idUsuario}`
+}
+
+// ver historial
 const verHistorial = async (herramienta) => {
   herramientaSeleccionada.value = herramienta
   modalHistorial.value = true
   loadingHistorial.value = true
   historialDetalle.value = []
-
+  usuariosService.getUsuarios()
   try {
-    const historial = await inventarioService.getHistorialHerramienta(herramienta.id_herramienta)
+    const [historial, usuariosData] = await Promise.all([inventarioService.getHistorialHerramienta(herramienta.id_herramienta), usuariosService.getUsuarios()])
+    usuarios.value = usuariosData
     // Ordenar por fecha descendente (más reciente primero)
     historialDetalle.value = historial.sort((a, b) =>
       new Date(b.registrada_en) - new Date(a.registrada_en)

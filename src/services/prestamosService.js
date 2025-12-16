@@ -58,7 +58,7 @@ export const prestamosService = {
       this._cache.prestamos = prestamosFormateados
       this._cache.lastUpdate = Date.now()
 
-      console.log(`✅ ${prestamosFormateados.length} préstamos cargados`)
+      console.log(` ${prestamosFormateados.length} préstamos cargados`)
       return prestamosFormateados
     } catch (error) {
       console.error('❌ Error al obtener préstamos:', error)

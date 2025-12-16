@@ -599,7 +599,7 @@ const cargarPrestamos = async (useCache = true) => {
     prestamos.value = await prestamosService.getPrestamos(useCache)
     await enriquecerPrestamos()
 
-    console.log('✅ Préstamos cargados:', prestamos.value.length)
+    console.log(' Préstamos cargados:', prestamos.value.length)
   } catch (err) {
     console.error('❌ Error al cargar préstamos:', err)
     error.value = err.message || 'Error al cargar los préstamos'
@@ -622,7 +622,7 @@ const cargarTiposHerramienta = async () => {
     tiposMap.value[tipo.id_tipo_herramienta] = tipo
   })
 
-  console.log('✅ Tipos de herramienta cargados:', tiposHerramienta.value.length)
+  console.log(' Tipos de herramienta cargados:', tiposHerramienta.value.length)
 }
 
 const calcularTotalHerramientas = (prestamo) => {
