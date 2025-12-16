@@ -430,6 +430,9 @@
                   <p class="text-gray-300 text-sm font-medium">
                     {{ formatFechaHora(registro.registrada_en) }}
                   </p>
+                  <p class="text-gray-500 text-xs mt-1">
+                    {{ formatFechaRelativa(registro.registrada_en) }}
+                  </p>
                 </div>
               </div>
             </div>
