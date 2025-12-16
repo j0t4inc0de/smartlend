@@ -75,7 +75,7 @@ const router = createRouter({
         },
         {
           path: 'inventario',
-          name: 'BodegueroInventario',
+          name: 'dashboard-inventario',
           component: () => import('@/views/bodeguero/InventarioView.vue'),
         },
       ],
