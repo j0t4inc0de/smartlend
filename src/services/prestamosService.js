@@ -7,18 +7,28 @@ export const prestamosService = {
   _usuariosCache: {
     usuarios: [],
     lastUpdate: null,
-    ttl: 300000, // 5 minutos
+    ttl: 120000, // 2 MINUTOS (cambiado de 5 minutos)
   },
   _cache: {
     prestamos: [],
     lastUpdate: null,
-    ttl: 30000, // 5 minutos de Tiempo de vida: NO CAMBIAR
+    ttl: 30000, // 30 segundos - NO CAMBIAR
   },
 
+  // NUEVO: Limpiar TODO el cache
+  clearAllCache() {
+    this._cache.prestamos = []
+    this._cache.lastUpdate = null
+    this._usuariosCache.usuarios = []
+    this._usuariosCache.lastUpdate = null
+    console.log('Cache completo limpiado')
+  },
+
+  // Mantener por compatibilidad
   clearCache() {
     this._cache.prestamos = []
     this._cache.lastUpdate = null
-    console.log('🗑️ Cache limpiado')
+    console.log('Cache de préstamos limpiado')
   },
 
   isCacheValid() {
@@ -32,7 +42,7 @@ export const prestamosService = {
       this._usuariosCache.lastUpdate &&
       Date.now() - this._usuariosCache.lastUpdate < this._usuariosCache.ttl
     ) {
-      console.log('📦 Usando usuarios desde cache')
+      console.log('Usando usuarios desde cache')
       return this._usuariosCache.usuarios
     }
 
@@ -45,7 +55,7 @@ export const prestamosService = {
       this._usuariosCache.usuarios = response.data
       this._usuariosCache.lastUpdate = Date.now()
 
-      console.log(`✅ ${response.data.length} usuarios cargados`)
+      console.log(`${response.data.length} usuarios cargados y almacenados en cache`)
       return response.data
     } catch (error) {
       console.error('Error al obtener usuarios:', error)
@@ -54,15 +64,48 @@ export const prestamosService = {
     }
   },
 
+  // NUEVO: Obtener usuario individual con fallback al cache
+  async getUsuarioConFallback(usuarioId) {
+    // 1. Buscar primero en cache
+    const usuarioEnCache = this._usuariosCache.usuarios.find((u) => u.id === usuarioId)
+
+    if (usuarioEnCache) {
+      console.log(`Usuario ${usuarioId} encontrado en cache`)
+      return usuarioEnCache
+    }
+
+    // 2. Si no está en cache, hacer request individual
+    console.log(`Usuario ${usuarioId} no en cache, obteniendo del servidor...`)
+    try {
+      const response = await axios.get(`${API_BASE_URL}/usuarios/api/usuarios/${usuarioId}/`, {
+        timeout: 5000,
+      })
+
+      // 3. Agregarlo al cache para la próxima vez
+      this._usuariosCache.usuarios.push(response.data)
+      console.log(`Usuario ${usuarioId} agregado al cache`)
+
+      return response.data
+    } catch (error) {
+      console.error(`Error al obtener usuario ${usuarioId}:`, error)
+      return {
+        id: usuarioId,
+        nombres: 'Usuario',
+        apellidos: 'Desconocido',
+        correo: 'N/A',
+      }
+    }
+  },
+
   async getPrestamos(useCache = true) {
     try {
       // 1. Verificar cache válido
       if (useCache && this.isCacheValid() && this._cache.prestamos.length > 0) {
-        console.log('📦 Usando préstamos desde cache')
+        console.log('Usando préstamos desde cache')
         return this._cache.prestamos
       }
 
-      console.log('🔍 Cargando préstamos desde servidor...')
+      console.log('Cargando préstamos desde servidor...')
 
       // 2. Obtener préstamos (ya vienen enriquecidos del backend)
       const response = await axios.get(`${API_BASE_URL}/operaciones/api/prestamos/`, {
@@ -70,7 +113,7 @@ export const prestamosService = {
       })
 
       if (!response.data || response.data.length === 0) {
-        console.log('📭 No hay préstamos')
+        console.log('No hay préstamos')
         return []
       }
 
@@ -91,14 +134,14 @@ export const prestamosService = {
       this._cache.prestamos = prestamosFormateados
       this._cache.lastUpdate = Date.now()
 
-      console.log(` ${prestamosFormateados.length} préstamos cargados`)
+      console.log(`${prestamosFormateados.length} préstamos cargados`)
       return prestamosFormateados
     } catch (error) {
-      console.error('❌ Error al obtener préstamos:', error)
+      console.error('Error al obtener préstamos:', error)
 
       // Fallback: devolver cache si existe
       if (this._cache.prestamos.length > 0) {
-        console.log('🔄 Usando cache por error de conexión')
+        console.log('Usando cache por error de conexión')
         return this._cache.prestamos
       }
 
@@ -234,7 +277,7 @@ export const prestamosService = {
         completados: prestamos.filter((p) => p.estado === 'completado').length,
       }
 
-      console.log('📊 Estadísticas:', stats)
+      console.log('Estadísticas:', stats)
       return stats
     } catch (error) {
       console.error('Error al obtener estadísticas:', error)

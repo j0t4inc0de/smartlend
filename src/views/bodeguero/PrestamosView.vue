@@ -583,27 +583,57 @@ const procesandoDevolucion = ref(false)
 
 // Cargar datos de usuario y tipo de herramienta para cada préstamo
 const enriquecerPrestamos = async () => {
-  // Cargar TODOS los usuarios de una vez
+  // 1. Cargar TODOS los usuarios de una vez
   const todosLosUsuarios = await prestamosService.getTodosLosUsuarios()
 
-  // Crear mapa para lookup rápido
+  // 2. Crear mapa para lookup rápido O(1)
   const usuariosMap = {}
   todosLosUsuarios.forEach(u => {
     usuariosMap[u.id] = u
   })
 
-  // Asignar usuarios SIN hacer requests adicionales
+  // 3. Detectar usuarios faltantes en el cache
+  const usuariosFaltantes = []
+
   prestamos.value.forEach(prestamo => {
     if (!prestamo.usuario_data) {
-      prestamo.usuario_data = usuariosMap[prestamo.id_usuario] || {
-        nombres: 'Usuario',
-        apellidos: 'Desconocido',
-        correo: 'N/A'
+      if (usuariosMap[prestamo.id_usuario]) {
+        // Usuario está en cache
+        prestamo.usuario_data = usuariosMap[prestamo.id_usuario]
+      } else {
+        // Usuario NO está en cache (probablemente recién creado)
+        usuariosFaltantes.push(prestamo.id_usuario)
+        prestamo.usuario_data = {
+          nombres: 'Cargando',
+          apellidos: '...',
+          correo: ''
+        }
       }
     }
   })
 
-  console.log('✅ Préstamos enriquecidos instantáneamente')
+  // 4. Si hay usuarios faltantes, cargarlos individualmente
+  if (usuariosFaltantes.length > 0) {
+    console.log(`${usuariosFaltantes.length} usuarios no encontrados en cache, cargando individualmente...`)
+
+    const promesas = usuariosFaltantes.map(id =>
+      prestamosService.getUsuarioConFallback(id)
+    )
+
+    const usuariosNuevos = await Promise.all(promesas)
+
+    // Asignar usuarios nuevos a sus préstamos correspondientes
+    let index = 0
+    prestamos.value.forEach(prestamo => {
+      if (usuariosFaltantes.includes(prestamo.id_usuario)) {
+        prestamo.usuario_data = usuariosNuevos[index++]
+      }
+    })
+
+    console.log('Usuarios faltantes cargados correctamente')
+  }
+
+  console.log('Préstamos enriquecidos completamente')
 }
 
 // Función principal de carga
@@ -626,8 +656,7 @@ const cargarPrestamos = async (useCache = true) => {
 
 // Forzar recarga
 const recargarPrestamos = () => {
-  prestamosService._cache.lastUpdate = null
-  prestamosService._usuariosCache.lastUpdate = null
+  prestamosService.clearAllCache()  // Limpiar AMBOS caches
   cargarPrestamos(false)
 }
 
