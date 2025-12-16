@@ -298,7 +298,7 @@
         <div v-else-if="herramientasDetalle.length > 0" class="space-y-2">
           <div v-for="herramienta in herramientasDetalle" :key="herramienta.id_herramienta"
             class="bg-gray-700 rounded-lg p-4 flex items-center justify-between hover:bg-gray-600 transition-colors">
-            <div>
+            <div class="flex-1">
               <p class="text-white font-medium font-mono">{{ herramienta.codigo_barras }}</p>
               <p class="text-gray-400 text-sm">Adquirido: {{ formatFecha(herramienta.fecha_adquisicion) }}</p>
             </div>
@@ -317,12 +317,143 @@
                 'w-2 h-2 rounded-full',
                 herramienta.disponible ? 'bg-green-500' : 'bg-red-500'
               ]" :title="herramienta.disponible ? 'Disponible' : 'En préstamo'"></span>
+
+              <!-- ✅ BOTÓN HISTORIAL -->
+              <button @click="verHistorial(herramienta)"
+                class="p-2 bg-purple-500/20 hover:bg-purple-500/30 rounded-lg border border-purple-500/50 transition-colors group"
+                title="Ver historial">
+                <svg class="w-4 h-4 text-purple-400 group-hover:text-purple-300" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </button>
             </div>
           </div>
         </div>
 
         <div v-else class="text-center py-8 text-gray-400">
           No hay herramientas registradas para este tipo
+        </div>
+      </div>
+    </div>
+
+    <!-- ✅ MODAL HISTORIAL -->
+    <div v-if="modalHistorial" class="fixed inset-0 bg-black/90 flex items-center justify-center z-[60] p-4">
+      <div class="bg-gray-800 rounded-xl p-6 max-w-3xl w-full border border-gray-700 max-h-[85vh] overflow-y-auto">
+        <div class="flex justify-between items-center mb-6">
+          <div>
+            <h3 class="text-xl font-bold text-white flex items-center gap-2">
+              <svg class="w-6 h-6 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Historial de Trazabilidad
+            </h3>
+            <p class="text-gray-400 text-sm mt-1">
+              Código: <span class="font-mono text-blue-400">{{ herramientaSeleccionada?.codigo_barras }}</span>
+            </p>
+          </div>
+          <button @click="cerrarModalHistorial" class="text-gray-400 hover:text-white">
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Estado Actual -->
+        <div
+          class="mb-6 bg-gradient-to-r from-purple-500/20 to-purple-600/20 border border-purple-500/50 rounded-lg p-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-gray-300 mb-1">Estado Actual</p>
+              <p class="text-xl font-bold text-white">{{ herramientaSeleccionada?.estado_herramienta }}</p>
+            </div>
+            <div :class="[
+              'w-3 h-3 rounded-full',
+              herramientaSeleccionada?.disponible ? 'bg-green-500 animate-pulse' : 'bg-red-500'
+            ]"></div>
+          </div>
+        </div>
+
+        <!-- Timeline de Historial -->
+        <div v-if="loadingHistorial" class="space-y-4">
+          <div v-for="i in 3" :key="i" class="flex gap-4 animate-pulse">
+            <div class="w-12 h-12 bg-gray-700 rounded-full"></div>
+            <div class="flex-1 space-y-2">
+              <div class="h-4 bg-gray-700 rounded w-3/4"></div>
+              <div class="h-3 bg-gray-700 rounded w-1/2"></div>
+            </div>
+          </div>
+        </div>
+
+        <div v-else-if="historialDetalle.length > 0" class="space-y-4 relative">
+          <!-- Línea vertical -->
+          <div class="absolute left-6 top-0 bottom-0 w-0.5 bg-gray-700"></div>
+
+          <div v-for="(registro, index) in historialDetalle" :key="registro.id_historial" class="relative flex gap-4">
+            <!-- Nodo -->
+            <div class="relative z-10 flex-shrink-0">
+              <div :class="[
+                'w-12 h-12 rounded-full border-4 border-gray-800 flex items-center justify-center font-bold text-sm',
+                index === 0 ? 'bg-purple-500 text-white' : 'bg-gray-700 text-gray-300'
+              ]">
+                {{ index + 1 }}
+              </div>
+            </div>
+
+            <!-- Contenido -->
+            <div class="flex-1 bg-gray-700 rounded-lg p-4 mb-2">
+              <div class="flex items-start justify-between mb-2">
+                <div class="flex-1">
+                  <div class="flex items-center gap-2 mb-1">
+                    <span :class="[
+                      'px-2 py-1 rounded text-xs font-semibold',
+                      registro.estado_herramienta === 'Nuevo' ? 'bg-green-500/20 text-green-400' :
+                        registro.estado_herramienta === 'Excelente' ? 'bg-blue-500/20 text-blue-400' :
+                          registro.estado_herramienta === 'Bueno' ? 'bg-cyan-500/20 text-cyan-400' :
+                            registro.estado_herramienta === 'Regular' ? 'bg-yellow-500/20 text-yellow-400' :
+                              'bg-red-500/20 text-red-400'
+                    ]">
+                      {{ registro.estado_herramienta }}
+                    </span>
+                    <span v-if="index === 0" class="text-xs text-purple-400 font-medium">• Más reciente</span>
+                  </div>
+                  <p class="text-white text-sm">
+                    Préstamo: <span class="font-mono text-blue-400">#{{ registro.prestamo }}</span>
+                  </p>
+                  <p class="text-gray-400 text-xs mt-1">
+                    Usuario ID: {{ registro.usuario }}
+                  </p>
+                </div>
+                <div class="text-right">
+                  <p class="text-gray-300 text-sm font-medium">
+                    {{ formatFechaHora(registro.registrada_en) }}
+                  </p>
+                  <p class="text-gray-500 text-xs mt-1">
+                    {{ formatFechaRelativa(registro.registrada_en) }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div v-else class="text-center py-12">
+          <svg class="w-16 h-16 text-gray-600 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <p class="text-gray-400 text-lg">Sin historial registrado</p>
+          <p class="text-gray-500 text-sm mt-1">Esta herramienta no tiene cambios de estado previos</p>
+        </div>
+
+        <!-- Botón Cerrar -->
+        <div class="mt-6 flex justify-end">
+          <button @click="cerrarModalHistorial"
+            class="px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-medium transition-colors">
+            Cerrar
+          </button>
         </div>
       </div>
     </div>
@@ -343,9 +474,13 @@ const categoriaSeleccionada = ref(null)
 const modalNuevaHerramienta = ref(false)
 const modalNuevoTipo = ref(false)
 const modalDetalles = ref(false)
+const modalHistorial = ref(false)
 const tipoSeleccionado = ref(null)
 const herramientasDetalle = ref([])
+const herramientaSeleccionada = ref(null)
+const historialDetalle = ref([])
 const loadingDetalles = ref(false)
+const loadingHistorial = ref(false)
 const imageInput = ref(null)
 const imagenSeleccionada = ref(null)
 const imagenPreview = ref(null)
@@ -375,40 +510,29 @@ const cargarDatos = async () => {
   try {
     loading.value = true
 
-    // ✅ Cargar categorías, tipos y herramientas individuales
     const [cats, tipos, todasLasHerramientas] = await Promise.all([
       inventarioService.getCategorias(),
-      inventarioService.getTiposHerramienta(),        // ✅ Tiene stock REAL
-      inventarioService.getHerramientasDisponibles()  // ✅ Para contar total
+      inventarioService.getTiposHerramienta(),
+      inventarioService.getHerramientasDisponibles()
     ])
 
     categorias.value = cats
 
-    // ✅ Mapear con stock correcto y total calculado
     tiposHerramienta.value = tipos.map(tipo => {
       const idTipo = tipo.id_tipo_herramienta || tipo.id
 
       return {
         ...tipo,
         id_tipo_herramienta: idTipo,
-        // ✅ DISPONIBLES: usa 'stock' que considera préstamos
         herramientas_disponibles: tipo.stock || 0,
-        // ✅ TOTAL: cuenta todas las herramientas físicas de este tipo
         total_herramientas: todasLasHerramientas.filter(
           h => h.id_tipo_herramienta === idTipo
         ).length,
-        // ✅ Arreglar URL de imagen
         imagen: tipo.imagen && !tipo.imagen.startsWith('http')
           ? `http://72.60.167.16:8000${tipo.imagen}`
           : tipo.imagen
       }
     })
-
-    console.log('✅ Inventario cargado con stock REAL:', tiposHerramienta.value.map(t => ({
-      nombre: t.nombre,
-      disponibles: t.herramientas_disponibles,
-      total: t.total_herramientas
-    })))
 
   } catch (error) {
     console.error('Error al cargar datos:', error)
@@ -416,6 +540,34 @@ const cargarDatos = async () => {
   } finally {
     loading.value = false
   }
+}
+
+// ✅ NUEVA FUNCIÓN: Ver historial
+const verHistorial = async (herramienta) => {
+  herramientaSeleccionada.value = herramienta
+  modalHistorial.value = true
+  loadingHistorial.value = true
+  historialDetalle.value = []
+
+  try {
+    const historial = await inventarioService.getHistorialHerramienta(herramienta.id_herramienta)
+    // Ordenar por fecha descendente (más reciente primero)
+    historialDetalle.value = historial.sort((a, b) =>
+      new Date(b.registrada_en) - new Date(a.registrada_en)
+    )
+    console.log('Historial cargado:', historialDetalle.value)
+  } catch (error) {
+    console.error('Error al cargar historial:', error)
+    alert('Error al cargar el historial de la herramienta')
+  } finally {
+    loadingHistorial.value = false
+  }
+}
+
+const cerrarModalHistorial = () => {
+  modalHistorial.value = false
+  herramientaSeleccionada.value = null
+  historialDetalle.value = []
 }
 
 const handleImageError = (event) => {
@@ -539,6 +691,30 @@ const formatFecha = (fecha) => {
     month: 'short',
     day: 'numeric'
   })
+}
+
+const formatFechaHora = (fecha) => {
+  return new Date(fecha).toLocaleString('es-CL', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  })
+}
+
+const formatFechaRelativa = (fecha) => {
+  const ahora = new Date()
+  const fechaPasada = new Date(fecha)
+  const diffMs = ahora - fechaPasada
+  const diffDias = Math.floor(diffMs / (1000 * 60 * 60 * 24))
+
+  if (diffDias === 0) return 'Hoy'
+  if (diffDias === 1) return 'Ayer'
+  if (diffDias < 7) return `Hace ${diffDias} días`
+  if (diffDias < 30) return `Hace ${Math.floor(diffDias / 7)} semanas`
+  if (diffDias < 365) return `Hace ${Math.floor(diffDias / 30)} meses`
+  return `Hace ${Math.floor(diffDias / 365)} años`
 }
 
 onMounted(() => {

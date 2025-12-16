@@ -156,4 +156,21 @@ export const inventarioService = {
       throw new Error(errorMsg)
     }
   },
+
+  // ✅ NUEVO: Obtiene el historial completo de una herramienta específica.
+  // Útil para: trazabilidad, ver quién usó la herramienta, cambios de estado, etc.
+  // Parámetros:
+  // - idHerramienta: ID de la herramienta individual
+  // Retorna: Array de registros históricos con préstamo, usuario y estado.
+  async getHistorialHerramienta(idHerramienta) {
+    try {
+      const response = await axios.get(
+        `${API_BASE_URL}/inventario/api/historial-herramientas/?herramienta=${idHerramienta}`,
+      )
+      return response.data
+    } catch (error) {
+      console.error('Error al obtener historial:', error)
+      throw new Error('No se pudo cargar el historial de la herramienta')
+    }
+  },
 }
