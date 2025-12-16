@@ -583,11 +583,27 @@ const procesandoDevolucion = ref(false)
 
 // Cargar datos de usuario y tipo de herramienta para cada préstamo
 const enriquecerPrestamos = async () => {
-  for (const prestamo of prestamos.value) {
+  // Cargar TODOS los usuarios de una vez
+  const todosLosUsuarios = await prestamosService.getTodosLosUsuarios()
+
+  // Crear mapa para lookup rápido
+  const usuariosMap = {}
+  todosLosUsuarios.forEach(u => {
+    usuariosMap[u.id] = u
+  })
+
+  // Asignar usuarios SIN hacer requests adicionales
+  prestamos.value.forEach(prestamo => {
     if (!prestamo.usuario_data) {
-      prestamo.usuario_data = await prestamosService.getUsuario(prestamo.id_usuario)
+      prestamo.usuario_data = usuariosMap[prestamo.id_usuario] || {
+        nombres: 'Usuario',
+        apellidos: 'Desconocido',
+        correo: 'N/A'
+      }
     }
-  }
+  })
+
+  console.log('✅ Préstamos enriquecidos instantáneamente')
 }
 
 // Función principal de carga

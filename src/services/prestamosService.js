@@ -4,6 +4,11 @@ import axios from 'axios'
 const API_BASE_URL = 'http://72.60.167.16:8000'
 
 export const prestamosService = {
+  _usuariosCache: {
+    usuarios: [],
+    lastUpdate: null,
+    ttl: 300000, // 5 minutos
+  },
   _cache: {
     prestamos: [],
     lastUpdate: null,
@@ -19,6 +24,34 @@ export const prestamosService = {
   isCacheValid() {
     if (!this._cache.lastUpdate) return false
     return Date.now() - this._cache.lastUpdate < this._cache.ttl
+  },
+
+  async getTodosLosUsuarios() {
+    // Verificar cache
+    if (
+      this._usuariosCache.lastUpdate &&
+      Date.now() - this._usuariosCache.lastUpdate < this._usuariosCache.ttl
+    ) {
+      console.log('📦 Usando usuarios desde cache')
+      return this._usuariosCache.usuarios
+    }
+
+    try {
+      const response = await axios.get(`${API_BASE_URL}/usuarios/api/usuarios/`, {
+        timeout: 10000,
+      })
+
+      // Actualizar cache
+      this._usuariosCache.usuarios = response.data
+      this._usuariosCache.lastUpdate = Date.now()
+
+      console.log(`✅ ${response.data.length} usuarios cargados`)
+      return response.data
+    } catch (error) {
+      console.error('Error al obtener usuarios:', error)
+      // Devolver cache antiguo si existe
+      return this._usuariosCache.usuarios.length > 0 ? this._usuariosCache.usuarios : []
+    }
   },
 
   async getPrestamos(useCache = true) {
