@@ -103,7 +103,7 @@
 
     <!-- MODAL DE LOGIN CON CORREO -->
     <div v-if="showEmailLoginModal" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-      <div class="bg-gray-800 rounded-xl p-6 max-w-sm w-full border border-gray-700 animate-fade-in-up">
+      <div class="bg-gray-800 rounded-xl p-6 max-w-md w-full border border-gray-700 animate-fade-in-up">
         <div class="flex justify-between items-center mb-4">
           <h3 class="text-lg font-bold text-white">Iniciar Sesión</h3>
           <button @click="closeEmailLoginModal" class="text-gray-400 hover:text-white">
@@ -116,14 +116,47 @@
         <form @submit.prevent="handleEmailLogin" class="space-y-4">
           <div>
             <label class="block text-sm font-medium text-white mb-2">Correo Institucional</label>
-            <input v-model="email" type="email" required placeholder="nombre@inacapmail.cl"
-              class="w-full bg-gray-700 text-white rounded-lg px-3 py-2 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500" />
+            <div class="relative">
+              <input ref="emailInput" v-model="email" type="email" required readonly @click="openKeyboard('email')"
+                placeholder="nombre@inacapmail.cl"
+                class="w-full bg-gray-700 text-white rounded-lg px-3 py-2 pr-10 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500 cursor-pointer" />
+              <button type="button" @click="openKeyboard('email')"
+                class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+              </button>
+            </div>
           </div>
 
           <div>
             <label class="block text-sm font-medium text-white mb-2">Contraseña</label>
-            <input v-model="password" type="password" required placeholder="••••••••"
-              class="w-full bg-gray-700 text-white rounded-lg px-3 py-2 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500" />
+            <div class="relative">
+              <input ref="passwordInput" v-model="password" :type="showPassword ? 'text' : 'password'" required readonly
+                @click="openKeyboard('password')" placeholder="••••••••"
+                class="w-full bg-gray-700 text-white rounded-lg px-3 py-2 pr-20 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500 cursor-pointer" />
+              <div class="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1">
+                <button type="button" @click="showPassword = !showPassword" class="text-gray-400 hover:text-white">
+                  <svg v-if="!showPassword" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                  <svg v-else class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                  </svg>
+                </button>
+                <button type="button" @click="openKeyboard('password')" class="text-gray-400 hover:text-white">
+                  <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
+                </button>
+              </div>
+            </div>
           </div>
 
           <div class="flex gap-3 pt-4">
@@ -149,6 +182,115 @@
       </div>
     </div>
 
+    <!-- TECLADO VIRTUAL -->
+    <div v-if="showKeyboard" class="fixed inset-0 bg-black/90 flex items-end justify-center z-[60] p-4"
+      @click.self="closeKeyboard">
+      <div class="bg-gray-900 rounded-t-2xl w-full max-w-3xl border-t-2 border-red-600 shadow-2xl animate-slide-up">
+
+        <!-- Header del teclado -->
+        <div class="flex justify-between items-center p-4 border-b border-gray-700">
+          <div class="text-white font-medium">
+            {{ activeField === 'email' ? 'Correo Institucional' : 'Contraseña' }}
+          </div>
+          <button @click="closeKeyboard" class="text-gray-400 hover:text-white">
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Display del texto -->
+        <div class="p-4 bg-gray-800 border-b border-gray-700">
+          <div class="bg-gray-700 rounded-lg px-4 py-3 text-white font-mono text-lg break-all">
+            {{ activeField === 'email' ? email : (showPassword ? password : '•'.repeat(password.length)) }}
+            <span class="animate-pulse">|</span>
+          </div>
+        </div>
+
+        <!-- Teclas -->
+        <div class="p-4 space-y-2">
+
+          <!-- Fila de números -->
+          <div class="grid grid-cols-10 gap-2">
+            <button v-for="num in ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']" :key="num" @click="addChar(num)"
+              class="bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-2 rounded-lg transition-colors active:scale-95">
+              {{ num }}
+            </button>
+          </div>
+
+          <!-- Fila 1 -->
+          <div class="grid grid-cols-10 gap-2">
+            <button v-for="letter in (capsLock ? 'QWERTYUIOP' : 'qwertyuiop').split('')" :key="letter"
+              @click="addChar(letter)"
+              class="bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-2 rounded-lg transition-colors active:scale-95">
+              {{ letter }}
+            </button>
+          </div>
+
+          <!-- Fila 2 -->
+          <div class="grid grid-cols-10 gap-2">
+            <div class="col-span-1"></div>
+            <button v-for="letter in (capsLock ? 'ASDFGHJKL' : 'asdfghjkl').split('')" :key="letter"
+              @click="addChar(letter)"
+              class="bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-2 rounded-lg transition-colors active:scale-95">
+              {{ letter }}
+            </button>
+          </div>
+
+          <!-- Fila 3 -->
+          <div class="grid grid-cols-10 gap-2">
+            <button @click="capsLock = !capsLock" :class="['col-span-1 font-semibold py-3 px-2 rounded-lg transition-colors active:scale-95',
+              capsLock ? 'bg-red-600 hover:bg-red-500 text-white' : 'bg-gray-700 hover:bg-gray-600 text-white']">
+              <svg class="w-5 h-5 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+              </svg>
+            </button>
+            <button v-for="letter in (capsLock ? 'ZXCVBNM' : 'zxcvbnm').split('')" :key="letter"
+              @click="addChar(letter)"
+              class="bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-2 rounded-lg transition-colors active:scale-95">
+              {{ letter }}
+            </button>
+            <button @click="backspace"
+              class="col-span-2 bg-red-600 hover:bg-red-500 text-white font-semibold py-3 px-2 rounded-lg transition-colors active:scale-95 flex items-center justify-center gap-1">
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z" />
+              </svg>
+            </button>
+          </div>
+
+          <!-- Fila 4 - Símbolos y espacio -->
+          <div class="grid grid-cols-10 gap-2">
+            <button @click="addChar('@')"
+              class="col-span-1 bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-2 rounded-lg transition-colors active:scale-95">
+              @
+            </button>
+            <button @click="addChar('.')"
+              class="col-span-1 bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-2 rounded-lg transition-colors active:scale-95">
+              .
+            </button>
+            <button @click="addChar('_')"
+              class="col-span-1 bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-2 rounded-lg transition-colors active:scale-95">
+              _
+            </button>
+            <button @click="addChar('-')"
+              class="col-span-1 bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-2 rounded-lg transition-colors active:scale-95">
+              -
+            </button>
+            <button @click="addChar(' ')"
+              class="col-span-4 bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-2 rounded-lg transition-colors active:scale-95">
+              Espacio
+            </button>
+            <button @click="closeKeyboard"
+              class="col-span-2 bg-green-600 hover:bg-green-500 text-white font-semibold py-3 px-2 rounded-lg transition-colors active:scale-95">
+              Listo
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -170,7 +312,14 @@ const showEmailLoginModal = ref(false)
 const email = ref('')
 const password = ref('')
 const isEmailSubmitting = ref(false)
+const showPassword = ref(false)
 
+// Estado para el teclado virtual
+const showKeyboard = ref(false)
+const activeField = ref(null) // 'email' o 'password'
+const capsLock = ref(false)
+const emailInput = ref(null)
+const passwordInput = ref(null)
 
 const startCamera = async () => {
   try {
@@ -193,7 +342,6 @@ const startCamera = async () => {
 
 const openEmailLoginModal = () => {
   showEmailLoginModal.value = true
-  // Pausamos el stream de la cámara para ahorrar recursos
   if (stream.value) {
     stream.value.getTracks().forEach(track => track.enabled = false)
   }
@@ -201,9 +349,37 @@ const openEmailLoginModal = () => {
 
 const closeEmailLoginModal = () => {
   showEmailLoginModal.value = false
-  // Reanudamos el stream de la cámara
+  showKeyboard.value = false
   if (stream.value) {
     stream.value.getTracks().forEach(track => track.enabled = true)
+  }
+}
+
+// Funciones del teclado virtual
+const openKeyboard = (field) => {
+  activeField.value = field
+  showKeyboard.value = true
+  capsLock.value = false
+}
+
+const closeKeyboard = () => {
+  showKeyboard.value = false
+  activeField.value = null
+}
+
+const addChar = (char) => {
+  if (activeField.value === 'email') {
+    email.value += char
+  } else if (activeField.value === 'password') {
+    password.value += char
+  }
+}
+
+const backspace = () => {
+  if (activeField.value === 'email') {
+    email.value = email.value.slice(0, -1)
+  } else if (activeField.value === 'password') {
+    password.value = password.value.slice(0, -1)
   }
 }
 
@@ -216,9 +392,7 @@ const handleEmailLogin = async () => {
   isEmailSubmitting.value = true
   try {
     const response = await authService.loginWithEmail(email.value, password.value)
-    // console.log('LOGIN EMAIL RESPONSE:', response)
 
-    // Normalizar usuario (clave)
     const u = response.usuario ?? response.user ?? response
 
     const normalizedUser = {
@@ -234,7 +408,7 @@ const handleEmailLogin = async () => {
     localStorage.setItem('user', JSON.stringify(normalizedUser))
     localStorage.setItem('isAuthenticated', 'true')
 
-    alert(`¡Bienvenido ${normalizedUser.nombres} ${normalizedUser.apellidos}!`)
+    alert(`Bienvenido ${normalizedUser.nombres} ${normalizedUser.apellidos}`)
     router.push('/dashboard')
 
   } catch (error) {
@@ -244,8 +418,6 @@ const handleEmailLogin = async () => {
     isEmailSubmitting.value = false
   }
 }
-
-
 
 const handleLogin = async () => {
   if (!videoElement.value || !canvasElement.value) return
@@ -266,15 +438,12 @@ const handleLogin = async () => {
     try {
       console.log('Enviando imagen para login, tamaño:', blob.size)
 
-      // Verificar reconocimiento facial
       const loginResponse = await authService.loginWithFace(blob)
 
-      // debug
       console.log('Respuesta completa del backend:', loginResponse)
       console.log('existe_embedding:', loginResponse.existe_embedding)
       console.log('usuario_id:', loginResponse.usuario_id)
 
-      // Validar si existe coincidencia
       if (loginResponse.existe_embedding === false) {
         console.log('No se encontró coincidencia facial')
         alert('No se reconoció tu rostro. Por favor, regístrate primero.')
@@ -283,20 +452,16 @@ const handleLogin = async () => {
       }
 
       if (loginResponse.existe_embedding === true && loginResponse.usuario_id) {
-        console.log('Coincidencia encontrada! Usuario ID:', loginResponse.usuario_id)
+        console.log('Coincidencia encontrada Usuario ID:', loginResponse.usuario_id)
 
-        // Obtener datos completos del usuario
         const usuario = await authService.getUsuarioById(loginResponse.usuario_id)
         console.log('Datos del usuario:', usuario)
 
-        // Guardar sesión
         localStorage.setItem('user', JSON.stringify(usuario))
         localStorage.setItem('isAuthenticated', 'true')
 
-        // Mostrar bienvenida
-        alert(`¡Bienvenido ${usuario.nombres} ${usuario.apellidos}!`)
+        alert(`Bienvenido ${usuario.nombres} ${usuario.apellidos}`)
 
-        // Redirigir
         router.push('/dashboard')
       } else {
         console.log('Respuesta inesperada del backend')
@@ -318,7 +483,7 @@ const goBack = () => {
 }
 
 onMounted(() => {
-  startCamera() // La cámara se inicia al montar el componente
+  startCamera()
 })
 
 onUnmounted(() => {
@@ -327,7 +492,6 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-/* Estilos de animación idénticos al RegisterUserView para consistencia */
 @keyframes ken-burns {
   0% {
     transform: scale(1) translate(0, 0);
@@ -356,6 +520,20 @@ onUnmounted(() => {
 
 .animate-fade-in-up {
   animation: fade-in-up 0.8s ease-out forwards;
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out forwards;
 }
 
 .particles {
@@ -389,7 +567,6 @@ onUnmounted(() => {
   }
 }
 
-/* Generación rápida de partículas */
 .particle:nth-child(even) {
   width: 4px;
   height: 4px;
