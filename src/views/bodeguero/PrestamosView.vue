@@ -626,6 +626,8 @@ const cargarPrestamos = async (useCache = true) => {
 
 // Forzar recarga
 const recargarPrestamos = () => {
+  prestamosService._cache.lastUpdate = null
+  prestamosService._usuariosCache.lastUpdate = null
   cargarPrestamos(false)
 }
 
