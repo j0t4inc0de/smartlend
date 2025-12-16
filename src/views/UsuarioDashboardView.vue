@@ -84,7 +84,7 @@
           <div class="p-2.5 flex-1 flex flex-col">
             <h3 class="text-xs font-bold text-white leading-tight mb-1 line-clamp-2 h-8">{{ herramienta.nombre }}</h3>
 
-            <!-- NUEVO: Selector de cantidad -->
+            <!--  Selector de cantidad -->
             <div v-if="herramienta.stock > 0" class="mt-auto flex items-center gap-1">
               <button @click="decrementarCantidad(herramienta.id_tipo_herramienta)"
                 :disabled="!cantidadesPorTipo[herramienta.id_tipo_herramienta]"

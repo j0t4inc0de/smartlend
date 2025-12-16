@@ -546,7 +546,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, nextTick } from 'vue'
+import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import { prestamosService } from '@/services/prestamosService'
 
 // Estados reactivos
@@ -556,23 +556,24 @@ const busqueda = ref('')
 const codigoBusqueda = ref('')
 const loading = ref(true)
 const error = ref('')
+const ultimaActualizacion = ref(null)
+const autoRefreshInterval = ref(null)
+
+// Configuración de auto-refresh
+const AUTO_REFRESH_INTERVAL = 30000 // 30 segundos
 
 const tiposHerramienta = ref([])
 const tiposMap = ref({})
 
-// Estados para modal de herramientas
+// Estados para modales (mantener todos los que ya tienes)
 const modalHerramientas = ref(false)
 const prestamoSeleccionadoHerramientas = ref(null)
 const codigoCopiado = ref(false)
-
-// Estados para modal de entrega (NUEVO)
 const modalEntrega = ref(false)
 const prestamoEntrega = ref(null)
 const codigosEscaneados = ref([])
 const scannerInput = ref(null)
 const procesandoEntrega = ref(false)
-
-// Estados para modal de devolución (ACTUALIZADO)
 const modalDevolucion = ref(false)
 const prestamoSeleccionado = ref(null)
 const codigosDevolucion = ref([])
@@ -581,27 +582,22 @@ const scannerDevolucionInput = ref(null)
 const observaciones = ref('')
 const procesandoDevolucion = ref(false)
 
-// Cargar datos de usuario y tipo de herramienta para cada préstamo
+// Cargar datos de usuario (MEJORADO con fallback)
 const enriquecerPrestamos = async () => {
-  // 1. Cargar TODOS los usuarios de una vez
   const todosLosUsuarios = await prestamosService.getTodosLosUsuarios()
 
-  // 2. Crear mapa para lookup rápido O(1)
   const usuariosMap = {}
   todosLosUsuarios.forEach(u => {
     usuariosMap[u.id] = u
   })
 
-  // 3. Detectar usuarios faltantes en el cache
   const usuariosFaltantes = []
 
   prestamos.value.forEach(prestamo => {
     if (!prestamo.usuario_data) {
       if (usuariosMap[prestamo.id_usuario]) {
-        // Usuario está en cache
         prestamo.usuario_data = usuariosMap[prestamo.id_usuario]
       } else {
-        // Usuario NO está en cache (probablemente recién creado)
         usuariosFaltantes.push(prestamo.id_usuario)
         prestamo.usuario_data = {
           nombres: 'Cargando',
@@ -612,9 +608,8 @@ const enriquecerPrestamos = async () => {
     }
   })
 
-  // 4. Si hay usuarios faltantes, cargarlos individualmente
   if (usuariosFaltantes.length > 0) {
-    console.log(`${usuariosFaltantes.length} usuarios no encontrados en cache, cargando individualmente...`)
+    console.log(`${usuariosFaltantes.length} usuarios no en cache, cargando...`)
 
     const promesas = usuariosFaltantes.map(id =>
       prestamosService.getUsuarioConFallback(id)
@@ -622,54 +617,80 @@ const enriquecerPrestamos = async () => {
 
     const usuariosNuevos = await Promise.all(promesas)
 
-    // Asignar usuarios nuevos a sus préstamos correspondientes
     let index = 0
     prestamos.value.forEach(prestamo => {
       if (usuariosFaltantes.includes(prestamo.id_usuario)) {
         prestamo.usuario_data = usuariosNuevos[index++]
       }
     })
-
-    console.log('Usuarios faltantes cargados correctamente')
   }
 
-  console.log('Préstamos enriquecidos completamente')
+  console.log('Préstamos enriquecidos')
 }
 
 // Función principal de carga
 const cargarPrestamos = async (useCache = true) => {
   try {
-    loading.value = true
+    // No mostrar loading si es refresh automático
+    if (!useCache) {
+      loading.value = true
+    }
     error.value = ''
 
     prestamos.value = await prestamosService.getPrestamos(useCache)
     await enriquecerPrestamos()
 
-    console.log(' Préstamos cargados:', prestamos.value.length)
+    ultimaActualizacion.value = new Date()
+    console.log(`Préstamos cargados: ${prestamos.value.length}`)
   } catch (err) {
-    console.error('❌ Error al cargar préstamos:', err)
+    console.error('Error al cargar préstamos:', err)
     error.value = err.message || 'Error al cargar los préstamos'
   } finally {
     loading.value = false
   }
 }
 
-// Forzar recarga
+// Recarga manual (limpia cache y recarga)
 const recargarPrestamos = () => {
-  prestamosService.clearAllCache()  // Limpiar AMBOS caches
+  prestamosService.clearAllCache()
   cargarPrestamos(false)
 }
 
+//  Iniciar auto-refresh
+const iniciarAutoRefresh = () => {
+  // Limpiar intervalo anterior si existe
+  if (autoRefreshInterval.value) {
+    clearInterval(autoRefreshInterval.value)
+  }
+
+  // Configurar nuevo intervalo
+  autoRefreshInterval.value = setInterval(() => {
+    console.log('Auto-refresh: actualizando préstamos...')
+    cargarPrestamos(false) // Siempre forzar recarga en auto-refresh
+  }, AUTO_REFRESH_INTERVAL)
+
+  console.log(`Auto-refresh configurado cada ${AUTO_REFRESH_INTERVAL / 1000} segundos`)
+}
+
+//  Detener auto-refresh
+const detenerAutoRefresh = () => {
+  if (autoRefreshInterval.value) {
+    clearInterval(autoRefreshInterval.value)
+    autoRefreshInterval.value = null
+    console.log('Auto-refresh detenido')
+  }
+}
+
+// Resto de funciones (mantener todas las que ya tienes)
 const cargarTiposHerramienta = async () => {
   tiposHerramienta.value = await prestamosService.getTodosLosTipos()
 
-  // Crear mapa para acceso rápido
   tiposMap.value = {}
   tiposHerramienta.value.forEach(tipo => {
     tiposMap.value[tipo.id_tipo_herramienta] = tipo
   })
 
-  console.log(' Tipos de herramienta cargados:', tiposHerramienta.value.length)
+  console.log(`Tipos de herramienta cargados: ${tiposHerramienta.value.length}`)
 }
 
 const calcularTotalHerramientas = (prestamo) => {
@@ -683,7 +704,6 @@ const getNombreTipo = (idTipo) => {
   return tiposMap.value[idTipo]?.nombre || 'Tipo Desconocido'
 }
 
-// BÚSQUEDA POR CÓDIGO (NUEVO)
 const buscarPrestamo = async () => {
   if (!codigoBusqueda.value.trim()) {
     alert('Ingresa un código de préstamo')
@@ -700,8 +720,6 @@ const buscarPrestamo = async () => {
     }
 
     const prestamo = resultado[0]
-
-    // Enriquecer datos
     prestamo.usuario_data = await prestamosService.getUsuario(prestamo.id_usuario)
 
     if (prestamo.estado_prestamo === 'Pendiente') {
@@ -719,7 +737,6 @@ const buscarPrestamo = async () => {
   }
 }
 
-// MODAL DE ENTREGA (NUEVO)
 const totalHerramientasRequeridas = computed(() => {
   if (!prestamoEntrega.value?.tipos_detalle) return 0
   return prestamoEntrega.value.tipos_detalle.reduce((sum, t) => sum + t.cantidad, 0)
@@ -730,7 +747,6 @@ const abrirModalEntrega = (prestamo) => {
   codigosEscaneados.value = []
   modalEntrega.value = true
 
-  // Autofocus en el scanner
   nextTick(() => {
     scannerInput.value?.focus()
   })
@@ -756,7 +772,6 @@ const escanearCodigo = (event) => {
   codigosEscaneados.value.push(codigo)
   event.target.value = ''
 
-  // Mantener focus
   scannerInput.value?.focus()
 }
 
@@ -778,8 +793,11 @@ const confirmarEntrega = async () => {
       codigosEscaneados.value
     )
 
-    alert('¡Herramientas entregadas exitosamente!')
+    alert('Herramientas entregadas exitosamente')
     cerrarModalEntrega()
+
+    // Invalidar cache e inmediatamente recargar
+    prestamosService.clearAllCache()
     await cargarPrestamos(false)
   } catch (error) {
     console.error('Error al entregar:', error)
@@ -790,7 +808,6 @@ const confirmarEntrega = async () => {
   }
 }
 
-// MODAL DE DEVOLUCIÓN (ACTUALIZADO)
 const abrirModalDevolucion = (prestamo) => {
   prestamoSeleccionado.value = prestamo
   codigosDevolucion.value = []
@@ -798,7 +815,6 @@ const abrirModalDevolucion = (prestamo) => {
   observaciones.value = ''
   modalDevolucion.value = true
 
-  // Inicializar estados por defecto
   prestamo.herramientas_detalle?.forEach(h => {
     estadosHerramientas.value[h.codigo_barras] = 'Bueno'
   })
@@ -827,7 +843,6 @@ const escanearDevolucion = (event) => {
     return
   }
 
-  // Verificar que pertenece al préstamo
   const perteneceAlPrestamo = prestamoSeleccionado.value.herramientas_detalle?.some(
     h => h.codigo_barras === codigo
   )
@@ -866,8 +881,11 @@ const confirmarDevolucion = async () => {
       estadosHerramientas.value
     )
 
-    alert('¡Herramientas devueltas exitosamente!')
+    alert('Herramientas devueltas exitosamente')
     cerrarModalDevolucion()
+
+    // Invalidar cache e inmediatamente recargar
+    prestamosService.clearAllCache()
     await cargarPrestamos(false)
   } catch (error) {
     console.error('Error:', error)
@@ -877,7 +895,6 @@ const confirmarDevolucion = async () => {
   }
 }
 
-// Modal de herramientas (existente)
 const abrirModalHerramientas = (prestamo) => {
   prestamoSeleccionadoHerramientas.value = prestamo
   codigoCopiado.value = false
@@ -902,16 +919,13 @@ const copiarCodigo = async (codigo) => {
   }
 }
 
-// Computed - Filtrado y búsqueda
 const prestamosFiltrados = computed(() => {
   let resultado = prestamos.value
 
-  // Filtrar por estado
   if (filtroEstado.value !== 'todos') {
     resultado = resultado.filter(p => p.estado_prestamo === filtroEstado.value)
   }
 
-  // Buscar por código o usuario
   if (busqueda.value.trim()) {
     const termino = busqueda.value.toLowerCase()
     resultado = resultado.filter(p => {
@@ -928,10 +942,30 @@ const contarPorEstado = (estado) => {
   return prestamos.value.filter(p => p.estado_prestamo === estado).length
 }
 
+//  Formato de última actualización
+const formatoUltimaActualizacion = computed(() => {
+  if (!ultimaActualizacion.value) return ''
+
+  const ahora = new Date()
+  const diff = Math.floor((ahora - ultimaActualizacion.value) / 1000) // segundos
+
+  if (diff < 60) return `Hace ${diff}s`
+  if (diff < 3600) return `Hace ${Math.floor(diff / 60)}m`
+  return ultimaActualizacion.value.toLocaleTimeString('es-CL', {
+    hour: '2-digit',
+    minute: '2-digit'
+  })
+})
+
 // Lifecycle
 onMounted(async () => {
   await cargarTiposHerramienta()
   await cargarPrestamos()
+  iniciarAutoRefresh() // Iniciar auto-refresh
+})
+
+onUnmounted(() => {
+  detenerAutoRefresh() // Limpiar al desmontar
 })
 </script>
 

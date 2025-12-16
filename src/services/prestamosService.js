@@ -15,7 +15,7 @@ export const prestamosService = {
     ttl: 30000, // 30 segundos - NO CAMBIAR
   },
 
-  // NUEVO: Limpiar TODO el cache
+  //  Limpiar TODO el cache
   clearAllCache() {
     this._cache.prestamos = []
     this._cache.lastUpdate = null
@@ -64,7 +64,7 @@ export const prestamosService = {
     }
   },
 
-  // NUEVO: Obtener usuario individual con fallback al cache
+  //  Obtener usuario individual con fallback al cache
   async getUsuarioConFallback(usuarioId) {
     // 1. Buscar primero en cache
     const usuarioEnCache = this._usuariosCache.usuarios.find((u) => u.id === usuarioId)
