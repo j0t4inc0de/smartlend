@@ -215,14 +215,29 @@
           </div>
 
           <!-- Fecha de devolución -->
-          <div class="bg-gray-800/50 p-3 rounded-xl mb-5 border border-white/5">
-            <label class="block text-xs font-bold text-gray-300 mb-2 uppercase tracking-wider">Fecha de
-              Devolución</label>
-            <input v-model="fechaDevolucion" type="date" :min="minDate" :max="maxDate"
-              class="w-full bg-black/40 border border-gray-600 text-white rounded-lg px-3 py-3 text-base focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none appearance-none" />
+          <div class="bg-gray-800/50 p-4 rounded-xl mb-5 border border-white/5">
+            <div class="flex items-start gap-3">
+              <div class="bg-red-500/20 p-2 rounded-lg">
+                <svg class="w-5 h-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <div class="flex-1">
+                <label class="block text-xs font-bold text-gray-300 mb-1 uppercase tracking-wider">
+                  Devolución Programada
+                </label>
+                <p class="text-white font-medium text-sm">
+                  {{ fechaDevolucionFormateada }}
+                </p>
+                <p class="text-gray-400 text-xs mt-1">
+                  Horario límite del pañol
+                </p>
+              </div>
+            </div>
           </div>
 
-          <button @click="confirmarPrestamo" :disabled="procesando || !fechaDevolucion || totalHerramientas === 0"
+          <button @click="confirmarPrestamo" :disabled="procesando || totalHerramientas === 0"
             class="w-full bg-green-600 hover:bg-green-500 text-white font-bold text-lg py-4 rounded-xl shadow-lg shadow-green-900/30 transition-all active:scale-98 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
             <span v-if="procesando"
               class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
@@ -280,7 +295,6 @@ const carritoVisible = ref(false)
 const procesando = ref(false)
 const mostrarConfirmacion = ref(false)
 const codigoPrestamo = ref('')
-const fechaDevolucion = ref('')
 
 // Timer
 const tiempoSesion = ref(300)
@@ -290,12 +304,26 @@ const tiempoRestante = computed(() => {
   return `${minutos}:${segundos.toString().padStart(2, '0')}`
 })
 
-// Fechas
-const minDate = computed(() => {
-  const d = new Date(); d.setDate(d.getDate() + 1); return d.toISOString().split('T')[0]
+// NUEVO: Fecha de devolución automática (mismo día 22:00)
+const fechaDevolucionAutomatica = computed(() => {
+  const hoy = new Date()
+  // Establecer hora a 22:00
+  hoy.setHours(22, 0, 0, 0)
+  return hoy
 })
-const maxDate = computed(() => {
-  const d = new Date(); d.setDate(d.getDate() + 7); return d.toISOString().split('T')[0]
+
+const fechaDevolucionFormateada = computed(() => {
+  const fecha = fechaDevolucionAutomatica.value
+  const opciones = {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZone: 'America/Santiago'
+  }
+  return fecha.toLocaleDateString('es-CL', opciones)
 })
 
 // Computed
@@ -339,11 +367,10 @@ const filtrarPorCategoria = (id) => {
   categoriaSeleccionada.value = id
 }
 
-// Confirmar préstamo con NUEVO formato
+// MODIFICADO: Confirmar préstamo con fecha automática
 const confirmarPrestamo = async () => {
   procesando.value = true
   try {
-    // Obtener usuario autenticado
     const stored = localStorage.getItem('user')
     const user = stored ? JSON.parse(stored) : null
     const idUsuario = user?.id ?? user?.id_usuario
@@ -353,7 +380,6 @@ const confirmarPrestamo = async () => {
       return
     }
 
-    // Convertir objeto de cantidades a array de tipos
     const tipos = Object.entries(cantidadesPorTipo.value)
       .filter(([_, cantidad]) => cantidad > 0)
       .map(([idTipo, cantidad]) => ({
@@ -366,10 +392,10 @@ const confirmarPrestamo = async () => {
       return
     }
 
-    // Crear préstamo
+    // Crear préstamo con fecha de devolución automática
     const prestamo = await prestamosService.crearPrestamo({
       fecha_prestamo: new Date().toISOString(),
-      fecha_devolucion_esperada: new Date(fechaDevolucion.value + 'T23:59:59').toISOString(),
+      fecha_devolucion_esperada: fechaDevolucionAutomatica.value.toISOString(), // Fecha automática 22:00
       estado_prestamo: 'Pendiente',
       id_usuario: idUsuario,
       tipos,
@@ -393,19 +419,15 @@ const confirmarPrestamo = async () => {
   }
 }
 
-
 const finalizarSesion = () => {
   localStorage.removeItem('user')
   localStorage.removeItem('isAuthenticated')
   router.push('/')
 }
 
-// Carga de Datos
 const cargarDatos = async () => {
   try {
     categorias.value = await inventarioService.getCategorias()
-
-    // Este endpoint trae stock (disponible real) y reservado
     const tipos = await inventarioService.getTiposHerramienta()
 
     herramientas.value = tipos.map((tipo) => ({
@@ -413,7 +435,7 @@ const cargarDatos = async () => {
       id_categoria: tipo.id_categoria || categorias.value[0]?.id_categoria,
       nombre: tipo.nombre,
       imagen_url: tipo.imagen ? tipo.imagen : null,
-      stock: tipo.stock, // DISPONIBLE real para pedir
+      stock: tipo.stock,
     }))
   } catch (e) {
     console.error('Error al cargar datos:', e)
@@ -423,7 +445,6 @@ const cargarDatos = async () => {
 let timerInterval
 onMounted(() => {
   cargarDatos()
-  fechaDevolucion.value = minDate.value
   timerInterval = setInterval(() => {
     if (tiempoSesion.value > 0) tiempoSesion.value--
     else finalizarSesion()
