@@ -7,7 +7,7 @@ export const alertasService = {
   // Obtener todas las alertas
   async getAlertas() {
     try {
-      const response = await axios.get(`${API_BASE_URL}/operaciones/api/alertas/`)
+      const response = await axios.get(`${API_BASE_URL}/operaciones/api/alertas/no-archivadas/`)
       return response.data
     } catch (error) {
       console.error('Error al obtener alertas:', error)
@@ -18,7 +18,7 @@ export const alertasService = {
   // Obtener solo alertas no resueltas
   async getAlertasNoResueltas() {
     try {
-      const response = await axios.get(`${API_BASE_URL}/operaciones/api/alertas/`)
+      const response = await axios.get(`${API_BASE_URL}/operaciones/api/alertas/no-archivadas/`)
       return response.data.filter((alerta) => !alerta.resuelta)
     } catch (error) {
       console.error('Error al obtener alertas:', error)
