@@ -203,7 +203,21 @@
                         </p>
 
                         <p class="text-gray-400 text-xs font-mono mt-0.5 truncate">
-                          Préstamo: <span class="text-blue-400 font-bold">{{ alerta.codigo_prestamo || 'N/A' }}</span>
+                          Préstamo:
+                          <span @click="copiarCodigo(alerta.codigo_prestamo, alerta.id_alerta)"
+                            class="text-blue-400 font-bold cursor-pointer hover:text-blue-300 transition-colors relative inline-flex items-center gap-1">
+                            {{ alerta.codigo_prestamo || 'N/A' }}
+                            <svg v-if="codigoCopiadoId === alerta.id_alerta" class="w-3 h-3 text-green-400" fill="none"
+                              viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M5 13l4 4L19 7" />
+                            </svg>
+                            <svg v-else class="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" fill="none"
+                              viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
+                          </span>
                         </p>
 
                         <div class="flex items-center gap-2 mt-2">
@@ -280,6 +294,22 @@ const mostrarNotificaciones = ref(false)
 
 // Timer para actualización automática
 let intervalId = null
+
+// Estado para feedback de copiado
+const codigoCopiadoId = ref(null)
+
+// Función para copiar código
+const copiarCodigo = async (codigo, alertaId) => {
+  try {
+    await navigator.clipboard.writeText(codigo)
+    codigoCopiadoId.value = alertaId
+    setTimeout(() => {
+      codigoCopiadoId.value = null
+    }, 2000)
+  } catch (error) {
+    console.error('Error al copiar:', error)
+  }
+}
 
 // Contador basado en el array real de alertas
 const alertasCount = computed(() => alertas.value.length)
