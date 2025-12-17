@@ -74,6 +74,21 @@
                 d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
             </svg>
           </div>
+          <!-- Badge de stock -->
+          <div
+            class="absolute top-3 right-3 bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/20">
+            <div class="flex items-center gap-2">
+              <span :class="[
+                'w-2 h-2 rounded-full',
+                tipo.herramientas_disponibles > 5 ? 'bg-green-500 animate-pulse' :
+                  tipo.herramientas_disponibles > 0 ? 'bg-yellow-500 animate-pulse' :
+                    'bg-red-500'
+              ]"></span>
+              <span class="text-white text-sm font-bold">
+                {{ tipo.herramientas_disponibles }}/{{ tipo.total_herramientas }}
+              </span>
+            </div>
+          </div>
         </div>
 
         <!-- Info - AGREGAR flex flex-col flex-1 -->
