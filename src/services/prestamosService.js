@@ -1,7 +1,7 @@
 // Este servici maneja las operaciones relacionadas con los préstamos de herramientas
 import axios from 'axios'
 
-const API_BASE_URL = 'http://72.60.167.16:8000'
+import API_BASE_URL from '@/config/api'
 
 export const prestamosService = {
   _usuariosCache: {

@@ -1,7 +1,7 @@
 // Este servicio se encarga ÚNICAMENTE de la autenticación del bodeguero (correo + contraseña).
 import axios from 'axios'
 
-const API_BASE_URL = 'http://72.60.167.16:8000'
+import API_BASE_URL from '@/config/api'
 
 export const bodegueroAuthService = {
   async login(correo, password) {
