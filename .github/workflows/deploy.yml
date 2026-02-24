@@ -26,11 +26,6 @@ jobs:
             git fetch origin
             git reset --hard origin/main
 
-            echo "📦 Instalando dependencias y construyendo la aplicación..."
-            npm install
-            rm -rf dist
-            npm run build
-
             echo "🐳 Construyendo nueva imagen Docker (sin caché)..."
             docker build --no-cache -t smartlend:latest .
 
