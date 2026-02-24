@@ -2,56 +2,56 @@ name: 🚀 Deploy to VPS
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: 📦 Checkout código
-      uses: actions/checkout@v4
+      - name: 📦 Checkout código
+        uses: actions/checkout@v4
 
-    - name: 🐳 Desplegar aplicación
-      uses: appleboy/ssh-action@v0.1.0
-      with:
-        host: ${{ secrets.VPS_HOST }}
-        username: ${{ secrets.VPS_USER }}
-        key: ${{ secrets.VPS_SSH_KEY }}
-        script: |
-          echo "🔧 Iniciando despliegue automático..."
-          cd /opt/smartlend/smartlend
-          
-          echo "🔄 Actualizando código desde GitHub..."
-          git fetch origin
-          git reset --hard origin/main
-          
-          echo "📦 Instalando dependencias y construyendo la aplicación..."
-          npm install
-          rm -rf dist
-          npm run build
-          
-          echo "🐳 Construyendo nueva imagen Docker (sin caché)..."
-          docker build --no-cache -t smartlend:latest .
-          
-          echo "🛑 Deteniendo y eliminando contenedor anterior..."
-          docker stop smartlend-app || true
-          docker rm smartlend-app || true
-          
-          echo "🧹 Limpiando imágenes Docker antiguas (dangling)..."
-          docker image prune -f  # <--- ESTA ES LA FORMA CORRECTA (reemplaza tu 'docker rmi ...')
-          
-          echo "🚀 Iniciando nuevo contenedor..."
-          docker run -d -p 8080:80 --name smartlend-app smartlend:latest
-          
-          echo "⏳ Esperando que la aplicación inicie (10s)..."
-          sleep 10
-          
-          echo "📊 Verificando estado del contenedor:"
-          docker ps
-          
-          echo "🔍 ¡CAZANDO EL CAMBIO! Buscando 'TEST 2' dentro del contenedor..."
+      - name: 🐳 Desplegar aplicación
+        uses: appleboy/ssh-action@v0.1.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            echo "🔧 Iniciando despliegue automático..."
+            cd /opt/smartlend
 
-          curl -s http://localhost:8080 | grep "TEST 2"
-          
-          echo "🎉 Despliegue completado exitosamente!"
+            echo "🔄 Actualizando código desde GitHub..."
+            git fetch origin
+            git reset --hard origin/main
+
+            echo "📦 Instalando dependencias y construyendo la aplicación..."
+            npm install
+            rm -rf dist
+            npm run build
+
+            echo "🐳 Construyendo nueva imagen Docker (sin caché)..."
+            docker build --no-cache -t smartlend:latest .
+
+            echo "🛑 Deteniendo y eliminando contenedor anterior..."
+            docker stop smartlend-app || true
+            docker rm smartlend-app || true
+
+            echo "🧹 Limpiando imágenes Docker antiguas (dangling)..."
+            docker image prune -f  # <--- ESTA ES LA FORMA CORRECTA (reemplaza tu 'docker rmi ...')
+
+            echo "🚀 Iniciando nuevo contenedor..."
+            docker run -d -p 8080:80 --name smartlend-app smartlend:latest
+
+            echo "⏳ Esperando que la aplicación inicie (10s)..."
+            sleep 10
+
+            echo "📊 Verificando estado del contenedor:"
+            docker ps
+
+            echo "🔍 ¡CAZANDO EL CAMBIO! Buscando 'TEST 2' dentro del contenedor..."
+
+            curl -s http://localhost:8080 | grep "TEST 2"
+
+            echo "🎉 Despliegue completado exitosamente!"
