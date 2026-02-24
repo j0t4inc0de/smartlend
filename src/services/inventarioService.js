@@ -1,7 +1,7 @@
+// src\services\inventarioService.js
 // Este servicio manejara todas las operaciones relacionadas con el inventario de herramientas
 import axios from 'axios'
-
-import API_BASE_URL from '@/config/api'
+import API_BASE_URL from './config/api.js'
 
 export const inventarioService = {
   // Obtiene todas las categorías de herramientas.

@@ -1,7 +1,7 @@
+// src\services\alertasService.js
 // Este servicio manejara las oeraciones para las notificaiones para el bodeguero
 import axios from 'axios'
-
-import API_BASE_URL from '@/config/api'
+import API_BASE_URL from './config/api.js'
 
 export const alertasService = {
   // Obtener todas las alertas

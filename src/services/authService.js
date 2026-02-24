@@ -1,5 +1,6 @@
+// src\services\authService.js
 import axios from 'axios'
-import API_BASE_URL from '@/config/api'
+import API_BASE_URL from './config/api.js'
 
 export const authService = {
   // Manejo de autenticación facial

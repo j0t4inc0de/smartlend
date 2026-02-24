@@ -1,7 +1,7 @@
+// src\services\prestamosService.js
 // Este servici maneja las operaciones relacionadas con los préstamos de herramientas
 import axios from 'axios'
-
-import API_BASE_URL from '@/config/api'
+import API_BASE_URL from './config/api.js'
 
 export const prestamosService = {
   _usuariosCache: {

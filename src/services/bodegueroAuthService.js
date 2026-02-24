@@ -1,7 +1,7 @@
+// src\services\bodegueroAuthService.js
 // Este servicio se encarga ÚNICAMENTE de la autenticación del bodeguero (correo + contraseña).
 import axios from 'axios'
-
-import API_BASE_URL from '@/config/api'
+import API_BASE_URL from './config/api.js'
 
 export const bodegueroAuthService = {
   async login(correo, password) {
