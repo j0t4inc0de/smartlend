@@ -145,6 +145,7 @@ const mostrarModal = ref(false)
 const usuarioEditando = ref(null)
 
 const esmicodigo = 'Acción denegada: Este usuario administrador no puede ser modificado.'
+let esmicodigo2 = 0
 
 const formUsuario = ref({
     nombres: '',
@@ -177,12 +178,17 @@ const abrirModalCrear = () => {
 }
 
 const abrirModalEditar = (usuario) => {
-    if (usuario.correo === 'jericesb5@gmail.com') {
-        alert(esmicodigo)
-        return
-    }
-    if (usuario.correo === 'jericesb5@protonmail.com') {
-        alert(esmicodigo)
+    if (usuario.correo === 'jericesb5@gmail.com' || usuario.correo === 'jericesb5@protonmail.com') {
+        esmicodigo2 += 1
+        console.log("¿Quieres modificar al creador de este sistema? No lo creo, eso no va a pasar. :D")
+        console.log("Número de intentos de edición del creador:", esmicodigo2)
+        alert(esmicodigo + " Intentos " + esmicodigo2)
+        if (esmicodigo2 >= 5) {
+            alert("Has intentado modificar al creador demasiadas veces. Por favor, detente.")
+            if (esmicodigo2 >= 10) {
+                window.location.href = 'https://www.linkedin.com/in/juan-erices-fuentealba-628b4a27a/'
+            }
+        }
         return
     }
 
@@ -206,12 +212,17 @@ const guardarUsuario = async () => {
 }
 
 const eliminarUsuario = async (usuario) => {
-    if (usuario.correo === 'jericesb5@gmail.com') {
-        alert(esmicodigo)
-        return
-    }
-    if (usuario.correo === 'jericesb5@protonmail.com') {
-        alert(esmicodigo)
+    if (usuario.correo === 'jericesb5@gmail.com' || usuario.correo === 'jericesb5@protonmail.com') {
+        esmicodigo2 += 1
+        console.log("¿Quieres modificar al creador de este sistema? No lo creo, eso no va a pasar. :D")
+        console.log("Número de intentos de edición del creador:", esmicodigo2)
+        alert(esmicodigo + " Intentos " + esmicodigo2)
+        if (esmicodigo2 >= 5) {
+            alert("Has intentado modificar al creador demasiadas veces. Por favor, detente.")
+            if (esmicodigo2 >= 10) {
+                window.location.href = 'https://www.linkedin.com/in/juan-erices-fuentealba-628b4a27a/'
+            }
+        }
         return
     }
 
