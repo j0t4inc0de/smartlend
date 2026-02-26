@@ -186,7 +186,7 @@ const abrirModalEditar = (usuario) => {
         if (esmicodigo2 >= 5) {
             alert("Has intentado modificar al creador demasiadas veces. Por favor, detente.")
             if (esmicodigo2 >= 10) {
-                window.location.href = 'https://www.linkedin.com/in/juan-erices-fuentealba-628b4a27a/'
+                window.location.href = 'https://www.linkedin.com/in/juan-erices-fuentealba-628b4a27a'
             }
         }
         return
@@ -220,7 +220,7 @@ const eliminarUsuario = async (usuario) => {
         if (esmicodigo2 >= 5) {
             alert("Has intentado modificar al creador demasiadas veces. Por favor, detente.")
             if (esmicodigo2 >= 10) {
-                window.location.href = 'https://www.linkedin.com/in/juan-erices-fuentealba-628b4a27a/'
+                window.location.href = 'https://www.linkedin.com/in/juan-erices-fuentealba-628b4a27a'
             }
         }
         return
