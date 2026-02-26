@@ -29,4 +29,37 @@ export const usuariosService = {
       throw new Error('No se pudo obtener el usuario')
     }
   },
+
+  async createUsuario(usuarioData) {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/usuarios/api/usuarios/`, usuarioData)
+      return response.data
+    } catch (error) {
+      console.error('Error al crear usuario:', error)
+      throw new Error('Error al crear usuario')
+    }
+  },
+
+  async updateUsuario(idUsuario, usuarioData) {
+    try {
+      const response = await axios.put(
+        `${API_BASE_URL}/usuarios/api/usuarios/${idUsuario}/`,
+        usuarioData,
+      )
+      return response.data
+    } catch (error) {
+      console.error('Error al actualizar usuario:', error)
+      throw new Error('Error al actualizar usuario')
+    }
+  },
+
+  async deleteUsuario(idUsuario) {
+    try {
+      await axios.delete(`${API_BASE_URL}/usuarios/api/usuarios/${idUsuario}/`)
+      return true
+    } catch (error) {
+      console.error('Error al eliminar usuario:', error)
+      throw new Error('Error al eliminar usuario')
+    }
+  },
 }
