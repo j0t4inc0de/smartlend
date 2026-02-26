@@ -78,6 +78,16 @@ const router = createRouter({
           name: 'dashboard-inventario',
           component: () => import('@/views/bodeguero/InventarioView.vue'),
         },
+        {
+          path: 'usuarios',
+          name: 'dashboard-usuarios',
+          component: () => import('@/views/bodeguero/UsuariosView.vue'),
+        },
+        {
+          path: 'reportes',
+          name: 'dashboard-reportes',
+          component: () => import('@/views/bodeguero/ReportesView.vue'),
+        },
       ],
     },
 
