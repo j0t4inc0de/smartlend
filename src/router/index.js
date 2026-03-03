@@ -6,7 +6,6 @@ import WelcomeScreen from '@/views/WelcomeScreen.vue'
 import RegisterUserView from '@/views/RegisterUserView.vue'
 import FacialLoginView from '@/views/LoginFacialView.vue'
 import UsuarioDashboardView from '@/views/UsuarioDashboardView.vue'
-
 // Vistas del bodeguero
 import LoginBodegueroView from '@/views/bodeguero/LoginBodegueroView.vue'
 import PrestamosView from '@/views/bodeguero/PrestamosView.vue'
@@ -34,6 +33,11 @@ const router = createRouter({
       name: 'facial-recognition',
       component: FacialLoginView,
       beforeEnter: guestOnly,
+    },
+    {
+      path: '/pantalla-turnos',
+      name: 'pantalla-turnos',
+      component: () => import('@/views/PantallaTurnosView.vue'),
     },
     {
       path: '/dashboard',
