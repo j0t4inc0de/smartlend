@@ -202,6 +202,18 @@ export const prestamosService = {
     return response.data
   },
 
+  async crearReservaDocente(data) {
+    const response = await axios.post(
+      `${API_BASE_URL}/operaciones/api/prestamos/reserva-docente/`,
+      {
+        id_usuario: data.id_usuario,
+        fecha_inicio_reserva: data.fecha_inicio_reserva,
+        tipos: data.tipos,
+      },
+    )
+    return response.data
+  },
+
   async buscarPorCodigo(codigo) {
     const response = await axios.get(
       `${API_BASE_URL}/operaciones/api/prestamos/buscar/?codigo=${codigo}`,
