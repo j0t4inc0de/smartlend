@@ -8,10 +8,10 @@
                     class="bg-gray-700 hover:bg-gray-600 border border-gray-600 text-white px-4 py-2 rounded-lg font-medium transition-colors text-sm">
                     Registrar Estudiante/Docente
                 </button>
-                <button @click="abrirModalCrear"
+                <!-- <button @click="abrirModalCrear"
                     class="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg font-medium transition-colors text-sm">
                     Nuevo Bodeguero
-                </button>
+                </button> -->
             </div>
         </div>
 
