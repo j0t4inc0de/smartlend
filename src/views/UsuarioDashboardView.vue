@@ -12,7 +12,6 @@
 
     <header
       class="fixed top-0 left-0 w-full bg-black/30 backdrop-blur-xl border-b border-white/10 z-30 pb-2 transition-all duration-300">
-
       <div class="flex justify-between items-center px-5 py-4">
         <div class="flex items-center gap-3">
           <div class="bg-white/10 p-1.5 rounded-lg">
@@ -84,7 +83,6 @@
           <div class="p-2.5 flex-1 flex flex-col">
             <h3 class="text-xs font-bold text-white leading-tight mb-1 line-clamp-2 h-8">{{ herramienta.nombre }}</h3>
 
-            <!--  Selector de cantidad -->
             <div v-if="herramienta.stock > 0" class="mt-auto flex items-center gap-1">
               <button @click="decrementarCantidad(herramienta.id_tipo_herramienta)"
                 :disabled="!cantidadesPorTipo[herramienta.id_tipo_herramienta]"
@@ -105,7 +103,6 @@
               </button>
             </div>
 
-            <!-- Agotado -->
             <div v-else class="mt-auto">
               <div class="w-full py-2 bg-gray-700 text-gray-500 rounded-lg font-bold text-xs text-center">
                 Agotado
@@ -179,7 +176,6 @@
             </button>
           </div>
 
-          <!-- Lista de herramientas con cantidades -->
           <div class="flex-1 overflow-y-auto space-y-2 mb-5 custom-scrollbar pr-1">
             <div v-for="(cantidad, idTipo) in cantidadesPorTipo" :key="idTipo">
               <div v-if="cantidad > 0"
@@ -204,18 +200,40 @@
             </div>
           </div>
 
-          <!-- Mensaje informativo -->
           <div class="bg-blue-500/10 border border-blue-500/50 rounded-lg p-3 mb-4">
             <p class="text-blue-300 text-xs">
-              📧 Recibirás un código por correo electrónico
+              Recibirás un código por correo electrónico
             </p>
             <p class="text-blue-300 text-xs mt-1">
-              ⏰ Tendrás 30 minutos para retirar las herramientas
+              Tendrás 30 minutos para retirar las herramientas
             </p>
           </div>
 
-          <!-- Fecha de devolución -->
-          <div class="bg-gray-800/50 p-4 rounded-xl mb-5 border border-white/5">
+          <div v-if="esDocente" class="bg-gray-800/50 p-4 rounded-xl mb-5 border border-white/5">
+            <label class="block text-xs font-bold text-gray-300 mb-3 uppercase tracking-wider">
+              Tipo de Solicitud
+            </label>
+            <div class="flex gap-4 mb-3">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="radio" v-model="tipoSolicitud" value="normal"
+                  class="text-red-500 bg-gray-900 border-gray-600 focus:ring-red-500">
+                <span class="text-sm text-white">Para hoy</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="radio" v-model="tipoSolicitud" value="reserva"
+                  class="text-red-500 bg-gray-900 border-gray-600 focus:ring-red-500">
+                <span class="text-sm text-white">Reserva (Mañana)</span>
+              </label>
+            </div>
+
+            <div v-if="tipoSolicitud === 'reserva'" class="mt-3">
+              <label class="block text-xs text-gray-400 mb-1">Hora de retiro esperada:</label>
+              <input type="time" v-model="horaReserva" required
+                class="w-full bg-gray-900 border border-gray-700 text-white rounded-lg p-2 focus:border-red-500 outline-none">
+            </div>
+          </div>
+
+          <div v-if="tipoSolicitud === 'normal'" class="bg-gray-800/50 p-4 rounded-xl mb-5 border border-white/5">
             <div class="flex items-start gap-3">
               <div class="bg-red-500/20 p-2 rounded-lg">
                 <svg class="w-5 h-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -241,7 +259,7 @@
             class="w-full bg-green-600 hover:bg-green-500 text-white font-bold text-lg py-4 rounded-xl shadow-lg shadow-green-900/30 transition-all active:scale-98 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
             <span v-if="procesando"
               class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-            <span v-else>Confirmar Solicitud</span>
+            <span v-else>{{ tipoSolicitud === 'reserva' ? 'Confirmar Reserva' : 'Confirmar Solicitud' }}</span>
             <svg v-if="!procesando" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
             </svg>
@@ -264,7 +282,7 @@
         <div class="bg-white/10 border border-white/20 rounded-2xl p-6 mb-4">
           <span class="text-4xl font-mono font-bold text-green-400 tracking-widest">{{ codigoPrestamo }}</span>
         </div>
-        <p class="text-yellow-300 text-sm mb-6">⏰ Tienes 30 minutos para retirar</p>
+        <p class="text-yellow-300 text-sm mb-6">Tienes 30 minutos para retirar</p>
         <button @click="finalizarSesion"
           class="w-full bg-gray-800 hover:bg-gray-700 text-white font-bold py-4 rounded-xl border border-gray-600 text-base transition-all active:scale-95">
           Cerrar Sesión
@@ -295,7 +313,8 @@ const carritoVisible = ref(false)
 const procesando = ref(false)
 const mostrarConfirmacion = ref(false)
 const codigoPrestamo = ref('')
-
+const tipoSolicitud = ref('normal')
+const horaReserva = ref('09:00')
 // Timer
 const tiempoSesion = ref(300)
 const tiempoRestante = computed(() => {
@@ -303,7 +322,12 @@ const tiempoRestante = computed(() => {
   const segundos = tiempoSesion.value % 60
   return `${minutos}:${segundos.toString().padStart(2, '0')}`
 })
-
+// Saber el rol del usuario
+const esDocente = computed(() => {
+  const stored = localStorage.getItem('user')
+  const user = stored ? JSON.parse(stored) : null
+  return user?.rol === 'Docente' || user?.tipo_usuario === 'Docente'
+})
 // NUEVO: Fecha de devolución automática (mismo día 22:00)
 const fechaDevolucionAutomatica = computed(() => {
   const hoy = new Date()
@@ -366,8 +390,8 @@ const getHerramienta = (idTipo) => {
 const filtrarPorCategoria = (id) => {
   categoriaSeleccionada.value = id
 }
-
-// MODIFICADO: Confirmar préstamo con fecha automática
+// Funcion para confirmar el préstamo o reserva, dependiendo del rol del usuario
+// bifurcar la lógica dependiendo de si el usuario es Docente o no
 const confirmarPrestamo = async () => {
   procesando.value = true
   try {
@@ -381,7 +405,7 @@ const confirmarPrestamo = async () => {
     }
 
     const tipos = Object.entries(cantidadesPorTipo.value)
-      .filter(([_, cantidad]) => cantidad > 0)
+      .filter((entry) => entry[1] > 0)
       .map(([idTipo, cantidad]) => ({
         tipo_herramienta: parseInt(idTipo, 10),
         cantidad,
@@ -392,16 +416,31 @@ const confirmarPrestamo = async () => {
       return
     }
 
-    // Crear préstamo con fecha de devolución automática
-    const prestamo = await prestamosService.crearPrestamo({
-      fecha_prestamo: new Date().toISOString(),
-      fecha_devolucion_esperada: fechaDevolucionAutomatica.value.toISOString(), // Fecha automática 22:00
-      estado_prestamo: 'Pendiente',
-      id_usuario: idUsuario,
-      tipos,
-    })
+    let prestamo;
 
-    codigoPrestamo.value = prestamo.codigo
+    if (esDocente.value && tipoSolicitud.value === 'reserva') {
+      const fechaManana = new Date()
+      fechaManana.setDate(fechaManana.getDate() + 1)
+
+      const [horas, minutos] = horaReserva.value.split(':')
+      fechaManana.setHours(parseInt(horas, 10), parseInt(minutos, 10), 0, 0)
+
+      prestamo = await prestamosService.crearReservaDocente({
+        id_usuario: idUsuario,
+        fecha_inicio_reserva: fechaManana.toISOString(),
+        tipos,
+      })
+    } else {
+      prestamo = await prestamosService.crearPrestamo({
+        fecha_prestamo: new Date().toISOString(),
+        fecha_devolucion_esperada: fechaDevolucionAutomatica.value.toISOString(),
+        estado_prestamo: 'Pendiente',
+        id_usuario: idUsuario,
+        tipos,
+      })
+    }
+
+    codigoPrestamo.value = prestamo.codigo || 'Exito'
     carritoVisible.value = false
     mostrarConfirmacion.value = true
     cantidadesPorTipo.value = {}
@@ -412,7 +451,8 @@ const confirmarPrestamo = async () => {
       error.response?.data?.id_usuario?.[0] ||
       error.response?.data?.tipos ||
       error.response?.data?.detail ||
-      'Error al crear el préstamo'
+      error.response?.data?.fecha_inicio_reserva?.[0] ||
+      'Error al procesar la solicitud'
     alert(mensaje)
   } finally {
     procesando.value = false
