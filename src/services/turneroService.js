@@ -7,3 +7,18 @@ export const getTurnoActual = async () => {
   }
   return response.json()
 }
+
+// siguiente turno en la cola, marcando el actual como saltado
+export const saltarTurnoSiguiente = async (token) => {
+  const response = await fetch(`${API_BASE_URL}/operaciones/api/turnero/siguiente/`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  if (!response.ok) {
+    throw new Error('Error al saltar al siguiente turno')
+  }
+  return response.json()
+}
