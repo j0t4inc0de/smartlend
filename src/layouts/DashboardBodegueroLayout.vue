@@ -144,6 +144,23 @@
           <h2 class="text-xl font-semibold text-white">{{ pageTitle }}</h2>
 
           <div class="flex items-center gap-4">
+            <div class="flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-lg p-1 pr-1 pl-4 shadow-sm">
+              <div class="flex flex-col">
+                <span class="text-[10px] text-gray-400 font-semibold uppercase tracking-wider">En pantalla</span>
+                <span class="text-sm font-bold text-white leading-none">
+                  {{ turnoActual?.codigo_publico || 'Ninguno' }}
+                </span>
+              </div>
+
+              <button @click="manejarSiguienteTurno" :disabled="isLoadingSiguiente"
+                class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-1.5 px-3 rounded shadow disabled:opacity-50 text-sm transition-colors">
+                <span v-if="isLoadingSiguiente">Llamando...</span>
+                <span v-else>Llamar Siguiente</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-4">
             <div v-if="alertasCount > 0" class="relative">
               <button @click="mostrarNotificaciones = !mostrarNotificaciones"
                 class="p-2 rounded-lg hover:bg-gray-700/50 transition-colors group">
@@ -249,7 +266,7 @@
                 <div v-if="alertas.length > 0" class="px-4 py-3 border-t border-gray-700 bg-gray-900/50">
                   <div class="flex justify-between items-center">
                     <span class="text-xs text-gray-400">{{ alertas.length }} alerta{{ alertas.length !== 1 ? 's' : ''
-                    }}</span>
+                      }}</span>
                     <span class="text-xs text-gray-500">Se resuelven automáticamente al devolver</span>
                   </div>
                 </div>
@@ -279,6 +296,7 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useBodegueroAuthStore } from '@/stores/bodegueroAuthStore'
 import { alertasService } from '@/services/alertasService'
+import { saltarTurnoSiguiente, getTurnoActual } from '@/services/turneroService'
 
 const router = useRouter()
 const route = useRoute()
@@ -291,7 +309,8 @@ const prestamosActivos = ref(0)
 const alertas = ref([])
 const loadingAlertas = ref(false)
 const mostrarNotificaciones = ref(false)
-
+const isLoadingSiguiente = ref(false)
+const turnoActual = ref(null)
 // Timer para actualización automática
 let intervalId = null
 
@@ -310,7 +329,34 @@ const copiarCodigo = async (codigo, alertaId) => {
     console.error('Error al copiar:', error)
   }
 }
+const cargarTurnoEnPantalla = async () => {
+  try {
+    const data = await getTurnoActual()
+    if (data.hay_turno) {
+      turnoActual.value = data.turno
+    } else {
+      turnoActual.value = null
+    }
+  } catch (error) {
+    console.error('Error al obtener turno actual:', error)
+  }
+}
+// Ejecuta la llamada a la API para avanzar la cola de turnos
+const manejarSiguienteTurno = async () => {
+  isLoadingSiguiente.value = true
+  try {
+    const token = authStore.token
+    await saltarTurnoSiguiente(token)
 
+    // Cargar el nuevo turno para actualizar la vista inmediatamente
+    await cargarTurnoEnPantalla()
+
+  } catch (error) {
+    console.error('Fallo al saltar turno:', error)
+  } finally {
+    isLoadingSiguiente.value = false
+  }
+}
 // Contador basado en el array real de alertas
 const alertasCount = computed(() => alertas.value.length)
 
@@ -378,9 +424,12 @@ onMounted(() => {
 
   // Cargar estadísticas iniciales (incluye alertas)
   cargarEstadisticas()
-
+  cargarTurnoEnPantalla()
   // Actualizar cada 30 segundos
-  intervalId = setInterval(cargarEstadisticas, 30000)
+  intervalId = setInterval(() => {
+    cargarEstadisticas()
+    cargarTurnoEnPantalla()
+  }, 30000)
 })
 
 onUnmounted(() => {
