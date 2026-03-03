@@ -76,7 +76,12 @@ const fetchDatosTurnero = async () => {
             getColaTurnos()
         ])
 
-        const turnoActual = actualData.hay_turno ? actualData.turno : null
+        let turnoActual = actualData.hay_turno ? actualData.turno : null
+
+        // Descartar el turno actual si su estado cambió a Expirado
+        if (turnoActual && turnoActual.estado_prestamo === 'Expirado') {
+            turnoActual = null
+        }
 
         let listaEspera = colaResponse.en_cola || colaResponse.pendientes || colaResponse.cola || []
         let listaSaltados = colaResponse.saltados || colaResponse.rezagados || []
@@ -84,6 +89,10 @@ const fetchDatosTurnero = async () => {
         if (Array.isArray(colaResponse)) {
             listaEspera = colaResponse
         }
+
+        // Limpiar las listas descartando cualquier préstamo que ya esté expirado
+        listaEspera = listaEspera.filter(t => t.estado_prestamo !== 'Expirado')
+        listaSaltados = listaSaltados.filter(t => t.estado_prestamo !== 'Expirado')
 
         if (listaSaltados.length === 0 && listaEspera.length > 0) {
             listaSaltados = listaEspera.filter(t =>
@@ -99,6 +108,7 @@ const fetchDatosTurnero = async () => {
             )
         }
 
+        // Remover el turno actual de la lista de espera para no duplicarlo
         if (turnoActual && listaEspera.length > 0) {
             listaEspera = listaEspera.filter(p => p.codigo_publico !== turnoActual.codigo_publico)
         }
