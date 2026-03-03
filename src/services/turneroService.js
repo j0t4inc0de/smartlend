@@ -22,3 +22,12 @@ export const saltarTurnoSiguiente = async (token) => {
   }
   return response.json()
 }
+
+// cola de turnos
+export const getColaTurnos = async () => {
+  const response = await fetch(`${API_BASE_URL}/operaciones/api/turnero/cola/`)
+  if (!response.ok) {
+    throw new Error('Error al obtener la cola de turnos')
+  }
+  return response.json()
+}
