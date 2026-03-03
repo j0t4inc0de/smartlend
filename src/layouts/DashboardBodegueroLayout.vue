@@ -153,9 +153,11 @@
               </div>
 
               <button @click="manejarSiguienteTurno" :disabled="isLoadingSiguiente"
-                class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-1.5 px-3 rounded shadow disabled:opacity-50 text-sm transition-colors">
-                <span v-if="isLoadingSiguiente">Llamando...</span>
-                <span v-else>Llamar Siguiente</span>
+                class="flex items-center gap-2 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-600 text-white font-medium py-2 px-4 rounded-lg shadow-lg shadow-red-900/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+                </svg>
+                <span class="text-sm">{{ isLoadingSiguiente ? 'Procesando...' : 'Siguiente' }}</span>
               </button>
             </div>
           </div>
@@ -266,7 +268,7 @@
                 <div v-if="alertas.length > 0" class="px-4 py-3 border-t border-gray-700 bg-gray-900/50">
                   <div class="flex justify-between items-center">
                     <span class="text-xs text-gray-400">{{ alertas.length }} alerta{{ alertas.length !== 1 ? 's' : ''
-                      }}</span>
+                    }}</span>
                     <span class="text-xs text-gray-500">Se resuelven automáticamente al devolver</span>
                   </div>
                 </div>

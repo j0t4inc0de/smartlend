@@ -1,23 +1,23 @@
 <template>
-    <div class="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
-        <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl text-center p-12">
-            <h1 class="text-4xl font-bold text-gray-800 mb-8">Turno Actual</h1>
+    <div class="min-h-screen bg-gray-900 flex flex-col items-center justify-center p-6">
+        <div class="bg-gray-800 border-2 border-gray-700 rounded-3xl shadow-2xl w-full max-w-6xl text-center p-16">
+            <h1 class="text-5xl font-bold text-white mb-12 tracking-wide">Turno Actual</h1>
 
-            <div v-if="turnoData.hay_turno" class="space-y-6">
-                <div class="text-8xl font-extrabold text-blue-600 tracking-wider">
+            <div v-if="turnoData.hay_turno" class="space-y-8">
+                <div class="text-[10rem] leading-none font-extrabold text-red-500 tracking-widest">
                     {{ turnoData.turno.codigo_publico }}
                 </div>
-                <div class="text-2xl text-gray-600 font-semibold uppercase">
+                <div class="text-5xl text-gray-300 font-semibold uppercase tracking-widest">
                     {{ turnoData.turno.estado_prestamo }}
                 </div>
             </div>
 
-            <div v-else class="text-4xl font-medium text-gray-500 py-12">
+            <div v-else class="text-6xl font-medium text-gray-500 py-24">
                 No hay turnos pendientes
             </div>
 
-            <div class="mt-12 text-xl text-gray-500">
-                Personas en espera: <span class="font-bold">{{ turnoData.pendientes_listos }}</span>
+            <div class="mt-20 text-4xl text-gray-400 border-t border-gray-700 pt-10">
+                Personas en espera: <span class="font-bold text-white">{{ turnoData.pendientes_listos }}</span>
             </div>
         </div>
     </div>
