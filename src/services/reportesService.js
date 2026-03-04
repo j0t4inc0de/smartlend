@@ -35,4 +35,14 @@ export const reportesService = {
       throw error
     }
   },
+  //   Obtener historial de herramientas para calcular último préstamo
+  async getHistorialHerramientasDatos() {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/inventario/api/historial-herramientas/`)
+      return Array.isArray(response.data) ? response.data : []
+    } catch (error) {
+      console.error('Error al obtener el historial de herramientas:', error)
+      throw error
+    }
+  },
 }

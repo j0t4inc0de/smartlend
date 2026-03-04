@@ -37,20 +37,43 @@ import autoTable from 'jspdf-autotable'
 const cargandoExcel = ref(false)
 const cargandoExcelInv = ref(false)
 const cargandoPDF = ref(false)
-
+// --- GENERAR EXCEL DE USUARIOS ---
 // --- GENERAR EXCEL DE USUARIOS ---
 const generarExcelUsuarios = async () => {
     try {
         cargandoExcel.value = true
-        const usuariosRaw = await reportesService.getUsuariosDatos()
 
+        // 1. Obtenemos Usuarios e Historial al mismo tiempo
+        const [usuariosRaw, historialRaw] = await Promise.all([
+            reportesService.getUsuariosDatos(),
+            reportesService.getHistorialHerramientasDatos()
+        ])
+
+        // 2. Procesamos el historial para encontrar la fecha más reciente por cada usuario
+        const ultimosPrestamosMap = {} // Formato: { id_usuario: fecha_mas_reciente (Date) }
+
+        historialRaw.forEach(registro => {
+            const idUsuario = registro.usuario
+            const fechaRegistro = new Date(registro.registrada_en)
+
+            // Si el usuario aún no está en nuestro mapa, o si la fecha que estamos 
+            // iterando es MÁS NUEVA que la que ya teníamos guardada, la actualizamos.
+            if (!ultimosPrestamosMap[idUsuario] || fechaRegistro > ultimosPrestamosMap[idUsuario]) {
+                ultimosPrestamosMap[idUsuario] = fechaRegistro
+            }
+        })
+
+        // 3. Mapeamos los usuarios cruzando la información con nuestro mapa
         const datosFormateados = usuariosRaw.map(usuario => {
             const fechaRegistro = usuario.date_joined
                 ? new Date(usuario.date_joined).toLocaleDateString('es-CL')
                 : 'Desconocida';
 
-            const fechaUltimoPrestamo = usuario.ultimo_prestamo
-                ? new Date(usuario.ultimo_prestamo).toLocaleDateString('es-CL')
+            // Buscamos la fecha en nuestro mapa usando el ID del usuario
+            const fechaUltimo = ultimosPrestamosMap[usuario.id]
+
+            const fechaUltimoPrestamo = fechaUltimo
+                ? fechaUltimo.toLocaleDateString('es-CL')
                 : 'No registra';
 
             return {
@@ -63,14 +86,26 @@ const generarExcelUsuarios = async () => {
             }
         })
 
+        // 4. Construimos el Excel
         const worksheet = XLSX.utils.json_to_sheet(datosFormateados)
+
+        // Ajustamos los anchos de columna para que el Excel quede presentable
+        worksheet['!cols'] = [
+            { wch: 20 }, // Nombres
+            { wch: 20 }, // Apellidos
+            { wch: 35 }, // Correo
+            { wch: 10 }, // Baneado
+            { wch: 18 }, // Fecha Registro
+            { wch: 18 }  // Último Préstamo
+        ]
+
         const workbook = XLSX.utils.book_new()
         XLSX.utils.book_append_sheet(workbook, worksheet, "Usuarios")
         XLSX.writeFile(workbook, "reporte_usuarios.xlsx")
 
     } catch (error) {
         console.error(error)
-        alert('Hubo un error al generar el Excel de usuarios.')
+        alert('Hubo un error al intentar generar el Excel de usuarios.')
     } finally {
         cargandoExcel.value = false
     }
