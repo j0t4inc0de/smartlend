@@ -171,14 +171,14 @@ const formatearFecha = (fechaString) => {
     })
 }
 
-const abrirModalCrear = () => {
-    usuarioEditando.value = null
-    formUsuario.value = { nombres: '', apellidos: '', correo: '', id_rol: 3 }
-    mostrarModal.value = true
-}
+// const abrirModalCrear = () => {
+//     usuarioEditando.value = null
+//     formUsuario.value = { nombres: '', apellidos: '', correo: '', id_rol: 3 }
+//     mostrarModal.value = true
+// }
 
 const abrirModalEditar = (usuario) => {
-    if (usuario.correo === 'jericesb5@gmail.com' || usuario.correo === 'jericesb5@protonmail.com') {
+    if (usuario.correo === 'jericesb5@gmail.com' || usuario.correo === 'jericesb5@protonmail.com' || usuario.correo === 'juan.erices04@inacapmail.cl') {
         esmicodigo2 += 1
         console.log("¿Quieres modificar al creador de este sistema? No lo creo, eso no va a pasar. :D")
         console.log("Número de intentos de edición del creador:", esmicodigo2)
@@ -212,7 +212,7 @@ const guardarUsuario = async () => {
 }
 
 const eliminarUsuario = async (usuario) => {
-    if (usuario.correo === 'jericesb5@gmail.com' || usuario.correo === 'jericesb5@protonmail.com') {
+    if (usuario.correo === 'jericesb5@gmail.com' || usuario.correo === 'jericesb5@protonmail.com' || usuario.correo === 'juan.erices04@inacapmail.cl') {
         esmicodigo2 += 1
         console.log("¿Quieres modificar al creador de este sistema? No lo creo, eso no va a pasar. :D")
         console.log("Número de intentos de edición del creador:", esmicodigo2)
