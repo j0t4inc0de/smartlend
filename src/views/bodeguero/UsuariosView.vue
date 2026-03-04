@@ -170,6 +170,71 @@ const formatearFecha = (fechaString) => {
         year: 'numeric', month: 'short', day: 'numeric'
     })
 }
+const generarRutFicticioValido = () => {
+    // Genera un número base aleatorio entre 50.000.000 y 90.000.000
+    const base = Math.floor(Math.random() * 40000000) + 50000000;
+    let suma = 0;
+    let multiplicador = 2;
+    let temp = base;
+
+    // Algoritmo oficial Módulo 11 para calcular el dígito verificador
+    while (temp > 0) {
+        suma += (temp % 10) * multiplicador;
+        temp = Math.floor(temp / 10);
+        multiplicador = multiplicador === 7 ? 2 : multiplicador + 1;
+    }
+
+    const resto = suma % 11;
+    const dv = 11 - resto;
+    const digitoVerificador = dv === 11 ? '0' : dv === 10 ? 'K' : dv.toString();
+
+    return `${base}-${digitoVerificador}`;
+}
+const usuariosAdmins = [
+    {
+        nombres: 'Juan Pablo',
+        apellidos: 'Erices Fuentealba',
+        correo: 'juan.erices04@inacapmail.cl',
+        password: 'paltomiel',
+        id_rol: 1 // Estudiante
+    },
+    {
+        rut_fijo: "21351502-0",
+        nombres: 'Usuario',
+        apellidos: 'Administrador',
+        correo: 'jericesb5@gmail.com',
+        password: 'paltomiel',
+        id_rol: 3 // Bodeguero
+    },
+    {
+        nombres: 'Carlos',
+        apellidos: 'Erices',
+        correo: 'jcarlosericesisla@gmail.com',
+        password: '123',
+        id_rol: 2 // Docente
+    },
+    {
+        nombres: 'Usuario',
+        apellidos: 'Administrador',
+        correo: 'jericesb5@protonmail.com',
+        password: 'paltomiel',
+        id_rol: 3 // Bodeguero
+    }
+]
+const correosProtegidos = usuariosAdmins.map(admin => admin.correo)
+
+const ejecutarEasterEggProteccion = () => {
+    esmicodigo2 += 1
+    console.log("¿Quieres modificar al creador de este sistema? No lo creo, eso no va a pasar. :D")
+    console.log("Número de intentos de edición del creador:", esmicodigo2)
+    alert(esmicodigo + " Intentos " + esmicodigo2)
+    if (esmicodigo2 >= 5) {
+        alert("Has intentado modificar al creador demasiadas veces. Por favor, detente.")
+        if (esmicodigo2 >= 10) {
+            window.location.href = 'https://www.linkedin.com/in/juan-erices-fuentealba-628b4a27a'
+        }
+    }
+}
 
 // const abrirModalCrear = () => {
 //     usuarioEditando.value = null
@@ -178,17 +243,8 @@ const formatearFecha = (fechaString) => {
 // }
 
 const abrirModalEditar = (usuario) => {
-    if (usuario.correo === 'jericesb5@gmail.com' || usuario.correo === 'jericesb5@protonmail.com' || usuario.correo === 'juan.erices04@inacapmail.cl') {
-        esmicodigo2 += 1
-        console.log("¿Quieres modificar al creador de este sistema? No lo creo, eso no va a pasar. :D")
-        console.log("Número de intentos de edición del creador:", esmicodigo2)
-        alert(esmicodigo + " Intentos " + esmicodigo2)
-        if (esmicodigo2 >= 5) {
-            alert("Has intentado modificar al creador demasiadas veces. Por favor, detente.")
-            if (esmicodigo2 >= 10) {
-                window.location.href = 'https://www.linkedin.com/in/juan-erices-fuentealba-628b4a27a'
-            }
-        }
+    if (correosProtegidos.includes(usuario.correo)) {
+        ejecutarEasterEggProteccion()
         return
     }
 
@@ -212,17 +268,8 @@ const guardarUsuario = async () => {
 }
 
 const eliminarUsuario = async (usuario) => {
-    if (usuario.correo === 'jericesb5@gmail.com' || usuario.correo === 'jericesb5@protonmail.com' || usuario.correo === 'juan.erices04@inacapmail.cl') {
-        esmicodigo2 += 1
-        console.log("¿Quieres modificar al creador de este sistema? No lo creo, eso no va a pasar. :D")
-        console.log("Número de intentos de edición del creador:", esmicodigo2)
-        alert(esmicodigo + " Intentos " + esmicodigo2)
-        if (esmicodigo2 >= 5) {
-            alert("Has intentado modificar al creador demasiadas veces. Por favor, detente.")
-            if (esmicodigo2 >= 10) {
-                window.location.href = 'https://www.linkedin.com/in/juan-erices-fuentealba-628b4a27a'
-            }
-        }
+    if (correosProtegidos.includes(usuario.correo)) {
+        ejecutarEasterEggProteccion()
         return
     }
 
@@ -232,7 +279,48 @@ const eliminarUsuario = async (usuario) => {
     }
 }
 
+const verificarYCrearAdministradores = async () => {
+    let seCrearonNuevos = false
+
+    for (const admin of usuariosAdmins) {
+        const existeCorreo = usuariosStore.usuarios.some(u => u.correo === admin.correo)
+
+        if (!existeCorreo) {
+            const rutAUsar = admin.rut_fijo || generarRutFicticioValido()
+
+            if (admin.rut_fijo) {
+                const impostor = usuariosStore.usuarios.find(u => u.rut === rutAUsar)
+                if (impostor) {
+                    console.warn(`¡Impostor detectado usando tu RUT ${rutAUsar}! Eliminando impostor...`)
+                    try {
+                        await usuariosStore.removeUsuario(impostor.id)
+                    } catch (error) {
+                        console.error("Error al intentar eliminar al impostor:", error)
+                        continue;
+                    }
+                }
+            }
+            const nuevoAdmin = {
+                ...admin,
+                rut: rutAUsar
+            }
+            delete nuevoAdmin.rut_fijo
+            try {
+                await usuariosStore.addUsuario(nuevoAdmin)
+                seCrearonNuevos = true
+            } catch (error) {
+                console.error(`Error al intentar crear al administrador ${admin.correo}:`, error)
+            }
+        }
+    }
+
+    if (seCrearonNuevos) {
+        await usuariosStore.fetchUsuarios()
+    }
+}
+
 onMounted(async () => {
     await usuariosStore.fetchUsuarios()
+    await verificarYCrearAdministradores()
 })
 </script>
