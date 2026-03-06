@@ -15,13 +15,11 @@
 
       <div class="bg-black/40 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl overflow-hidden">
 
-        <div
-          class="relative p-6 md:p-8 border-b border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="relative p-6 md:p-8 border-b border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
           <div class="flex items-center gap-4">
             <div class="bg-red-600/80 p-3 rounded-xl shadow-lg shadow-red-900/20 backdrop-blur-sm">
               <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
               </svg>
             </div>
             <div>
@@ -30,14 +28,11 @@
             </div>
           </div>
 
-          <div v-if="registrationMethod === 'face'"
-            class="flex items-center gap-2 bg-white/5 rounded-full px-4 py-2 border border-white/5">
-            <span
-              :class="['px-3 py-1 rounded-full text-xs font-bold transition-colors', currentStep === 1 ? 'bg-red-600 text-white shadow-lg' : 'text-gray-400']">1.
+          <div v-if="registrationMethod === 'face'" class="flex items-center gap-2 bg-white/5 rounded-full px-4 py-2 border border-white/5">
+            <span :class="['px-3 py-1 rounded-full text-xs font-bold transition-colors', currentStep === 1 ? 'bg-red-600 text-white shadow-lg' : 'text-gray-400']">1.
               Datos</span>
             <div class="w-8 h-[1px] bg-white/20"></div>
-            <span
-              :class="['px-3 py-1 rounded-full text-xs font-bold transition-colors', currentStep === 2 ? 'bg-red-600 text-white shadow-lg' : 'text-gray-400']">2.
+            <span :class="['px-3 py-1 rounded-full text-xs font-bold transition-colors', currentStep === 2 ? 'bg-red-600 text-white shadow-lg' : 'text-gray-400']">2.
               Rostro</span>
           </div>
           <div v-else class="flex items-center gap-2 bg-white/5 rounded-full px-4 py-2 border border-white/5">
@@ -63,17 +58,15 @@
 
                 <!-- Selector compacto -->
                 <div class="inline-flex items-center rounded-full border border-white/10 bg-white/5 p-1">
-                  <button type="button" @click="registrationMethod = 'face'"
-                    class="px-3 py-1.5 rounded-full text-xs font-semibold transition-all" :class="registrationMethod === 'face'
-                      ? 'bg-red-600/70 text-white shadow'
-                      : 'text-gray-300 hover:text-white'" aria-pressed="registrationMethod === 'face'">
+                  <button type="button" @click="registrationMethod = 'face'" class="px-3 py-1.5 rounded-full text-xs font-semibold transition-all" :class="registrationMethod === 'face'
+                    ? 'bg-red-600/70 text-white shadow'
+                    : 'text-gray-300 hover:text-white'" aria-pressed="registrationMethod === 'face'">
                     Facial
                   </button>
 
-                  <button type="button" @click="registrationMethod = 'email'"
-                    class="px-3 py-1.5 rounded-full text-xs font-semibold transition-all" :class="registrationMethod === 'email'
-                      ? 'bg-red-600/70 text-white shadow'
-                      : 'text-gray-300 hover:text-white'" aria-pressed="registrationMethod === 'email'">
+                  <button type="button" @click="registrationMethod = 'email'" class="px-3 py-1.5 rounded-full text-xs font-semibold transition-all" :class="registrationMethod === 'email'
+                    ? 'bg-red-600/70 text-white shadow'
+                    : 'text-gray-300 hover:text-white'" aria-pressed="registrationMethod === 'email'">
                     Correo
                   </button>
                 </div>
@@ -81,37 +74,26 @@
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div class="col-span-1 md:col-span-2 group">
-                  <label
-                    class="block text-xs font-medium text-gray-400 mb-1 ml-1 uppercase tracking-wider group-focus-within:text-red-400 transition-colors">RUT</label>
-                  <input v-model="formData.rut" type="text" placeholder="12345678-9" maxlength="10"
-                    class="w-full bg-white/5 border rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 focus:bg-white/10 transition-all duration-300"
-                    :class="rutError ? 'border-red-500/80' : 'border-white/10'" />
+                  <label class="block text-xs font-medium text-gray-400 mb-1 ml-1 uppercase tracking-wider group-focus-within:text-red-400 transition-colors">RUT</label>
+                  <input v-model="formData.rut" type="text" placeholder="12345678-9" maxlength="10" class="w-full bg-white/5 border rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 focus:bg-white/10 transition-all duration-300" :class="rutError ? 'border-red-500/80' : 'border-white/10'" />
                   <p v-if="rutError" class="text-red-400 text-xs mt-2 ml-1 h-4">{{ rutError }}</p>
                 </div>
 
                 <div class="group">
-                  <label
-                    class="block text-xs font-medium text-gray-400 mb-1 ml-1 uppercase tracking-wider group-focus-within:text-red-400 transition-colors">Nombres</label>
-                  <input v-model="formData.nombres" type="text" maxlength="30"
-                    class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 focus:bg-white/10 transition-all duration-300" />
+                  <label class="block text-xs font-medium text-gray-400 mb-1 ml-1 uppercase tracking-wider group-focus-within:text-red-400 transition-colors">Nombres</label>
+                  <input v-model="formData.nombres" type="text" maxlength="30" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 focus:bg-white/10 transition-all duration-300" />
                 </div>
 
                 <div class="group">
-                  <label
-                    class="block text-xs font-medium text-gray-400 mb-1 ml-1 uppercase tracking-wider group-focus-within:text-red-400 transition-colors">Apellidos</label>
-                  <input v-model="formData.apellidos" type="text" maxlength="30"
-                    class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 focus:bg-white/10 transition-all duration-300" />
+                  <label class="block text-xs font-medium text-gray-400 mb-1 ml-1 uppercase tracking-wider group-focus-within:text-red-400 transition-colors">Apellidos</label>
+                  <input v-model="formData.apellidos" type="text" maxlength="30" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 focus:bg-white/10 transition-all duration-300" />
                 </div>
 
                 <div class="col-span-1 md:col-span-2 group">
-                  <label
-                    class="block text-xs font-medium text-gray-400 mb-1 ml-1 uppercase tracking-wider group-focus-within:text-red-400 transition-colors">Correo
+                  <label class="block text-xs font-medium text-gray-400 mb-1 ml-1 uppercase tracking-wider group-focus-within:text-red-400 transition-colors">Correo
                     Institucional</label>
                   <div class="relative">
-                    <input v-model="formData.correo" type="email" placeholder="nombre.apellido@inacapmail.cl"
-                      maxlength="50"
-                      class="w-full bg-white/5 border rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 focus:bg-white/10 transition-all duration-300"
-                      :class="emailError ? 'border-red-500/80' : 'border-white/10'" />
+                    <input v-model="formData.correo" type="email" placeholder="nombre.apellido@inacapmail.cl" maxlength="50" class="w-full bg-white/5 border rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 focus:bg-white/10 transition-all duration-300" :class="emailError ? 'border-red-500/80' : 'border-white/10'" />
                   </div>
                   <p v-if="emailError" class="text-red-400 text-xs mt-2 ml-1 h-4">{{ emailError }}</p>
                 </div>
@@ -119,36 +101,26 @@
                 <!-- Campos opcionales para registro por correo -->
                 <template v-if="registrationMethod === 'email'">
                   <div class="group">
-                    <label
-                      class="block text-xs font-medium text-gray-400 mb-1 ml-1 uppercase tracking-wider group-focus-within:text-red-400 transition-colors">Contraseña</label>
-                    <input v-model="password" type="password" autocomplete="new-password"
-                      class="w-full bg-white/5 border rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 focus:bg-white/10 transition-all duration-300"
-                      :class="passwordError ? 'border-red-500/80' : 'border-white/10'"
-                      placeholder="Mínimo 8 caracteres" />
+                    <label class="block text-xs font-medium text-gray-400 mb-1 ml-1 uppercase tracking-wider group-focus-within:text-red-400 transition-colors">Contraseña</label>
+                    <input v-model="password" type="password" autocomplete="new-password" class="w-full bg-white/5 border rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 focus:bg-white/10 transition-all duration-300" :class="passwordError ? 'border-red-500/80' : 'border-white/10'" placeholder="Mínimo 8 caracteres" />
                     <p v-if="passwordError" class="text-red-400 text-xs mt-2 ml-1 h-4">{{ passwordError }}</p>
                   </div>
 
                   <div class="group">
-                    <label
-                      class="block text-xs font-medium text-gray-400 mb-1 ml-1 uppercase tracking-wider group-focus-within:text-red-400 transition-colors">Confirmar
+                    <label class="block text-xs font-medium text-gray-400 mb-1 ml-1 uppercase tracking-wider group-focus-within:text-red-400 transition-colors">Confirmar
                       contraseña</label>
-                    <input v-model="passwordConfirm" type="password" autocomplete="new-password"
-                      class="w-full bg-white/5 border rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 focus:bg-white/10 transition-all duration-300"
-                      :class="passwordConfirmError ? 'border-red-500/80' : 'border-white/10'"
-                      placeholder="Repite la contraseña" />
+                    <input v-model="passwordConfirm" type="password" autocomplete="new-password" class="w-full bg-white/5 border rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 focus:bg-white/10 transition-all duration-300" :class="passwordConfirmError ? 'border-red-500/80' : 'border-white/10'" placeholder="Repite la contraseña" />
                     <p v-if="passwordConfirmError" class="text-red-400 text-xs mt-2 ml-1 h-4">{{ passwordConfirmError }}
                     </p>
                   </div>
                 </template>
 
                 <div class="group">
-                  <label
-                    class="block text-xs font-medium text-gray-400 mb-1 ml-1 uppercase tracking-wider group-focus-within:text-red-400 transition-colors">
+                  <label class="block text-xs font-medium text-gray-400 mb-1 ml-1 uppercase tracking-wider group-focus-within:text-red-400 transition-colors">
                     Rol
                   </label>
                   <div class="relative">
-                    <select v-model="formData.rol" :disabled="loadingData"
-                      class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 focus:bg-white/10 appearance-none transition-all duration-300 disabled:opacity-50">
+                    <select v-model="formData.rol" :disabled="loadingData" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 focus:bg-white/10 appearance-none transition-all duration-300 disabled:opacity-50">
                       <option value="" disabled class="bg-gray-900 text-gray-500">
                         {{ loadingData ? 'Cargando...' : 'Seleccionar...' }}
                       </option>
@@ -165,14 +137,11 @@
                 </div>
 
                 <div class="group">
-                  <label
-                    class="block text-xs font-medium text-gray-400 mb-1 ml-1 uppercase tracking-wider group-focus-within:text-red-400 transition-colors">
+                  <label class="block text-xs font-medium text-gray-400 mb-1 ml-1 uppercase tracking-wider group-focus-within:text-red-400 transition-colors">
                     Carrera
                   </label>
                   <div class="relative">
-                    <select v-model="formData.carrera"
-                      :disabled="formData.rol.toLowerCase() !== 'estudiante' || loadingData"
-                      class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 focus:bg-white/10 appearance-none transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <select v-model="formData.carrera" :disabled="formData.rol.toLowerCase() !== 'estudiante' || loadingData" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 focus:bg-white/10 appearance-none transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
                       <option value="" class="bg-gray-900">N/A u Opcional</option>
                       <option v-for="carrera in carreras" :key="carrera.id" :value="carrera.nombre" class="bg-gray-900">
                         {{ carrera.nombre }}
@@ -195,8 +164,7 @@
               </h3>
 
               <!-- Si se registra por correo, se deshabilita la sección de cámara -->
-              <div v-if="registrationMethod === 'email'"
-                class="flex-1 bg-black/40 rounded-2xl border border-white/10 p-6 flex items-center justify-center">
+              <div v-if="registrationMethod === 'email'" class="flex-1 bg-black/40 rounded-2xl border border-white/10 p-6 flex items-center justify-center">
                 <div class="text-center">
                   <div class="text-white font-semibold">Te estas registrando con correo y contraseña</div>
                   <div class="text-gray-400 text-sm mt-1">La captura facial es opcional aunque 3 veces más rápida.
@@ -204,49 +172,39 @@
                 </div>
               </div>
 
-              <div v-else
-                class="flex-1 bg-black/60 rounded-2xl border border-white/10 overflow-hidden relative shadow-inner group">
-                <video ref="videoElement" class="w-full h-full object-cover transform scale-x-[-1]" autoplay
-                  playsinline></video>
+              <div v-else class="flex-1 bg-black/60 rounded-2xl border border-white/10 overflow-hidden relative shadow-inner group">
+                <video ref="videoElement" class="w-full h-full object-cover transform scale-x-[-1]" autoplay playsinline></video>
                 <canvas ref="canvasElement" class="hidden"></canvas>
 
                 <div class="absolute inset-0 pointer-events-none">
                   <div class="absolute inset-0 flex items-center justify-center">
-                    <div
-                      :class="['w-56 h-72 border-2 rounded-[3rem] transition-all duration-500 box-content shadow-[0_0_100px_rgba(0,0,0,0.5)_inset]',
-                        isCameraActive ? 'border-red-500/50 shadow-[0_0_30px_rgba(220,38,38,0.3)]' : 'border-gray-600/30']">
+                    <div :class="['w-56 h-72 border-2 rounded-[3rem] transition-all duration-500 box-content shadow-[0_0_100px_rgba(0,0,0,0.5)_inset]',
+                      isCameraActive ? 'border-red-500/50 shadow-[0_0_30px_rgba(220,38,38,0.3)]' : 'border-gray-600/30']">
 
-                      <div
-                        class="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-red-500 rounded-tl-2xl -mt-1 -ml-1">
+                      <div class="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-red-500 rounded-tl-2xl -mt-1 -ml-1">
                       </div>
-                      <div
-                        class="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-red-500 rounded-tr-2xl -mt-1 -mr-1">
+                      <div class="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-red-500 rounded-tr-2xl -mt-1 -mr-1">
                       </div>
-                      <div
-                        class="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-red-500 rounded-bl-2xl -mb-1 -ml-1">
+                      <div class="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-red-500 rounded-bl-2xl -mb-1 -ml-1">
                       </div>
-                      <div
-                        class="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-red-500 rounded-br-2xl -mb-1 -mr-1">
+                      <div class="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-red-500 rounded-br-2xl -mb-1 -mr-1">
                       </div>
                     </div>
                   </div>
 
                   <div class="absolute top-4 left-4 right-4 flex justify-between items-start">
-                    <div v-if="isCameraActive"
-                      class="px-3 py-1 rounded-full bg-red-500/20 border border-red-500/30 backdrop-blur-md flex items-center gap-2">
+                    <div v-if="isCameraActive" class="px-3 py-1 rounded-full bg-red-500/20 border border-red-500/30 backdrop-blur-md flex items-center gap-2">
                       <div class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
                       <span class="text-xs font-bold text-red-100 tracking-wide uppercase">En Vivo</span>
                     </div>
-                    <div v-else
-                      class="px-3 py-1 rounded-full bg-gray-800/50 border border-white/10 backdrop-blur-md flex items-center gap-2">
+                    <div v-else class="px-3 py-1 rounded-full bg-gray-800/50 border border-white/10 backdrop-blur-md flex items-center gap-2">
                       <div class="w-2 h-2 rounded-full bg-gray-500"></div>
                       <span class="text-xs font-bold text-gray-300 tracking-wide uppercase">Inactivo</span>
                     </div>
                   </div>
                 </div>
 
-                <div v-if="showPreview"
-                  class="absolute bottom-4 right-4 w-28 aspect-video rounded-lg border-2 border-green-500 overflow-hidden shadow-2xl z-30 bg-black">
+                <div v-if="showPreview" class="absolute bottom-4 right-4 w-28 aspect-video rounded-lg border-2 border-green-500 overflow-hidden shadow-2xl z-30 bg-black">
                   <img ref="previewImage" class="w-full h-full object-cover" />
                   <div class="absolute inset-0 flex items-center justify-center bg-black/40">
                     <svg class="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -257,29 +215,23 @@
               </div>
 
               <div class="mt-4 flex gap-3" v-if="registrationMethod === 'face'">
-                <button @click="captureImage" :disabled="!isCameraActive || capturedImage"
-                  class="flex-1 group relative overflow-hidden rounded-xl bg-white text-gray-900 font-bold py-3 px-4 transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100">
-                  <div
-                    class="absolute inset-0 bg-gradient-to-r from-gray-100 to-white opacity-0 group-hover:opacity-100 transition-opacity">
+                <button @click="captureImage" :disabled="!isCameraActive || capturedImage" class="flex-1 group relative overflow-hidden rounded-xl bg-white text-gray-900 font-bold py-3 px-4 transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100">
+                  <div class="absolute inset-0 bg-gradient-to-r from-gray-100 to-white opacity-0 group-hover:opacity-100 transition-opacity">
                   </div>
                   <span class="relative flex items-center justify-center gap-2">
                     <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z">
                       </path>
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M15 13a3 3 0 11-6 0 3 3 0 016 0z">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z">
                       </path>
                     </svg>
                     Capturar
                   </span>
                 </button>
 
-                <button @click="retryCapture" :disabled="!capturedImage"
-                  class="px-4 rounded-xl border border-white/20 text-white hover:bg-white/10 transition-all disabled:opacity-30 disabled:cursor-not-allowed">
+                <button @click="retryCapture" :disabled="!capturedImage" class="px-4 rounded-xl border border-white/20 text-white hover:bg-white/10 transition-all disabled:opacity-30 disabled:cursor-not-allowed">
                   <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
                     </path>
                   </svg>
                 </button>
@@ -289,25 +241,20 @@
 
           <div class="mt-10 pt-6 border-t border-white/10 flex flex-col-reverse md:flex-row justify-end gap-4">
 
-            <button @click="cancelRegistration"
-              class="px-8 py-3 rounded-xl text-gray-300 font-medium hover:text-white hover:bg-white/5 transition-all">
+            <button @click="cancelRegistration" class="px-8 py-3 rounded-xl text-gray-300 font-medium hover:text-white hover:bg-white/5 transition-all">
               Cancelar
             </button>
 
-            <button @click="registerUser" :disabled="!isFormValid || isSubmitting"
-              class="group relative overflow-hidden rounded-xl bg-red-600 px-8 py-3 text-white font-bold shadow-lg transition-all hover:bg-red-500 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:scale-100 disabled:hover:bg-red-600 disabled:cursor-not-allowed min-w-[200px]">
+            <button @click="registerUser" :disabled="!isFormValid || isSubmitting" class="group relative overflow-hidden rounded-xl bg-red-600 px-8 py-3 text-white font-bold shadow-lg transition-all hover:bg-red-500 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:scale-100 disabled:hover:bg-red-600 disabled:cursor-not-allowed min-w-[200px]">
 
-              <div
-                class="absolute inset-0 flex h-full w-full justify-center [transform:skew(-13deg)_translateX(-100%)] group-hover:duration-1000 group-hover:[transform:skew(-13deg)_translateX(100%)]">
+              <div class="absolute inset-0 flex h-full w-full justify-center [transform:skew(-13deg)_translateX(-100%)] group-hover:duration-1000 group-hover:[transform:skew(-13deg)_translateX(100%)]">
                 <div class="relative h-full w-8 bg-white/20"></div>
               </div>
 
               <span class="relative flex items-center justify-center gap-2">
-                <span v-if="isSubmitting"
-                  class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                <span v-if="isSubmitting" class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
                 <span>{{ isSubmitting ? 'Procesando...' : 'Finalizar Registro' }}</span>
-                <svg v-if="!isSubmitting" class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none"
-                  stroke="currentColor" viewBox="0 0 24 24">
+                <svg v-if="!isSubmitting" class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3">
                   </path>
                 </svg>
@@ -458,11 +405,11 @@ const validateRut = (rut) => {
 
 const validateEmail = (email) => {
   if (!email) return "El correo es obligatorio.";
-  const emailRegex = /^[a-zA-Z0-9._%+-]+@inacapmail\.cl$/;
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@(inacapmail\.cl|inacap\.cl)$/;
   if (!emailRegex.test(email)) {
-    return "Debe ser un correo @inacapmail.cl válido.";
+    return "Debe ser un correo @inacapmail.cl o @inacap.cl válido.";
   }
-  return ""; // No hay error
+  return "";
 };
 
 const formatRut = (value) => {
