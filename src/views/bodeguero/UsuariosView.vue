@@ -5,7 +5,7 @@
 
             <div class="flex gap-3">
                 <button @click="router.push('/registrar-usuario')" class="bg-gray-700 hover:bg-gray-600 border border-gray-600 text-white px-4 py-2 rounded-lg font-medium transition-colors text-sm">
-                    Registrar Usuario en Smartlend
+                    Registrar Usuario - test
                 </button>
                 <!-- <button @click="abrirModalCrear"
                     class="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg font-medium transition-colors text-sm">
