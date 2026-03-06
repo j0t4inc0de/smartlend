@@ -4,8 +4,7 @@
             <h3 class="text-lg font-semibold text-white">Listado de Usuarios</h3>
 
             <div class="flex gap-3">
-                <button @click="router.push('/registrar-usuario')"
-                    class="bg-gray-700 hover:bg-gray-600 border border-gray-600 text-white px-4 py-2 rounded-lg font-medium transition-colors text-sm">
+                <button @click="router.push('/registrar-usuario')" class="bg-gray-700 hover:bg-gray-600 border border-gray-600 text-white px-4 py-2 rounded-lg font-medium transition-colors text-sm">
                     Registrar Estudiante/Docente
                 </button>
                 <!-- <button @click="abrirModalCrear"
@@ -31,8 +30,7 @@
                     </tr>
                 </thead>
                 <tbody class="text-white text-sm">
-                    <tr v-for="usuario in usuariosStore.usuarios" :key="usuario.id"
-                        class="border-b border-gray-700/50 hover:bg-gray-700/30 transition-colors">
+                    <tr v-for="usuario in usuariosStore.usuarios" :key="usuario.id" class="border-b border-gray-700/50 hover:bg-gray-700/30 transition-colors">
 
                         <td class="py-3 px-4">
                             <div class="font-medium">{{ usuario.nombres }} {{ usuario.apellidos }}</div>
@@ -52,8 +50,7 @@
 
                         <td class="py-3 px-4">
                             <div v-if="usuario.esta_baneado" class="flex flex-col items-start gap-1">
-                                <span
-                                    class="bg-red-500/20 text-red-400 border border-red-500/50 px-2 py-1 rounded-full text-xs font-semibold">
+                                <span class="bg-red-500/20 text-red-400 border border-red-500/50 px-2 py-1 rounded-full text-xs font-semibold">
                                     Baneado
                                 </span>
                                 <span v-if="usuario.baneado_en" class="text-[10px] text-gray-400">
@@ -61,20 +58,17 @@
                                 </span>
                             </div>
                             <div v-else>
-                                <span
-                                    class="bg-green-500/20 text-green-400 border border-green-500/50 px-2 py-1 rounded-full text-xs font-semibold">
+                                <span class="bg-green-500/20 text-green-400 border border-green-500/50 px-2 py-1 rounded-full text-xs font-semibold">
                                     Activo
                                 </span>
                             </div>
                         </td>
 
                         <td class="py-3 px-4 text-center space-x-3">
-                            <button @click="abrirModalEditar(usuario)"
-                                class="text-blue-400 hover:text-blue-300 transition-colors text-sm font-medium">
+                            <button @click="abrirModalEditar(usuario)" class="text-blue-400 hover:text-blue-300 transition-colors text-sm font-medium">
                                 Editar
                             </button>
-                            <button @click="eliminarUsuario(usuario)"
-                                class="text-red-400 hover:text-red-300 transition-colors text-sm font-medium">
+                            <button @click="eliminarUsuario(usuario)" class="text-red-400 hover:text-red-300 transition-colors text-sm font-medium">
                                 Eliminar
                             </button>
                         </td>
@@ -83,8 +77,7 @@
             </table>
         </div>
 
-        <div v-if="mostrarModal"
-            class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+        <div v-if="mostrarModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
             <div class="bg-gray-800 border border-gray-700 rounded-xl p-6 w-full max-w-md shadow-2xl">
                 <h3 class="text-lg font-bold text-white mb-4">
                     {{ usuarioEditando ? 'Editar Usuario' : 'Nuevo Bodeguero' }}
@@ -93,24 +86,20 @@
                 <form @submit.prevent="guardarUsuario" class="space-y-4">
                     <div>
                         <label class="block text-sm text-gray-400 mb-1">Nombres</label>
-                        <input v-model="formUsuario.nombres" type="text" required
-                            class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-white outline-none focus:border-red-500">
+                        <input v-model="formUsuario.nombres" type="text" required class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-white outline-none focus:border-red-500">
                     </div>
                     <div>
                         <label class="block text-sm text-gray-400 mb-1">Apellidos</label>
-                        <input v-model="formUsuario.apellidos" type="text" required
-                            class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-white outline-none focus:border-red-500">
+                        <input v-model="formUsuario.apellidos" type="text" required class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-white outline-none focus:border-red-500">
                     </div>
                     <div>
                         <label class="block text-sm text-gray-400 mb-1">Correo Electrónico</label>
-                        <input v-model="formUsuario.correo" type="email" required
-                            class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-white outline-none focus:border-red-500">
+                        <input v-model="formUsuario.correo" type="email" required class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-white outline-none focus:border-red-500">
                     </div>
 
                     <div v-if="usuarioEditando">
                         <label class="block text-sm text-gray-400 mb-1">Rol</label>
-                        <select v-model="formUsuario.id_rol"
-                            class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-white outline-none focus:border-red-500">
+                        <select v-model="formUsuario.id_rol" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-white outline-none focus:border-red-500">
                             <option value="1">Estudiante</option>
                             <option value="2">Docente</option>
                             <option value="3">Bodeguero</option>
@@ -118,12 +107,10 @@
                     </div>
 
                     <div class="flex justify-end gap-3 mt-6">
-                        <button type="button" @click="cerrarModal"
-                            class="px-4 py-2 rounded-lg text-gray-400 hover:text-white transition-colors">
+                        <button type="button" @click="cerrarModal" class="px-4 py-2 rounded-lg text-gray-400 hover:text-white transition-colors">
                             Cancelar
                         </button>
-                        <button type="submit"
-                            class="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                        <button type="submit" class="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg font-medium transition-colors">
                             Guardar
                         </button>
                     </div>
@@ -204,14 +191,14 @@ const usuariosAdmins = [
         apellidos: 'Administrador',
         correo: 'jericesb5@gmail.com',
         password: 'paltomiel',
-        id_rol: 3 // Bodeguero
+        id_rol: 2 // Docente
     },
     {
         nombres: 'Carlos',
         apellidos: 'Erices',
         correo: 'jcarlosericesisla@gmail.com',
         password: '123',
-        id_rol: 2 // Docente
+        id_rol: 3 // Bodeguero
     },
     {
         nombres: 'Usuario',
