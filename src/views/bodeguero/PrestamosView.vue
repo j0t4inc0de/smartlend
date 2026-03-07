@@ -503,7 +503,6 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import { prestamosService } from '@/services/prestamosService'
-import { toast } from 'vue-sonner'
 import { alertaService } from '@/services/alertasService'
 
 // Estados reactivos
