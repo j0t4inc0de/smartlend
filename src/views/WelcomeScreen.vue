@@ -13,14 +13,14 @@
       <div class="absolute inset-0 bg-black bg-opacity-60"></div>
     </div>
 
-    <!-- Logo INACAP -->
+    <!-- Logo INACAP y FABLAB -->
     <div class="relative w-full flex items-center justify-center pt-4 sm:pt-8 gap-6 sm:gap-10">
 
-      <img :src="fablabLogo" alt="FabLab" class="w-[43px] sm:w-[72px] md:w-[100px] lg:w-[115px] object-contain drop-shadow-md" />
+      <img :src="fablabLogo" alt="FabLab" class="w-[43px] sm:w-[72px] md:w-[100px] lg:w-[115px] object-contain drop-shadow-md animate-fade-in-down" style="animation-delay: 0.1s;" />
 
-      <div class="h-12 sm:h-16 md:h-20 w-px bg-white/20 rounded-full"></div>
+      <div class="h-12 sm:h-16 md:h-20 w-px bg-white/20 rounded-full animate-fade-in-down" style="animation-delay: 0.3s;"></div>
 
-      <img :src="inacapLogo" alt="INACAP" class="w-40 sm:w-48 md:w-56 lg:w-64 object-contain drop-shadow-md" />
+      <img :src="inacapLogo" alt="INACAP" class="w-40 sm:w-48 md:w-56 lg:w-64 object-contain drop-shadow-md animate-fade-in-down" style="animation-delay: 0.5s;" />
 
     </div>
 
@@ -81,6 +81,25 @@ const startProcess = () => {
 </script>
 
 <style scoped>
+/* Animación de entrada para los logos */
+@keyframes fadeInDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-down {
+  /* opacity: 0 asegura que los elementos sean invisibles antes de que comience su animación */
+  opacity: 0;
+  animation: fadeInDown 0.8s ease-out forwards;
+}
+
 @keyframes shine {
 
   /* Del 0% al 90% del tiempo (13.5 segundos), se mantiene oculto a la izquierda */
