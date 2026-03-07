@@ -17,8 +17,7 @@
         <div class="p-6 md:p-8 border-b border-white/10 flex flex-col items-center text-center gap-4">
           <div class="bg-red-600/80 p-3 rounded-xl shadow-lg shadow-red-900/20 backdrop-blur-sm">
             <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
           <div>
@@ -28,33 +27,26 @@
         </div>
 
         <div class="p-6 md:p-8 flex flex-col items-center">
-          <div
-            class="relative w-full max-w-lg aspect-video bg-black/60 rounded-2xl border border-white/10 overflow-hidden shadow-2xl group">
-            <video ref="videoElement" class="w-full h-full object-cover transform scale-x-[-1]" autoplay
-              playsinline></video>
+          <div class="relative w-full max-w-lg aspect-video bg-black/60 rounded-2xl border border-white/10 overflow-hidden shadow-2xl group">
+            <video ref="videoElement" class="w-full h-full object-cover transform scale-x-[-1]" autoplay playsinline></video>
             <canvas ref="canvasElement" class="hidden"></canvas>
 
             <div class="absolute inset-0 pointer-events-none flex items-center justify-center">
               <div :class="['w-48 h-64 border-2 rounded-[2.5rem] transition-all duration-500 box-content',
                 isCameraActive ? 'border-red-500/60 shadow-[0_0_40px_rgba(220,38,38,0.2)]' : 'border-gray-600/30']">
-                <div
-                  class="absolute top-0 left-0 w-6 h-6 border-t-4 border-l-4 border-red-500 rounded-tl-2xl -mt-1 -ml-1">
+                <div class="absolute top-0 left-0 w-6 h-6 border-t-4 border-l-4 border-red-500 rounded-tl-2xl -mt-1 -ml-1">
                 </div>
-                <div
-                  class="absolute top-0 right-0 w-6 h-6 border-t-4 border-r-4 border-red-500 rounded-tr-2xl -mt-1 -mr-1">
+                <div class="absolute top-0 right-0 w-6 h-6 border-t-4 border-r-4 border-red-500 rounded-tr-2xl -mt-1 -mr-1">
                 </div>
-                <div
-                  class="absolute bottom-0 left-0 w-6 h-6 border-b-4 border-l-4 border-red-500 rounded-bl-2xl -mb-1 -ml-1">
+                <div class="absolute bottom-0 left-0 w-6 h-6 border-b-4 border-l-4 border-red-500 rounded-bl-2xl -mb-1 -ml-1">
                 </div>
-                <div
-                  class="absolute bottom-0 right-0 w-6 h-6 border-b-4 border-r-4 border-red-500 rounded-br-2xl -mb-1 -mr-1">
+                <div class="absolute bottom-0 right-0 w-6 h-6 border-b-4 border-r-4 border-red-500 rounded-br-2xl -mb-1 -mr-1">
                 </div>
               </div>
             </div>
 
             <div class="absolute top-4 left-4">
-              <div v-if="isCameraActive"
-                class="px-3 py-1 rounded-full bg-red-500/20 border border-red-500/30 backdrop-blur-md flex items-center gap-2">
+              <div v-if="isCameraActive" class="px-3 py-1 rounded-full bg-red-500/20 border border-red-500/30 backdrop-blur-md flex items-center gap-2">
                 <div class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
                 <span class="text-xs font-bold text-red-100 uppercase">Cámara Activa</span>
               </div>
@@ -62,34 +54,27 @@
           </div>
 
           <div class="mt-8 flex gap-4 w-full max-w-lg">
-            <button @click="goBack"
-              class="px-6 py-3 rounded-xl text-gray-400 font-medium hover:text-white hover:bg-white/5 transition-all border border-transparent hover:border-white/10">
+            <button @click="goBack" class="px-6 py-3 rounded-xl text-gray-400 font-medium hover:text-white hover:bg-white/5 transition-all border border-transparent hover:border-white/10">
               Volver
             </button>
 
-            <button @click="openEmailLoginModal"
-              class="px-6 py-3 rounded-xl text-gray-300 font-medium hover:text-white hover:bg-white/5 transition-all border border-white/10">
+            <button @click="openEmailLoginModal" class="px-6 py-3 rounded-xl text-gray-300 font-medium hover:text-white hover:bg-white/5 transition-all border border-white/10">
               Usar Correo
             </button>
 
-            <button @click="handleLogin" :disabled="!isCameraActive || isSubmitting"
-              class="flex-1 group relative overflow-hidden rounded-xl bg-red-600 px-8 py-3 text-white font-bold shadow-lg transition-all hover:bg-red-500 hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
+            <button @click="handleLogin" :disabled="!isCameraActive || isSubmitting" class="flex-1 group relative overflow-hidden rounded-xl bg-red-600 px-8 py-3 text-white font-bold shadow-lg transition-all hover:bg-red-500 hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
 
-              <div
-                class="absolute inset-0 flex h-full w-full justify-center [transform:skew(-13deg)_translateX(-100%)] group-hover:duration-1000 group-hover:[transform:skew(-13deg)_translateX(100%)]">
+              <div class="absolute inset-0 flex h-full w-full justify-center [transform:skew(-13deg)_translateX(-100%)] group-hover:duration-1000 group-hover:[transform:skew(-13deg)_translateX(100%)]">
                 <div class="relative h-full w-8 bg-white/20"></div>
               </div>
 
               <span class="relative flex items-center justify-center gap-2">
-                <span v-if="isSubmitting"
-                  class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                <span v-if="isSubmitting" class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
                 <span v-else>
                   <svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z">
                     </path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
                   </svg>
                   Identificarse
                 </span>
@@ -117,14 +102,10 @@
           <div>
             <label class="block text-sm font-medium text-white mb-2">Correo Institucional</label>
             <div class="relative">
-              <input ref="emailInput" v-model="email" type="email" required readonly @click="openKeyboard('email')"
-                placeholder="nombre@inacapmail.cl"
-                class="w-full bg-gray-700 text-white rounded-lg px-3 py-2 pr-10 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500 cursor-pointer" />
-              <button type="button" @click="openKeyboard('email')"
-                class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white">
+              <input ref="emailInput" v-model="email" type="email" required readonly @click="openKeyboard('email')" placeholder="nombre@inacapmail.cl" class="w-full bg-gray-700 text-white rounded-lg px-3 py-2 pr-10 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500 cursor-pointer" />
+              <button type="button" @click="openKeyboard('email')" class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white">
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                 </svg>
               </button>
             </div>
@@ -133,26 +114,20 @@
           <div>
             <label class="block text-sm font-medium text-white mb-2">Contraseña</label>
             <div class="relative">
-              <input ref="passwordInput" v-model="password" :type="showPassword ? 'text' : 'password'" required readonly
-                @click="openKeyboard('password')" placeholder="••••••••"
-                class="w-full bg-gray-700 text-white rounded-lg px-3 py-2 pr-20 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500 cursor-pointer" />
+              <input ref="passwordInput" v-model="password" :type="showPassword ? 'text' : 'password'" required readonly @click="openKeyboard('password')" placeholder="••••••••" class="w-full bg-gray-700 text-white rounded-lg px-3 py-2 pr-20 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500 cursor-pointer" />
               <div class="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1">
                 <button type="button" @click="showPassword = !showPassword" class="text-gray-400 hover:text-white">
                   <svg v-if="!showPassword" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                   </svg>
                   <svg v-else class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
                   </svg>
                 </button>
                 <button type="button" @click="openKeyboard('password')" class="text-gray-400 hover:text-white">
                   <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                   </svg>
                 </button>
               </div>
@@ -160,14 +135,11 @@
           </div>
 
           <div class="flex gap-3 pt-4">
-            <button type="button" @click="closeEmailLoginModal"
-              class="flex-1 px-4 py-2 rounded-lg border border-gray-600 text-gray-300 hover:bg-gray-700 transition-colors">
+            <button type="button" @click="closeEmailLoginModal" class="flex-1 px-4 py-2 rounded-lg border border-gray-600 text-gray-300 hover:bg-gray-700 transition-colors">
               Cancelar
             </button>
-            <button type="submit" :disabled="isEmailSubmitting"
-              class="flex-1 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-white font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
-              <span v-if="isEmailSubmitting"
-                class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+            <button type="submit" :disabled="isEmailSubmitting" class="flex-1 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-white font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+              <span v-if="isEmailSubmitting" class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
               <span>{{ isEmailSubmitting ? 'Ingresando...' : 'Ingresar' }}</span>
             </button>
           </div>
@@ -183,8 +155,7 @@
     </div>
 
     <!-- TECLADO VIRTUAL -->
-    <div v-if="showKeyboard" class="fixed inset-0 bg-black/90 flex items-end justify-center z-[60] p-4"
-      @click.self="closeKeyboard">
+    <div v-if="showKeyboard" class="fixed inset-0 bg-black/90 flex items-end justify-center z-[60] p-4" @click.self="closeKeyboard">
       <div class="bg-gray-900 rounded-t-2xl w-full max-w-3xl border-t-2 border-red-600 shadow-2xl animate-slide-up">
 
         <!-- Header del teclado -->
@@ -212,17 +183,14 @@
 
           <!-- Fila de números -->
           <div class="grid grid-cols-10 gap-2">
-            <button v-for="num in ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']" :key="num" @click="addChar(num)"
-              class="bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-2 rounded-lg transition-colors active:scale-95">
+            <button v-for="num in ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']" :key="num" @click="addChar(num)" class="bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-2 rounded-lg transition-colors active:scale-95">
               {{ num }}
             </button>
           </div>
 
           <!-- Fila 1 -->
           <div class="grid grid-cols-10 gap-2">
-            <button v-for="letter in (capsLock ? 'QWERTYUIOP' : 'qwertyuiop').split('')" :key="letter"
-              @click="addChar(letter)"
-              class="bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-2 rounded-lg transition-colors active:scale-95">
+            <button v-for="letter in (capsLock ? 'QWERTYUIOP' : 'qwertyuiop').split('')" :key="letter" @click="addChar(letter)" class="bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-2 rounded-lg transition-colors active:scale-95">
               {{ letter }}
             </button>
           </div>
@@ -230,9 +198,7 @@
           <!-- Fila 2 -->
           <div class="grid grid-cols-10 gap-2">
             <div class="col-span-1"></div>
-            <button v-for="letter in (capsLock ? 'ASDFGHJKL' : 'asdfghjkl').split('')" :key="letter"
-              @click="addChar(letter)"
-              class="bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-2 rounded-lg transition-colors active:scale-95">
+            <button v-for="letter in (capsLock ? 'ASDFGHJKL' : 'asdfghjkl').split('')" :key="letter" @click="addChar(letter)" class="bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-2 rounded-lg transition-colors active:scale-95">
               {{ letter }}
             </button>
           </div>
@@ -245,44 +211,34 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
               </svg>
             </button>
-            <button v-for="letter in (capsLock ? 'ZXCVBNM' : 'zxcvbnm').split('')" :key="letter"
-              @click="addChar(letter)"
-              class="bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-2 rounded-lg transition-colors active:scale-95">
+            <button v-for="letter in (capsLock ? 'ZXCVBNM' : 'zxcvbnm').split('')" :key="letter" @click="addChar(letter)" class="bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-2 rounded-lg transition-colors active:scale-95">
               {{ letter }}
             </button>
-            <button @click="backspace"
-              class="col-span-2 bg-red-600 hover:bg-red-500 text-white font-semibold py-3 px-2 rounded-lg transition-colors active:scale-95 flex items-center justify-center gap-1">
+            <button @click="backspace" class="col-span-2 bg-red-600 hover:bg-red-500 text-white font-semibold py-3 px-2 rounded-lg transition-colors active:scale-95 flex items-center justify-center gap-1">
               <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z" />
               </svg>
             </button>
           </div>
 
           <!-- Fila 4 - Símbolos y espacio -->
           <div class="grid grid-cols-10 gap-2">
-            <button @click="addChar('@')"
-              class="col-span-1 bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-2 rounded-lg transition-colors active:scale-95">
+            <button @click="addChar('@')" class="col-span-1 bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-2 rounded-lg transition-colors active:scale-95">
               @
             </button>
-            <button @click="addChar('.')"
-              class="col-span-1 bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-2 rounded-lg transition-colors active:scale-95">
+            <button @click="addChar('.')" class="col-span-1 bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-2 rounded-lg transition-colors active:scale-95">
               .
             </button>
-            <button @click="addChar('_')"
-              class="col-span-1 bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-2 rounded-lg transition-colors active:scale-95">
+            <button @click="addChar('_')" class="col-span-1 bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-2 rounded-lg transition-colors active:scale-95">
               _
             </button>
-            <button @click="addChar('-')"
-              class="col-span-1 bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-2 rounded-lg transition-colors active:scale-95">
+            <button @click="addChar('-')" class="col-span-1 bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-2 rounded-lg transition-colors active:scale-95">
               -
             </button>
-            <button @click="addChar(' ')"
-              class="col-span-4 bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-2 rounded-lg transition-colors active:scale-95">
+            <button @click="addChar(' ')" class="col-span-4 bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-2 rounded-lg transition-colors active:scale-95">
               Espacio
             </button>
-            <button @click="closeKeyboard"
-              class="col-span-2 bg-green-600 hover:bg-green-500 text-white font-semibold py-3 px-2 rounded-lg transition-colors active:scale-95">
+            <button @click="closeKeyboard" class="col-span-2 bg-green-600 hover:bg-green-500 text-white font-semibold py-3 px-2 rounded-lg transition-colors active:scale-95">
               Listo
             </button>
           </div>
@@ -299,7 +255,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { authService } from '@/services/authService'
 import sedeBackground from '@/assets/images/sede-background.jpg'
-
+import { alertaService } from '@/services/alertasService'
 const router = useRouter()
 const videoElement = ref(null)
 const canvasElement = ref(null)
@@ -336,7 +292,7 @@ const startCamera = async () => {
     }
   } catch (error) {
     console.error('Error cámara:', error)
-    alert('No se pudo acceder a la cámara.')
+    alertaService.error('No se pudo acceder a la cámara.')
   }
 }
 
@@ -385,7 +341,7 @@ const backspace = () => {
 
 const handleEmailLogin = async () => {
   if (!email.value || !password.value) {
-    alert('Por favor, ingresa tu correo y contraseña.')
+    alertaService.info('Por favor, ingresa tu correo y contraseña.')
     return
   }
 
@@ -401,19 +357,18 @@ const handleEmailLogin = async () => {
     }
 
     if (!normalizedUser.id) {
-      alert('Error: el servidor no devolvió el id del usuario.')
+      alertaService.warning('Error: el servidor no devolvió el id del usuario.')
       return
     }
 
     localStorage.setItem('user', JSON.stringify(normalizedUser))
     localStorage.setItem('isAuthenticated', 'true')
 
-    alert(`Bienvenido ${normalizedUser.nombres} ${normalizedUser.apellidos}`)
     router.push('/dashboard')
 
   } catch (error) {
     console.error('Error en login con correo:', error)
-    alert(error.message || 'Correo o contraseña incorrectos. Intenta de nuevo.')
+    alertaService.error(error.message || 'Correo o contraseña incorrectos. Intenta de nuevo.')
   } finally {
     isEmailSubmitting.value = false
   }
@@ -446,7 +401,7 @@ const handleLogin = async () => {
 
       if (loginResponse.existe_embedding === false) {
         console.log('No se encontró coincidencia facial')
-        alert('No se reconoció tu rostro. Por favor, regístrate primero.')
+        alertaService.warning('No se reconoció tu rostro. Por favor, regístrate primero.')
         router.push('/register')
         return
       }
@@ -460,18 +415,16 @@ const handleLogin = async () => {
         localStorage.setItem('user', JSON.stringify(usuario))
         localStorage.setItem('isAuthenticated', 'true')
 
-        alert(`Bienvenido ${usuario.nombres} ${usuario.apellidos}`)
-
         router.push('/dashboard')
       } else {
         console.log('Respuesta inesperada del backend')
-        alert('Error en la respuesta del servidor. Intenta de nuevo.')
+        alertaService.error('Error en la respuesta del servidor. Intenta de nuevo.')
       }
 
     } catch (error) {
       console.error('Error en login:', error)
       console.error('Detalles del error:', error.response?.data)
-      alert(error.message || 'Error al intentar iniciar sesión. Intenta de nuevo.')
+      alertaService.error(error.message || 'Error al intentar iniciar sesión. Intenta de nuevo.')
     } finally {
       isSubmitting.value = false
     }
