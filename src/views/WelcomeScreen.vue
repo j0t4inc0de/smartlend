@@ -14,8 +14,14 @@
     </div>
 
     <!-- Logo INACAP -->
-    <div class="relative w-full flex justify-center pt-4 sm:pt-8">
-      <img :src="inacapLogo" alt="INACAP" class="w-40 sm:w-48 md:w-56 lg:w-64" />
+    <div class="relative w-full flex items-center justify-center pt-4 sm:pt-8 gap-6 sm:gap-10">
+
+      <img :src="fablabLogo" alt="FabLab" class="w-12 sm:w-20 md:w-28 lg:w-32 object-contain drop-shadow-md" />
+
+      <div class="h-12 sm:h-16 md:h-20 w-px bg-white/20 rounded-full"></div>
+
+      <img :src="inacapLogo" alt="INACAP" class="w-40 sm:w-48 md:w-56 lg:w-64 object-contain drop-shadow-md" />
+
     </div>
 
     <!-- Botón "Ingresar" centrado -->
@@ -62,6 +68,7 @@
 
 <script setup>
 import sedeBackground from '../assets/images/sede-background.jpg'
+import fablabLogo from '../assets/images/logo-fablab.jpeg'
 import inacapLogo from '../assets/images/inacap-logo.png'
 
 import { useRouter } from 'vue-router'
