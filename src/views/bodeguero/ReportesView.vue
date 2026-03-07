@@ -29,6 +29,7 @@ import { reportesService } from '@/services/reportesService'
 import * as XLSX from 'xlsx'
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
+import { alertaService } from '@/services/alertasService'
 
 // Estados de carga independientes
 const cargandoExcel = ref(false)
@@ -167,7 +168,7 @@ const generarExcelInventario = async () => {
 
     } catch (error) {
         console.error(error)
-        alert('Hubo un error al generar el Excel de inventario.')
+        alertaService.error('Hubo un error al generar el Excel de inventario.')
     } finally {
         cargandoExcelInv.value = false
     }
@@ -233,7 +234,7 @@ const generarPDFInventario = async () => {
 
     } catch (error) {
         console.error(error)
-        alert('Hubo un error al generar el PDF.')
+        alertaService.error('Hubo un error al generar el PDF.')
     } finally {
         cargandoPDF.value = false
     }
