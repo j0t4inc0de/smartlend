@@ -20,7 +20,7 @@
 
     <!-- Botón "Ingresar" centrado -->
     <div class="relative flex-1 flex items-center justify-center px-4">
-      <button @click="startProcess" class="animate-pulse-slow group/button relative inline-flex cursor-pointer items-center justify-center overflow-hidden rounded-md bg-red-500/30 backdrop-blur-lg px-7 py-3 text-base font-semibold text-white transition-all duration-300 ease-in-out scale-125 hover:scale-125 hover:animate-none border border-white/20">
+      <button @click="startProcess" class="animate-pulse-slow group/button relative inline-flex cursor-pointer items-center justify-center overflow-hidden rounded-md bg-red-500/30 backdrop-blur-lg px-8 py-2.5 text-base font-semibold text-white transition-all duration-300 ease-in-out scale-125 hover:scale-125 hover:animate-none border border-white/20">
         <span class="text-xl">Ingresar</span>
         <div class="absolute inset-0 flex h-full w-full justify-center [transform:skew(-13deg)_translateX(-100%)] group-hover/button:duration-1000 group-hover/button:[transform:skew(-13deg)_translateX(100%)]">
           <div class="relative h-full w-10 bg-white/30"></div>
@@ -29,8 +29,33 @@
     </div>
 
     <!-- Logo SmartLend -->
-    <div class="relative w-full flex justify-center pb-4 sm:pb-6">
-      <h2 class="text-white text-2xl sm:text-3xl md:text-4xl">SmartLend</h2>
+    <div class="relative w-full flex justify-center">
+      <footer class="mx-auto w-full max-w-container sm:px-6 lg:px-8">
+
+        <div class="border-t border-white/10 py-6 text-white">
+          <h1 class="text-center text-lg font-medium select-none text-white/90">
+            <span class="text-base font-normal">© 2026</span> SmartLend
+          </h1>
+
+          <div class="mt-2 flex flex-wrap items-center justify-center gap-x-1.5 text-base font-normal select-none text-white/60">
+            <span>Desarrollado por</span>
+
+            <span class="relative inline-flex overflow-hidden rounded-sm cursor-pointer font-normal text-white/90 transition-all duration-300 hover:scale-105 hover:text-white active:scale-95">
+              Juan Erices Fuentealba
+              <span class="absolute inset-0 z-10 pointer-events-none translate-x-[-150%] animate-shine">
+                <span class="block h-full w-6 bg-white/40 skew-x-[-20deg] blur-[1px]"></span>
+              </span>
+            </span>
+
+            <span>y</span>
+
+            <span class="inline-flex cursor-pointer font-normal text-white/85 transition-all duration-300 hover:scale-105 hover:text-white active:scale-95">
+              Omar Montanares
+            </span>
+          </div>
+
+        </div>
+      </footer>
     </div>
   </div>
 </template>
@@ -49,6 +74,24 @@ const startProcess = () => {
 </script>
 
 <style scoped>
+@keyframes shine {
+
+  /* Del 0% al 90% del tiempo (13.5 segundos), se mantiene oculto a la izquierda */
+  0%,
+  90% {
+    transform: translateX(-150%);
+  }
+
+  /* En el 10% restante (1.5 segundos), cruza rápidamente hacia la derecha */
+  100% {
+    transform: translateX(150%);
+  }
+}
+
+.animate-shine {
+  animation: shine 15s ease-in-out infinite;
+}
+
 /* Animación de pulso para el botón */
 @keyframes pulse-slow {
 
