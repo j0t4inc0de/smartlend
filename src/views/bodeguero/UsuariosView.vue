@@ -85,6 +85,10 @@
 
                 <form @submit.prevent="guardarUsuario" class="space-y-4">
                     <div>
+                        <label class="block text-sm text-gray-400 mb-1">RUT</label>
+                        <input v-model="formUsuario.rut" type="text" disabled class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-gray-500 outline-none cursor-not-allowed">
+                    </div>
+                    <div>
                         <label class="block text-sm text-gray-400 mb-1">Nombres</label>
                         <input v-model="formUsuario.nombres" type="text" required class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-white outline-none focus:border-red-500">
                     </div>
@@ -106,13 +110,26 @@
                         </select>
                     </div>
 
-                    <div class="flex justify-end gap-3 mt-6">
-                        <button type="button" @click="cerrarModal" class="px-4 py-2 rounded-lg text-gray-400 hover:text-white transition-colors">
-                            Cancelar
-                        </button>
-                        <button type="submit" class="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg font-medium transition-colors">
-                            Guardar
-                        </button>
+                    <div class="flex items-center justify-between mt-6 pt-4 border-t border-gray-700">
+                        <div>
+                            <template v-if="usuarioEditando">
+                                <button v-if="formUsuario.esta_baneado" type="button" @click="alternarBaneo(false)" class="bg-green-600/20 text-green-400 border border-green-500 hover:bg-green-600 hover:text-white px-4 py-2 rounded-lg font-medium transition-colors text-sm">
+                                    Desbanear Usuario
+                                </button>
+                                <!-- <button v-else type="button" @click="alternarBaneo(true)" class="bg-red-900/30 text-red-400 border border-red-800 hover:bg-red-800 hover:text-white px-4 py-2 rounded-lg font-medium transition-colors text-sm">
+                                    Banear Usuario
+                                </button> -->
+                            </template>
+                        </div>
+
+                        <div class="flex gap-3">
+                            <button type="button" @click="cerrarModal" class="px-4 py-2 rounded-lg text-gray-400 hover:text-white transition-colors text-sm">
+                                Cancelar
+                            </button>
+                            <button v-if="!formUsuario.esta_baneado" type="submit" class="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg font-medium transition-colors text-sm">
+                                Guardar
+                            </button>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -124,6 +141,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUsuariosStore } from '@/stores/usuariosStore'
+import { toast } from 'vue-sonner'
 
 const router = useRouter()
 const usuariosStore = useUsuariosStore()
@@ -238,6 +256,31 @@ const abrirModalEditar = (usuario) => {
     usuarioEditando.value = usuario.id
     formUsuario.value = { ...usuario }
     mostrarModal.value = true
+}
+
+const alternarBaneo = (nuevoEstado) => {
+    if (correosProtegidos.includes(formUsuario.value.correo)) {
+        ejecutarEasterEggProteccion()
+        return
+    }
+
+    const accion = nuevoEstado ? 'banear' : 'desbanear'
+
+    toast.warning(`¿Deseas ${accion} a ${formUsuario.value.nombres}?`, {
+        description: 'El estado del usuario cambiará en el sistema.',
+        duration: 8000, // Le damos 8 segundos al usuario para hacer clic
+        action: {
+            label: 'Sí, confirmar',
+            onClick: async () => {
+                await usuariosStore.cambiarBaneoUsuario(usuarioEditando.value, nuevoEstado)
+                cerrarModal()
+            }
+        },
+        cancel: {
+            label: 'Cancelar',
+            onClick: () => console.log('Acción cancelada por el usuario')
+        }
+    })
 }
 
 const cerrarModal = () => {

@@ -1,11 +1,30 @@
-// src\stores\usuariosStore.js
+// src/stores/usuariosStore.js
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { usuariosService } from '@/services/usuariosService'
+import { alertaService } from '@/services/alertasService'
 
 export const useUsuariosStore = defineStore('usuarios', () => {
   const usuarios = ref([])
   const isLoading = ref(false)
+
+  const cambiarBaneoUsuario = async (id, nuevoEstado) => {
+    try {
+      await usuariosService.actualizarEstadoUsuario(id, nuevoEstado)
+
+      const index = usuarios.value.findIndex((u) => u.id === id)
+      if (index !== -1) {
+        // Usamos la propiedad correcta: esta_baneado
+        usuarios.value[index].esta_baneado = nuevoEstado
+      }
+
+      const msg = nuevoEstado ? 'Usuario baneado' : 'Usuario desbloqueado'
+      alertaService.success(msg)
+    } catch (error) {
+      console.error(error)
+      alertaService.error('Error al cambiar estado del usuario')
+    }
+  }
 
   const fetchUsuarios = async () => {
     isLoading.value = true
@@ -52,5 +71,6 @@ export const useUsuariosStore = defineStore('usuarios', () => {
     addUsuario,
     editUsuario,
     removeUsuario,
+    cambiarBaneoUsuario,
   }
 })

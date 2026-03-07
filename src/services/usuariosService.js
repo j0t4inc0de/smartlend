@@ -62,4 +62,8 @@ export const usuariosService = {
       throw new Error('Error al eliminar usuario')
     }
   },
+  async actualizarEstadoUsuario(id, baneo) {
+    // Asumiendo que tu backend recibe un booleano 'baneado'
+    return await axios.patch(`${API_BASE_URL}/usuarios/api/usuarios/${id}/`, { baneado: baneo })
+  },
 }
