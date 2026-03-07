@@ -16,7 +16,7 @@
     <!-- Logo INACAP -->
     <div class="relative w-full flex items-center justify-center pt-4 sm:pt-8 gap-6 sm:gap-10">
 
-      <img :src="fablabLogo" alt="FabLab" class="w-12 sm:w-20 md:w-28 lg:w-32 object-contain drop-shadow-md" />
+      <img :src="fablabLogo" alt="FabLab" class="w-[43px] sm:w-[72px] md:w-[100px] lg:w-[115px] object-contain drop-shadow-md" />
 
       <div class="h-12 sm:h-16 md:h-20 w-px bg-white/20 rounded-full"></div>
 
@@ -34,7 +34,7 @@
       </button>
     </div>
 
-    <!-- Logo SmartLend -->
+    <!-- Logo SmartLend y creditos a mi y omar -->
     <div class="relative w-full flex justify-center">
       <footer class="mx-auto w-full max-w-container sm:px-6 lg:px-8">
 
