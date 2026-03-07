@@ -46,7 +46,7 @@
           <div class="mt-2 flex flex-wrap items-center justify-center gap-x-1.5 text-base font-normal select-none text-white/60">
             <span>Desarrollado por</span>
 
-            <span class="relative inline-flex overflow-hidden rounded-sm cursor-pointer font-normal text-white/90 transition-all duration-300 hover:scale-105 hover:text-white active:scale-95">
+            <span class="relative inline-flex overflow-hidden rounded-sm cursor-pointer font-normal text-white/90 transition-all duration-300 hover:scale-105 hover:text-white active:scale-95 animate-fade-in-up" style="animation-delay: 0.8s;">
               Juan Erices Fuentealba
               <span class="absolute inset-0 z-10 pointer-events-none translate-x-[-150%] animate-shine">
                 <span class="block h-full w-6 bg-white/40 skew-x-[-20deg] blur-[1px]"></span>
@@ -55,7 +55,7 @@
 
             <span>y</span>
 
-            <span class="inline-flex cursor-pointer font-normal text-white/85 transition-all duration-300 hover:scale-105 hover:text-white active:scale-95">
+            <span class="inline-flex cursor-pointer font-normal text-white/85 transition-all duration-300 hover:scale-105 hover:text-white active:scale-95 animate-fade-in-up" style="animation-delay: 1.0s;">
               Omar Montanares
             </span>
           </div>
@@ -81,6 +81,25 @@ const startProcess = () => {
 </script>
 
 <style scoped>
+/* Animación de entrada desde abajo para el footer */
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  /* opacity: 0 asegura que los nombres no se vean antes de su turno */
+  opacity: 0;
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
 /* Animación de entrada para los logos */
 @keyframes fadeInDown {
   0% {
