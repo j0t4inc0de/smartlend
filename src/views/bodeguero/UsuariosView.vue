@@ -142,6 +142,7 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUsuariosStore } from '@/stores/usuariosStore'
 import { toast } from 'vue-sonner'
+import { alertaService } from '@/services/alertasService'
 
 const router = useRouter()
 const usuariosStore = useUsuariosStore()
@@ -232,12 +233,12 @@ const ejecutarEasterEggProteccion = () => {
     esmicodigo2 += 1
     console.log("¿Quieres modificar al creador de este sistema? No lo creo, eso no va a pasar. :D")
     console.log("Número de intentos de edición del creador:", esmicodigo2)
-    alert(esmicodigo + " Intentos " + esmicodigo2)
+    alertaService.error(esmicodigo + " Intentos " + esmicodigo2)
     if (esmicodigo2 >= 5) {
-        alert("Has intentado modificar al creador demasiadas veces. Por favor, detente.")
-        if (esmicodigo2 >= 10) {
+        if (esmicodigo2 >= 6) {
             window.location.href = 'https://www.linkedin.com/in/juan-erices-fuentealba-628b4a27a'
         }
+        alertaService.warning("¡Alerta! Has intentado modificar al creador varias veces. Por favor, detente.")
     }
 }
 
@@ -303,10 +304,21 @@ const eliminarUsuario = async (usuario) => {
         return
     }
 
-    const confirmacion = confirm(`¿Estás seguro de que deseas eliminar al usuario ${usuario.nombres}? Esta acción no se puede deshacer.`)
-    if (confirmacion) {
-        await usuariosStore.removeUsuario(usuario.id)
-    }
+    toast.warning(`¿Deseas eliminar a ${usuario.nombres}?`, {
+        description: 'Esta accion no se puede deshacer.',
+        duration: 8000, // Le damos 8 segundos al usuario para hacer clic
+        action: {
+            label: 'Sí, confirmar',
+            onClick: async () => {
+                await usuariosStore.removeUsuario(usuario.id)
+                cerrarModal()
+            }
+        },
+        cancel: {
+            label: 'Cancelar',
+            onClick: () => console.log('Acción cancelada por el usuario')
+        }
+    })
 }
 
 const verificarYCrearAdministradores = async () => {
