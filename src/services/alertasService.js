@@ -2,6 +2,22 @@
 // Este servicio manejara las oeraciones para las notificaiones para el bodeguero
 import axios from 'axios'
 import API_BASE_URL from './config/api.js'
+import { toast } from 'vue-sonner'
+
+export const alertaService = {
+  success(message, description = '') {
+    toast.success(message, { description })
+  },
+  error(message, description = '') {
+    toast.error(message, { description })
+  },
+  info(message, description = '') {
+    toast.info(message, { description })
+  },
+  warning(message, description = '') {
+    toast.warning(message, { description })
+  },
+}
 
 export const alertasService = {
   // Obtener todas las alertas
