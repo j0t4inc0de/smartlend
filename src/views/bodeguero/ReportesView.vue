@@ -4,20 +4,17 @@
             <h3 class="text-lg font-semibold text-white mb-4">Exportar Reportes Personalizados</h3>
 
             <div class="flex flex-wrap gap-4">
-                <button @click="generarExcelUsuarios" :disabled="cargandoExcel"
-                    class="bg-green-600 hover:bg-green-500 disabled:opacity-50 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2">
+                <button @click="generarExcelUsuarios" :disabled="cargandoExcel" class="bg-green-600 hover:bg-green-500 disabled:opacity-50 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2">
                     <span v-if="cargandoExcel">Generando...</span>
                     <span v-else>Usuarios (Excel)</span>
                 </button>
 
-                <button @click="generarExcelInventario" :disabled="cargandoExcelInv"
-                    class="bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2">
+                <button @click="generarExcelInventario" :disabled="cargandoExcelInv" class="bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2">
                     <span v-if="cargandoExcelInv">Generando...</span>
                     <span v-else>Inventario Detallado (Excel)</span>
                 </button>
 
-                <button @click="generarPDFInventario" :disabled="cargandoPDF"
-                    class="bg-red-600 hover:bg-red-500 disabled:opacity-50 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2">
+                <button @click="generarPDFInventario" :disabled="cargandoPDF" class="bg-red-600 hover:bg-red-500 disabled:opacity-50 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2">
                     <span v-if="cargandoPDF">Generando PDF...</span>
                     <span v-else>Inventario Resumen (PDF)</span>
                 </button>
@@ -105,7 +102,7 @@ const generarExcelUsuarios = async () => {
 
     } catch (error) {
         console.error(error)
-        alert('Hubo un error al intentar generar el Excel de usuarios.')
+            ('Hubo un error al intentar generar el Excel de usuarios.')
     } finally {
         cargandoExcel.value = false
     }

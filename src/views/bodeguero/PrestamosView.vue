@@ -5,14 +5,12 @@
 
       <!-- Estado de conexión -->
       <div>
-        <div v-if="loading"
-          class="flex items-center gap-2 bg-blue-500/20 border border-blue-500/30 rounded-lg px-3 py-1">
+        <div v-if="loading" class="flex items-center gap-2 bg-blue-500/20 border border-blue-500/30 rounded-lg px-3 py-1">
           <div class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
           <span class="text-blue-300 text-xs font-medium">Cargando...</span>
         </div>
 
-        <div v-else-if="error"
-          class="flex items-center gap-2 bg-red-500/20 border border-red-500/30 rounded-lg px-3 py-1">
+        <div v-else-if="error" class="flex items-center gap-2 bg-red-500/20 border border-red-500/30 rounded-lg px-3 py-1">
           <div class="w-2 h-2 rounded-full bg-red-500"></div>
           <span class="text-red-300 text-xs font-medium">Error de conexión</span>
         </div>
@@ -28,18 +26,14 @@
 
         <!-- Buscador de código -->
         <div class="relative flex-1 md:w-64">
-          <input v-model="busqueda" type="text" placeholder="Buscar por código o usuario..."
-            class="w-full bg-gray-800 text-white pl-10 pr-4 py-2 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500 text-sm" />
-          <svg class="w-5 h-5 text-gray-400 absolute left-3 top-2.5" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          <input v-model="busqueda" type="text" placeholder="Buscar por código o usuario..." class="w-full bg-gray-800 text-white pl-10 pr-4 py-2 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500 text-sm" />
+          <svg class="w-5 h-5 text-gray-400 absolute left-3 top-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
         </div>
 
         <!-- Filtro de estado -->
-        <select v-model="filtroEstado"
-          class="bg-gray-800 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500 text-sm">
+        <select v-model="filtroEstado" class="bg-gray-800 text-white px-3 py-2 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500 text-sm">
           <option value="todos">Todos ({{ prestamos.length }})</option>
           <option value="Pendiente">Pendientes ({{ contarPorEstado('Pendiente') }})</option>
           <option value="Entregado">Entregados ({{ contarPorEstado('Entregado') }})</option>
@@ -49,12 +43,9 @@
         </select>
 
         <!-- Botón recargar -->
-        <button @click="recargarPrestamos" :disabled="loading"
-          class="p-2 rounded-lg bg-gray-800 border border-gray-700 hover:bg-gray-700 transition-colors disabled:opacity-50 text-gray-300 hover:text-white">
-          <svg class="w-5 h-5" :class="{ 'animate-spin': loading }" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+        <button @click="recargarPrestamos" :disabled="loading" class="p-2 rounded-lg bg-gray-800 border border-gray-700 hover:bg-gray-700 transition-colors disabled:opacity-50 text-gray-300 hover:text-white">
+          <svg class="w-5 h-5" :class="{ 'animate-spin': loading }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
           </svg>
         </button>
       </div>
@@ -64,8 +55,7 @@
     <div v-if="error" class="mb-6 bg-red-500/10 border border-red-500/50 rounded-lg p-4">
       <div class="flex items-start gap-3">
         <svg class="w-5 h-5 text-red-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
         <div>
           <h4 class="text-red-200 font-medium">Error de conexión</h4>
@@ -82,8 +72,7 @@
           <p class="text-gray-400 text-sm">Pendientes</p>
           <div class="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center">
             <svg class="w-6 h-6 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
         </div>
@@ -96,8 +85,7 @@
           <p class="text-gray-400 text-sm">Entregados</p>
           <div class="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
             <svg class="w-6 h-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
             </svg>
           </div>
         </div>
@@ -110,8 +98,7 @@
           <p class="text-gray-400 text-sm">Vencidos</p>
           <div class="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center">
             <svg class="w-6 h-6 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
         </div>
@@ -148,8 +135,7 @@
       </div>
 
       <!-- SIN DATOS -->
-      <div v-else-if="prestamosFiltrados.length === 0"
-        class="bg-gray-800 rounded-xl border border-gray-700 p-12 text-center">
+      <div v-else-if="prestamosFiltrados.length === 0" class="bg-gray-800 rounded-xl border border-gray-700 p-12 text-center">
         <div class="text-6xl mb-4">📦</div>
         <p class="text-gray-400 text-lg">No hay préstamos para mostrar</p>
       </div>
@@ -170,8 +156,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="prestamo in prestamosFiltrados" :key="prestamo.id_prestamo"
-                class="border-t border-gray-700 hover:bg-gray-700/30 transition-colors">
+              <tr v-for="prestamo in prestamosFiltrados" :key="prestamo.id_prestamo" class="border-t border-gray-700 hover:bg-gray-700/30 transition-colors">
 
                 <!-- Código -->
                 <td class="px-6 py-4">
@@ -183,8 +168,7 @@
                 <!-- Usuario -->
                 <td class="px-6 py-4">
                   <div v-if="prestamo.usuario_data" class="flex items-center gap-3">
-                    <div
-                      class="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                    <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">
                       {{ prestamo.usuario_data.nombres?.charAt(0) || '?' }}
                     </div>
                     <div>
@@ -204,8 +188,7 @@
                       {{ calcularTotalHerramientas(prestamo) }} herramienta{{ calcularTotalHerramientas(prestamo) !== 1
                         ? 's' : '' }}
                     </span>
-                    <button @click="abrirModalHerramientas(prestamo)"
-                      class="text-xs text-blue-400 hover:text-blue-300 underline">
+                    <button @click="abrirModalHerramientas(prestamo)" class="text-xs text-blue-400 hover:text-blue-300 underline">
                       Ver detalle
                     </button>
                   </div>
@@ -237,24 +220,19 @@
                 <!-- Acciones -->
                 <td class="px-6 py-4">
                   <!-- Pendiente: Entregar -->
-                  <button v-if="prestamo.estado_prestamo === 'Pendiente'" @click="abrirModalEntrega(prestamo)"
-                    class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                  <button v-if="prestamo.estado_prestamo === 'Pendiente'" @click="abrirModalEntrega(prestamo)" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
                     Entregar
                   </button>
 
                   <!-- Entregado o Vencido: Devolver -->
-                  <button v-else-if="['Entregado', 'Vencido'].includes(prestamo.estado_prestamo)"
-                    @click="abrirModalDevolucion(prestamo)"
-                    class="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                  <button v-else-if="['Entregado', 'Vencido'].includes(prestamo.estado_prestamo)" @click="abrirModalDevolucion(prestamo)" class="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
                     Devolver
                   </button>
 
                   <!-- Finalizado o Expirado: Sin acciones -->
                   <span v-else class="text-gray-500 text-sm flex items-center gap-1">
                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                      <path fill-rule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                        clip-rule="evenodd" />
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                     </svg>
                     {{ prestamo.estado_prestamo }}
                   </span>
@@ -296,8 +274,7 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                 </svg>
                 <svg v-else class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                 </svg>
                 <span>{{ codigoCopiado ? '¡Copiado!' : 'Copiar' }}</span>
               </button>
@@ -307,8 +284,7 @@
           <!-- Tipos solicitados -->
           <div class="bg-gray-700/50 rounded-lg p-3 mb-3">
             <p class="text-gray-400 text-xs uppercase tracking-wider mb-2">Tipos Solicitados</p>
-            <div v-for="tipo in prestamoSeleccionadoHerramientas.tipos_detalle" :key="tipo.tipo_herramienta"
-              class="flex items-center justify-between py-1">
+            <div v-for="tipo in prestamoSeleccionadoHerramientas.tipos_detalle" :key="tipo.tipo_herramienta" class="flex items-center justify-between py-1">
               <span class="text-white text-sm">{{ tipo.tipo_herramienta_nombre }}</span>
               <span class="bg-blue-500/20 text-blue-400 px-2 py-1 rounded text-sm font-bold">
                 {{ tipo.cantidad }}x
@@ -319,9 +295,7 @@
           <!-- Herramientas asignadas -->
           <div v-if="prestamoSeleccionadoHerramientas.herramientas_detalle?.length > 0">
             <p class="text-gray-400 text-xs uppercase tracking-wider mb-2">Herramientas Asignadas</p>
-            <div v-for="(herramienta, index) in prestamoSeleccionadoHerramientas.herramientas_detalle"
-              :key="herramienta.id_herramienta"
-              class="bg-gray-700 rounded-lg p-4 border border-gray-600 hover:border-gray-500 transition-colors mb-2">
+            <div v-for="(herramienta, index) in prestamoSeleccionadoHerramientas.herramientas_detalle" :key="herramienta.id_herramienta" class="bg-gray-700 rounded-lg p-4 border border-gray-600 hover:border-gray-500 transition-colors mb-2">
               <div class="flex items-start justify-between mb-3">
                 <div class="flex items-center gap-2">
                   <span class="bg-gray-600 text-gray-300 px-2 py-1 rounded text-xs font-bold">
@@ -344,8 +318,7 @@
               </div>
               <div class="flex items-center gap-2">
                 <svg class="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
                 </svg>
                 <span class="text-gray-400 text-sm">Código:</span>
                 <span class="text-white font-mono font-bold">{{ herramienta.codigo_barras }}</span>
@@ -386,8 +359,7 @@
           <!-- Tipos solicitados -->
           <div class="bg-gray-700/50 rounded-lg p-3">
             <p class="text-gray-400 text-xs uppercase tracking-wider mb-2">Herramientas Solicitadas</p>
-            <div v-for="tipo in prestamoEntrega.tipos_detalle" :key="tipo.tipo_herramienta"
-              class="flex items-center justify-between py-1">
+            <div v-for="tipo in prestamoEntrega.tipos_detalle" :key="tipo.tipo_herramienta" class="flex items-center justify-between py-1">
               <span class="text-white text-sm">{{ tipo.tipo_herramienta_nombre }}</span>
               <span class="bg-blue-500/20 text-blue-400 px-2 py-1 rounded text-sm font-bold">
                 {{ tipo.cantidad }}x
@@ -400,17 +372,14 @@
             <label class="block text-sm font-medium text-white mb-2">
               Escanear Código de Barras
             </label>
-            <input ref="scannerInput" type="text" @keyup.enter="escanearCodigo"
-              placeholder="Escanea o escribe el código..."
-              class="w-full bg-gray-700 text-white rounded-lg px-3 py-2 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <input ref="scannerInput" type="text" @keyup.enter="escanearCodigo" placeholder="Escanea o escribe el código..." class="w-full bg-gray-700 text-white rounded-lg px-3 py-2 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" />
             <p class="text-xs text-gray-400 mt-1">Presiona Enter después de escanear</p>
           </div>
 
           <!-- Códigos escaneados -->
           <div v-if="codigosEscaneados.length > 0" class="space-y-2">
             <p class="text-sm font-medium text-white">Códigos Escaneados:</p>
-            <div v-for="(codigo, index) in codigosEscaneados" :key="codigo"
-              class="flex items-center justify-between bg-green-500/20 border border-green-500/50 rounded-lg p-3">
+            <div v-for="(codigo, index) in codigosEscaneados" :key="codigo" class="flex items-center justify-between bg-green-500/20 border border-green-500/50 rounded-lg p-3">
               <div class="flex items-center gap-2">
                 <svg class="w-5 h-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
@@ -438,21 +407,16 @@
               </span>
             </div>
             <div class="w-full bg-gray-600 rounded-full h-2">
-              <div class="h-2 rounded-full transition-all duration-300"
-                :class="codigosEscaneados.length === totalHerramientasRequeridas ? 'bg-green-500' : 'bg-yellow-500'"
-                :style="{ width: `${(codigosEscaneados.length / totalHerramientasRequeridas) * 100}%` }"></div>
+              <div class="h-2 rounded-full transition-all duration-300" :class="codigosEscaneados.length === totalHerramientasRequeridas ? 'bg-green-500' : 'bg-yellow-500'" :style="{ width: `${(codigosEscaneados.length / totalHerramientasRequeridas) * 100}%` }"></div>
             </div>
           </div>
 
           <!-- Botones -->
           <div class="flex gap-3 pt-4">
-            <button @click="cerrarModalEntrega"
-              class="flex-1 px-4 py-2 rounded-lg border border-gray-600 text-gray-300 hover:bg-gray-700 transition-colors">
+            <button @click="cerrarModalEntrega" class="flex-1 px-4 py-2 rounded-lg border border-gray-600 text-gray-300 hover:bg-gray-700 transition-colors">
               Cancelar
             </button>
-            <button @click="confirmarEntrega"
-              :disabled="codigosEscaneados.length !== totalHerramientasRequeridas || procesandoEntrega"
-              class="flex-1 px-4 py-2 rounded-lg bg-green-600 hover:bg-green-500 text-white font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+            <button @click="confirmarEntrega" :disabled="codigosEscaneados.length !== totalHerramientasRequeridas || procesandoEntrega" class="flex-1 px-4 py-2 rounded-lg bg-green-600 hover:bg-green-500 text-white font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
               {{ procesandoEntrega ? 'Procesando...' : 'Confirmar Entrega' }}
             </button>
           </div>
@@ -486,17 +450,14 @@
             <label class="block text-sm font-medium text-white mb-2">
               Escanear Herramientas a Devolver
             </label>
-            <input ref="scannerDevolucionInput" type="text" @keyup.enter="escanearDevolucion"
-              placeholder="Escanea código de barras..."
-              class="w-full bg-gray-700 text-white rounded-lg px-3 py-2 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500" />
+            <input ref="scannerDevolucionInput" type="text" @keyup.enter="escanearDevolucion" placeholder="Escanea código de barras..." class="w-full bg-gray-700 text-white rounded-lg px-3 py-2 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500" />
           </div>
 
           <!-- Códigos escaneados para devolución -->
           <div v-if="codigosDevolucion.length > 0" class="space-y-2">
             <p class="text-sm font-medium text-white">Escaneados ({{ codigosDevolucion.length }}/{{
               prestamoSeleccionado.herramientas_detalle?.length || 0 }}):</p>
-            <div v-for="codigo in codigosDevolucion" :key="codigo"
-              class="bg-gray-700 rounded-lg p-3 border border-gray-600">
+            <div v-for="codigo in codigosDevolucion" :key="codigo" class="bg-gray-700 rounded-lg p-3 border border-gray-600">
               <div class="flex items-center justify-between mb-2">
                 <span class="text-white font-mono text-sm">{{ codigo }}</span>
                 <button @click="quitarCodigoDevolucion(codigo)" class="text-red-400 hover:text-red-300">
@@ -507,8 +468,7 @@
               </div>
 
               <!-- Selector de estado individual -->
-              <select v-model="estadosHerramientas[codigo]"
-                class="w-full bg-gray-600 text-white rounded px-2 py-1 text-sm border border-gray-500">
+              <select v-model="estadosHerramientas[codigo]" class="w-full bg-gray-600 text-white rounded px-2 py-1 text-sm border border-gray-500">
                 <option value="Nuevo">Nuevo</option>
                 <option value="Excelente">Excelente</option>
                 <option value="Bueno">Bueno</option>
@@ -522,20 +482,15 @@
           <!-- Observaciones generales -->
           <div>
             <label class="block text-sm font-medium text-white mb-2">Observaciones (opcional)</label>
-            <textarea v-model="observaciones"
-              class="w-full bg-gray-700 text-white rounded-lg px-3 py-2 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500"
-              rows="3" placeholder="Describe cualquier daño o problema observado..."></textarea>
+            <textarea v-model="observaciones" class="w-full bg-gray-700 text-white rounded-lg px-3 py-2 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500" rows="3" placeholder="Describe cualquier daño o problema observado..."></textarea>
           </div>
 
           <!-- Botones -->
           <div class="flex gap-3 pt-4">
-            <button @click="cerrarModalDevolucion"
-              class="flex-1 px-4 py-2 rounded-lg border border-gray-600 text-gray-300 hover:bg-gray-700 transition-colors">
+            <button @click="cerrarModalDevolucion" class="flex-1 px-4 py-2 rounded-lg border border-gray-600 text-gray-300 hover:bg-gray-700 transition-colors">
               Cancelar
             </button>
-            <button @click="confirmarDevolucion"
-              :disabled="procesandoDevolucion || codigosDevolucion.length !== (prestamoSeleccionado.herramientas_detalle?.length || 0)"
-              class="flex-1 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-white font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+            <button @click="confirmarDevolucion" :disabled="procesandoDevolucion || codigosDevolucion.length !== (prestamoSeleccionado.herramientas_detalle?.length || 0)" class="flex-1 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-white font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
               {{ procesandoDevolucion ? 'Procesando...' : 'Confirmar Devolución' }}
             </button>
           </div>
@@ -548,6 +503,8 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import { prestamosService } from '@/services/prestamosService'
+import { toast } from 'vue-sonner'
+import { alertaService } from '@/services/alertasService'
 
 // Estados reactivos
 const prestamos = ref([])
@@ -764,7 +721,7 @@ const escanearCodigo = (event) => {
   if (!codigo) return
 
   if (codigosEscaneados.value.includes(codigo)) {
-    alert(`El código ${codigo} ya fue escaneado`)
+    alertaService.error(`El código ${codigo} ya fue escaneado`)
     event.target.value = ''
     return
   }
@@ -781,7 +738,7 @@ const quitarCodigo = (codigo) => {
 
 const confirmarEntrega = async () => {
   if (codigosEscaneados.value.length !== totalHerramientasRequeridas.value) {
-    alert(`Faltan códigos. Necesitas ${totalHerramientasRequeridas.value}, tienes ${codigosEscaneados.value.length}`)
+    alertaService.info(`Faltan códigos. Necesitas ${totalHerramientasRequeridas.value}, tienes ${codigosEscaneados.value.length}`)
     return
   }
 
@@ -793,7 +750,7 @@ const confirmarEntrega = async () => {
       codigosEscaneados.value
     )
 
-    alert('Herramientas entregadas exitosamente')
+    alertaService.success('Herramientas entregadas exitosamente')
     cerrarModalEntrega()
 
     // Invalidar cache e inmediatamente recargar
@@ -802,7 +759,7 @@ const confirmarEntrega = async () => {
   } catch (error) {
     console.error('Error al entregar:', error)
     const mensaje = error.response?.data?.detail || 'Error al asignar herramientas'
-    alert(mensaje)
+    alertaService.error(mensaje)
   } finally {
     procesandoEntrega.value = false
   }
@@ -838,7 +795,7 @@ const escanearDevolucion = (event) => {
   if (!codigo) return
 
   if (codigosDevolucion.value.includes(codigo)) {
-    alert(`El código ${codigo} ya fue escaneado`)
+    alertaService.warning(`El código ${codigo} ya fue escaneado`)
     event.target.value = ''
     return
   }
@@ -848,7 +805,7 @@ const escanearDevolucion = (event) => {
   )
 
   if (!perteneceAlPrestamo) {
-    alert('Este código no pertenece al préstamo')
+    alertaService.warning('Este código no pertenece al préstamo')
     event.target.value = ''
     return
   }
@@ -868,7 +825,7 @@ const confirmarDevolucion = async () => {
   const totalHerramientas = prestamoSeleccionado.value.herramientas_detalle?.length || 0
 
   if (codigosDevolucion.value.length !== totalHerramientas) {
-    alert(`Debes escanear todas las herramientas (${totalHerramientas})`)
+    alertaService.warning(`Debes escanear todas las herramientas (${totalHerramientas})`)
     return
   }
 
@@ -881,7 +838,7 @@ const confirmarDevolucion = async () => {
       estadosHerramientas.value
     )
 
-    alert('Herramientas devueltas exitosamente')
+    alertaService.success('Herramientas devueltas exitosamente')
     cerrarModalDevolucion()
 
     // Invalidar cache e inmediatamente recargar
@@ -889,7 +846,7 @@ const confirmarDevolucion = async () => {
     await cargarPrestamos(false)
   } catch (error) {
     console.error('Error:', error)
-    alert(error.response?.data?.detail || 'Error al devolver herramientas')
+    alertaService.error(error.response?.data?.detail || 'Error al devolver herramientas')
   } finally {
     procesandoDevolucion.value = false
   }
@@ -915,7 +872,7 @@ const copiarCodigo = async (codigo) => {
     }, 2000)
   } catch (err) {
     console.error('Error al copiar:', err)
-    alert('No se pudo copiar el código')
+    alertaService.error('No se pudo copiar el código')
   }
 }
 
