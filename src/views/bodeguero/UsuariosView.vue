@@ -23,6 +23,7 @@
                 <thead>
                     <tr class="border-b border-gray-700 text-gray-400 text-sm">
                         <th class="py-3 px-4">Usuario</th>
+                        <th class="py-3 px-4">RUT</th>
                         <th class="py-3 px-4">Rol / Carrera</th>
                         <th class="py-3 px-4">Registro</th>
                         <th class="py-3 px-4">Estado</th>
@@ -35,6 +36,9 @@
                         <td class="py-3 px-4">
                             <div class="font-medium">{{ usuario.nombres }} {{ usuario.apellidos }}</div>
                             <div class="text-xs text-gray-400">{{ usuario.correo }}</div>
+                        </td>
+                        <td class="py-3 px-4 text-gray-300 font-mono text-sm">
+                            {{ usuario.rut }}
                         </td>
 
                         <td class="py-3 px-4">
