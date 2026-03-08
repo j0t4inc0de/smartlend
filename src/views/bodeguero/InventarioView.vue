@@ -289,7 +289,7 @@
         </div>
 
         <div v-else-if="herramientasDetalle.length > 0" class="space-y-2">
-          <div v-for="herramienta in herramientasDetalle" :key="herramienta.id_herramienta" class="bg-gray-700 rounded-lg p-4 flex items-center justify-between hover:bg-gray-600 transition-colors">
+          <div v-for="herramienta in herramientasDetalle" :key="herramienta.id_herramienta" class="bg-gray-700 rounded-lg p-4 flex items-center justify-between border border-gray-800 hover:border-orange-700 transition-colors">
             <div class="flex-1">
               <p class="text-white font-medium font-mono">{{ herramienta.codigo_barras }}</p>
               <p class="text-gray-400 text-sm">Adquirido: {{ formatFecha(herramienta.fecha_adquisicion) }}</p>
@@ -309,13 +309,24 @@
                 'w-2 h-2 rounded-full',
                 herramienta.disponible ? 'bg-green-500' : 'bg-red-500'
               ]" :title="herramienta.disponible ? 'Disponible' : 'En préstamo'"></span>
-
-              <!--  BOTÓN HISTORIAL -->
-              <button @click="verHistorial(herramienta)" class="p-2 bg-purple-500/20 hover:bg-purple-500/30 rounded-lg border border-purple-500/50 transition-colors group" title="Ver historial">
-                <svg class="w-4 h-4 text-purple-400 group-hover:text-purple-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </button>
+              <!-- Botones -->
+              <div class="flex items-center justify-end gap-2 mt-auto">
+                <button @click="verHistorial(herramienta)" class="p-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-all group" title="Ver historial">
+                  <svg class="w-4 h-4 text-purple-400 group-hover:text-purple-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </button>
+                <button @click="abrirModalEditarHerramienta(herramienta)" class="p-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-all group" title="Editar">
+                  <svg class="w-4 h-4 text-yellow-400 group-hover:text-yellow-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                </button>
+                <button @click="eliminarExistencia(herramienta.id_herramienta)" class="p-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-all group" title="Eliminar">
+                  <svg class="w-4 h-4 text-red-400 group-hover:text-red-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -503,6 +514,8 @@ const imagenPreview = ref(null)
 const usuarios = ref([])
 const modalCategorias = ref(false)
 const nuevaCategoriaNombre = ref('')
+const modalEditarTipo = ref(false)
+const tipoEditando = ref(null)
 
 const nuevaHerramienta = ref({
   codigo_barras: '',
@@ -525,8 +538,42 @@ const tiposFiltrados = computed(() => {
 })
 
 // Funciones
+const abrirModalEditarTipo = (tipo) => {
+  tipoEditando.value = { ...tipo }
+  modalEditarTipo.value = true
+}
+
 const abrirModalCategorias = () => {
   modalCategorias.value = true
+}
+
+const guardarEdicionTipo = async () => {
+  try {
+    const formData = new FormData()
+    formData.append('nombre', tipoEditando.value.nombre)
+    formData.append('descripcion', tipoEditando.value.descripcion)
+    formData.append('id_categoria', tipoEditando.value.id_categoria)
+
+    // Si cambiaste la imagen, también la agregas al formData aquí
+
+    await inventarioService.actualizarTipoHerramienta(tipoEditando.value.id_tipo_herramienta, formData)
+    alertaService.success('Tipo actualizado')
+    modalEditarTipo.value = false
+    await cargarDatos()
+  } catch (error) {
+    alertaService.error('Error al actualizar')
+  }
+}
+
+const eliminarTipo = async (id) => {
+  if (!confirm('¿Seguro que deseas eliminar este tipo de herramienta?')) return
+  try {
+    await inventarioService.eliminarTipoHerramienta(id)
+    alertaService.success('Tipo eliminado')
+    await cargarDatos()
+  } catch (error) {
+    alertaService.error('Error al eliminar')
+  }
 }
 
 const crearCategoria = async () => {
