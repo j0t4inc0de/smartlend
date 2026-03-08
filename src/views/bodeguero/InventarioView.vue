@@ -87,21 +87,34 @@
           </div>
         </div>
 
-        <!-- Info - AGREGAR flex flex-col flex-1 -->
+        <!-- Info -->
         <div class="p-4 flex flex-col flex-1">
           <h3 class="text-white font-bold text-lg mb-2 line-clamp-2">{{ tipo.nombre }}</h3>
           <p class="text-gray-400 text-sm mb-4 line-clamp-2">{{ tipo.descripcion }}</p>
 
           <!-- Acciones - AGREGAR mt-auto -->
-          <div class="flex gap-2 mt-auto">
-            <button @click="verDetalles(tipo)" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all">
-              Ver Detalles
+          <div class="flex items-center justify-between gap-2 mt-auto">
+            <button @click="verDetalles(tipo)" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white px-3 py-2 rounded-lg text-sm font-medium transition-all">
+              Detalles
             </button>
-            <button @click="añadirHerramientaTipo(tipo)" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all">
-              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-              </svg>
-            </button>
+
+            <div class="flex gap-1">
+              <button @click="abrirModalEditarTipo(tipo)" class="p-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-all" title="Editar">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+              </button>
+              <button @click="eliminarTipo(tipo.id_tipo_herramienta)" class="p-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-all" title="Eliminar">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+              </button>
+              <button @click="añadirHerramientaTipo(tipo)" class="p-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-all" title="Añadir herramienta">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
       </div>
