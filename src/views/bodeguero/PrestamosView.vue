@@ -332,7 +332,7 @@
       </div>
     </div>
 
-    <!-- MODAL DE ENTREGA (NUEVO) -->
+    <!-- MODAL DE ENTREGA -->
     <div v-if="modalEntrega" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
       <div class="bg-gray-800 rounded-xl p-6 max-w-lg w-full border border-gray-700 max-h-[85vh] overflow-y-auto">
 
@@ -424,7 +424,7 @@
       </div>
     </div>
 
-    <!-- MODAL DE DEVOLUCIÓN (ACTUALIZADO) -->
+    <!-- MODAL DE DEVOLUCIÓN -->
     <div v-if="modalDevolucion" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
       <div class="bg-gray-800 rounded-xl p-6 max-w-lg w-full border border-gray-700 max-h-[85vh] overflow-y-auto">
         <div class="flex justify-between items-center mb-4">
@@ -457,25 +457,45 @@
           <div v-if="codigosDevolucion.length > 0" class="space-y-2">
             <p class="text-sm font-medium text-white">Escaneados ({{ codigosDevolucion.length }}/{{
               prestamoSeleccionado.herramientas_detalle?.length || 0 }}):</p>
+
             <div v-for="codigo in codigosDevolucion" :key="codigo" class="bg-gray-700 rounded-lg p-3 border border-gray-600">
-              <div class="flex items-center justify-between mb-2">
-                <span class="text-white font-mono text-sm">{{ codigo }}</span>
-                <button @click="quitarCodigoDevolucion(codigo)" class="text-red-400 hover:text-red-300">
+
+              <div class="flex items-start justify-between mb-3">
+                <div>
+                  <span class="text-white font-mono text-sm block mb-1">{{ codigo }}</span>
+                  <div class="flex items-center gap-2">
+                    <span class="text-xs text-gray-400">Estado al prestar:</span>
+                    <span :class="[
+                      'px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider',
+                      getDetalleHerramienta(codigo)?.estado_herramienta === 'Nuevo' ? 'bg-green-500/20 text-green-400 border border-green-500/50' :
+                        getDetalleHerramienta(codigo)?.estado_herramienta === 'Excelente' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/50' :
+                          getDetalleHerramienta(codigo)?.estado_herramienta === 'Bueno' ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/50' :
+                            getDetalleHerramienta(codigo)?.estado_herramienta === 'Regular' ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/50' :
+                              'bg-red-500/20 text-red-400 border border-red-500/50'
+                    ]">
+                      {{ getDetalleHerramienta(codigo)?.estado_herramienta }}
+                    </span>
+                  </div>
+                </div>
+
+                <button @click="quitarCodigoDevolucion(codigo)" class="text-red-400 hover:text-red-300 mt-1">
                   <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </button>
               </div>
 
-              <!-- Selector de estado individual -->
-              <select v-model="estadosHerramientas[codigo]" class="w-full bg-gray-600 text-white rounded px-2 py-1 text-sm border border-gray-500">
-                <option value="Nuevo">Nuevo</option>
-                <option value="Excelente">Excelente</option>
-                <option value="Bueno">Bueno</option>
-                <option value="Regular">Regular</option>
-                <option value="Defectuoso">Defectuoso</option>
-                <option value="Dañado">Dañado</option>
-              </select>
+              <div class="flex items-center gap-2">
+                <label class="text-xs text-gray-300 w-24">Estado a devolver:</label>
+                <select v-model="estadosHerramientas[codigo]" class="flex-1 bg-gray-600 text-white rounded px-2 py-1.5 text-sm border border-gray-500 focus:outline-none focus:ring-1 focus:ring-red-500">
+                  <option value="Nuevo">Nuevo</option>
+                  <option value="Excelente">Excelente</option>
+                  <option value="Bueno">Bueno</option>
+                  <option value="Regular">Regular</option>
+                  <option value="Defectuoso">Defectuoso</option>
+                  <option value="Dañado">Dañado</option>
+                </select>
+              </div>
             </div>
           </div>
 
@@ -604,6 +624,9 @@ const cargarPrestamos = async (useCache = true) => {
   } finally {
     loading.value = false
   }
+}
+const getDetalleHerramienta = (codigo) => {
+  return prestamoSeleccionado.value?.herramientas_detalle?.find(h => h.codigo_barras === codigo)
 }
 
 // Recarga manual (limpia cache y recarga)
@@ -772,7 +795,7 @@ const abrirModalDevolucion = (prestamo) => {
   modalDevolucion.value = true
 
   prestamo.herramientas_detalle?.forEach(h => {
-    estadosHerramientas.value[h.codigo_barras] = 'Bueno'
+    estadosHerramientas.value[h.codigo_barras] = h.estado_herramienta || 'Bueno'
   })
 
   nextTick(() => {
