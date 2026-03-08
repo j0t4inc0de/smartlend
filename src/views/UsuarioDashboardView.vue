@@ -10,8 +10,7 @@
       <div class="absolute inset-0 bg-gradient-to-b from-gray-900/80 via-gray-900/90 to-black"></div>
     </div>
 
-    <header
-      class="fixed top-0 left-0 w-full bg-black/30 backdrop-blur-xl border-b border-white/10 z-30 pb-2 transition-all duration-300">
+    <header class="fixed top-0 left-0 w-full bg-black/30 backdrop-blur-xl border-b border-white/10 z-30 pb-2 transition-all duration-300">
       <div class="flex justify-between items-center px-5 py-4">
         <div class="flex items-center gap-3">
           <div class="bg-white/10 p-1.5 rounded-lg">
@@ -23,8 +22,7 @@
           </div>
         </div>
 
-        <div
-          class="bg-red-600/20 border border-red-500/50 rounded-lg px-3 py-1 flex flex-col items-center shadow-[0_0_15px_rgba(220,38,38,0.3)]">
+        <div class="bg-red-600/20 border border-red-500/50 rounded-lg px-3 py-1 flex flex-col items-center shadow-[0_0_15px_rgba(220,38,38,0.3)]">
           <span class="text-[10px] text-red-300 uppercase font-bold tracking-wider">Sesión</span>
           <span class="text-base font-mono text-white font-bold">{{ tiempoRestante }}</span>
         </div>
@@ -40,13 +38,12 @@
           ]">
             Todas
           </button>
-          <button v-for="categoria in categorias" :key="categoria.id_categoria"
-            @click="filtrarPorCategoria(categoria.id_categoria)" :class="[
-              'flex-none px-4 py-2 rounded-full text-sm font-bold transition-all duration-300 border shadow-lg active:scale-95',
-              categoriaSeleccionada === categoria.id_categoria
-                ? 'bg-red-600 text-white border-red-500 shadow-red-900/50 scale-105'
-                : 'bg-gray-800/80 text-gray-400 border-white/10 hover:bg-gray-700'
-            ]">
+          <button v-for="categoria in categorias" :key="categoria.id_categoria" @click="filtrarPorCategoria(categoria.id_categoria)" :class="[
+            'flex-none px-4 py-2 rounded-full text-sm font-bold transition-all duration-300 border shadow-lg active:scale-95',
+            categoriaSeleccionada === categoria.id_categoria
+              ? 'bg-red-600 text-white border-red-500 shadow-red-900/50 scale-105'
+              : 'bg-gray-800/80 text-gray-400 border-white/10 hover:bg-gray-700'
+          ]">
             {{ categoria.nombre }}
           </button>
         </div>
@@ -55,27 +52,21 @@
 
     <main class="flex-1 overflow-y-auto p-4 pt-36 pb-28 z-10 custom-scrollbar">
       <div v-if="herramientasFiltradas.length > 0" class="grid grid-cols-3 gap-3">
-        <div v-for="herramienta in herramientasFiltradas" :key="herramienta.id_tipo_herramienta"
-          class="group relative bg-gray-800/60 backdrop-blur-md border border-white/10 rounded-xl overflow-hidden flex flex-col h-full transition-all duration-200">
+        <div v-for="herramienta in herramientasFiltradas" :key="herramienta.id_tipo_herramienta" class="group relative bg-gray-800/60 backdrop-blur-md border border-white/10 rounded-xl overflow-hidden flex flex-col h-full transition-all duration-200">
 
           <div class="aspect-video bg-gray-700/50 relative overflow-hidden">
             <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent z-10"></div>
 
-            <img v-if="herramienta.imagen_url" :src="herramienta.imagen_url" loading="lazy" decoding="async"
-              @error="herramienta.imagen_url = null"
-              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+            <img v-if="herramienta.imagen_url" :src="herramienta.imagen_url" loading="lazy" decoding="async" @error="herramienta.imagen_url = null" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
 
             <div v-else class="w-full h-full flex items-center justify-center">
               <svg class="w-10 h-10 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                  d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
               </svg>
             </div>
 
-            <div
-              class="absolute top-2 right-2 z-20 bg-black/60 backdrop-blur-md px-1.5 py-0.5 rounded-full border border-white/10 flex items-center gap-1">
-              <span
-                :class="['w-1.5 h-1.5 rounded-full animate-pulse', herramienta.stock > 0 ? 'bg-green-500' : 'bg-red-500']"></span>
+            <div class="absolute top-2 right-2 z-20 bg-black/60 backdrop-blur-md px-1.5 py-0.5 rounded-full border border-white/10 flex items-center gap-1">
+              <span :class="['w-1.5 h-1.5 rounded-full animate-pulse', herramienta.stock > 0 ? 'bg-green-500' : 'bg-red-500']"></span>
               <span class="text-[11px] font-bold text-white">{{ herramienta.stock }}</span>
             </div>
           </div>
@@ -84,9 +75,7 @@
             <h3 class="text-xs font-bold text-white leading-tight mb-1 line-clamp-2 h-8">{{ herramienta.nombre }}</h3>
 
             <div v-if="herramienta.stock > 0" class="mt-auto flex items-center gap-1">
-              <button @click="decrementarCantidad(herramienta.id_tipo_herramienta)"
-                :disabled="!cantidadesPorTipo[herramienta.id_tipo_herramienta]"
-                class="flex-1 bg-gray-700 hover:bg-gray-600 text-white py-2 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed active:scale-95 transition-all">
+              <button @click="decrementarCantidad(herramienta.id_tipo_herramienta)" :disabled="!cantidadesPorTipo[herramienta.id_tipo_herramienta]" class="flex-1 bg-gray-700 hover:bg-gray-600 text-white py-2 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed active:scale-95 transition-all">
                 <span class="text-lg font-bold">−</span>
               </button>
 
@@ -96,9 +85,7 @@
                 </span>
               </div>
 
-              <button @click="incrementarCantidad(herramienta.id_tipo_herramienta, herramienta.stock)"
-                :disabled="(cantidadesPorTipo[herramienta.id_tipo_herramienta] || 0) >= herramienta.stock"
-                class="flex-1 bg-red-600 hover:bg-red-500 text-white py-2 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed active:scale-95 transition-all">
+              <button @click="incrementarCantidad(herramienta.id_tipo_herramienta, herramienta.stock)" :disabled="(cantidadesPorTipo[herramienta.id_tipo_herramienta] || 0) >= herramienta.stock" class="flex-1 bg-red-600 hover:bg-red-500 text-white py-2 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed active:scale-95 transition-all">
                 <span class="text-lg font-bold">+</span>
               </button>
             </div>
@@ -114,8 +101,7 @@
 
       <div v-else class="flex flex-col items-center justify-center h-48 text-gray-500">
         <svg class="w-12 h-12 mb-3 opacity-20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
         <p class="text-base font-medium">Sin resultados</p>
       </div>
@@ -131,11 +117,9 @@
         <div class="flex items-center gap-3">
           <div class="relative">
             <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 6M7 13l-1.5 6m4.5-6h8m-8 0V9a3 3 0 116 0v4M9 19a1 1 0 102 0 1 1 0 00-2 0zm10 0a1 1 0 102 0 1 1 0 00-2 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 6M7 13l-1.5 6m4.5-6h8m-8 0V9a3 3 0 116 0v4M9 19a1 1 0 102 0 1 1 0 00-2 0zm10 0a1 1 0 102 0 1 1 0 00-2 0z" />
             </svg>
-            <span v-if="totalHerramientas > 0"
-              class="absolute -top-2 -right-2 w-5 h-5 bg-white text-red-600 rounded-full flex items-center justify-center text-xs font-bold shadow-sm">
+            <span v-if="totalHerramientas > 0" class="absolute -top-2 -right-2 w-5 h-5 bg-white text-red-600 rounded-full flex items-center justify-center text-xs font-bold shadow-sm">
               {{ totalHerramientas }}
             </span>
           </div>
@@ -156,20 +140,17 @@
       <div v-if="carritoVisible" class="fixed inset-0 z-50 flex flex-col justify-end">
         <div @click="carritoVisible = false" class="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity">
         </div>
-        <div
-          class="relative bg-gray-900 border-t border-white/10 rounded-t-3xl p-5 shadow-2xl max-h-[85vh] flex flex-col animate-slide-up">
+        <div class="relative bg-gray-900 border-t border-white/10 rounded-t-3xl p-5 shadow-2xl max-h-[85vh] flex flex-col animate-slide-up">
           <div class="w-12 h-1 bg-gray-700 rounded-full mx-auto mb-5"></div>
 
           <div class="flex justify-between items-center mb-5">
             <h2 class="text-xl font-bold text-white flex items-center gap-2">
               <svg class="w-5 h-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
               </svg>
               Confirmar
             </h2>
-            <button @click="carritoVisible = false"
-              class="p-1.5 bg-gray-800 rounded-full text-gray-400 hover:text-white">
+            <button @click="carritoVisible = false" class="p-1.5 bg-gray-800 rounded-full text-gray-400 hover:text-white">
               <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
               </svg>
@@ -178,22 +159,17 @@
 
           <div class="flex-1 overflow-y-auto space-y-2 mb-5 custom-scrollbar pr-1">
             <div v-for="(cantidad, idTipo) in cantidadesPorTipo" :key="idTipo">
-              <div v-if="cantidad > 0"
-                class="bg-gray-800/50 border border-white/5 p-3 rounded-xl flex justify-between items-center">
+              <div v-if="cantidad > 0" class="bg-gray-800/50 border border-white/5 p-3 rounded-xl flex justify-between items-center">
                 <div class="flex items-center gap-3">
-                  <img v-if="getHerramienta(idTipo)?.imagen_url" :src="getHerramienta(idTipo).imagen_url" loading="lazy"
-                    decoding="async" @error="getHerramienta(idTipo).imagen_url = null"
-                    class="w-10 h-10 rounded-lg object-cover bg-gray-700" />
+                  <img v-if="getHerramienta(idTipo)?.imagen_url" :src="getHerramienta(idTipo).imagen_url" loading="lazy" decoding="async" @error="getHerramienta(idTipo).imagen_url = null" class="w-10 h-10 rounded-lg object-cover bg-gray-700" />
                   <div>
                     <h4 class="text-white font-bold text-sm">{{ getHerramienta(idTipo)?.nombre }}</h4>
                     <p class="text-xs text-gray-400">Cantidad: {{ cantidad }}</p>
                   </div>
                 </div>
-                <button @click="removerDelCarrito(idTipo)"
-                  class="p-2 text-red-500 bg-red-500/10 rounded-lg hover:bg-red-500/20 active:scale-95 transition-all">
+                <button @click="removerDelCarrito(idTipo)" class="p-2 text-red-500 bg-red-500/10 rounded-lg hover:bg-red-500/20 active:scale-95 transition-all">
                   <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                   </svg>
                 </button>
               </div>
@@ -215,21 +191,18 @@
             </label>
             <div class="flex gap-4 mb-3">
               <label class="flex items-center gap-2 cursor-pointer">
-                <input type="radio" v-model="tipoSolicitud" value="normal"
-                  class="text-red-500 bg-gray-900 border-gray-600 focus:ring-red-500">
+                <input type="radio" v-model="tipoSolicitud" value="normal" class="text-red-500 bg-gray-900 border-gray-600 focus:ring-red-500">
                 <span class="text-sm text-white">Para hoy</span>
               </label>
               <label class="flex items-center gap-2 cursor-pointer">
-                <input type="radio" v-model="tipoSolicitud" value="reserva"
-                  class="text-red-500 bg-gray-900 border-gray-600 focus:ring-red-500">
+                <input type="radio" v-model="tipoSolicitud" value="reserva" class="text-red-500 bg-gray-900 border-gray-600 focus:ring-red-500">
                 <span class="text-sm text-white">Reserva (Mañana)</span>
               </label>
             </div>
 
             <div v-if="tipoSolicitud === 'reserva'" class="mt-3">
               <label class="block text-xs text-gray-400 mb-1">Hora de retiro esperada:</label>
-              <input type="time" v-model="horaReserva" required
-                class="w-full bg-gray-900 border border-gray-700 text-white rounded-lg p-2 focus:border-red-500 outline-none">
+              <input type="time" v-model="horaReserva" required class="w-full bg-gray-900 border border-gray-700 text-white rounded-lg p-2 focus:border-red-500 outline-none">
             </div>
           </div>
 
@@ -237,8 +210,7 @@
             <div class="flex items-start gap-3">
               <div class="bg-red-500/20 p-2 rounded-lg">
                 <svg class="w-5 h-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
               </div>
               <div class="flex-1">
@@ -255,10 +227,8 @@
             </div>
           </div>
 
-          <button @click="confirmarPrestamo" :disabled="procesando || totalHerramientas === 0"
-            class="w-full bg-green-600 hover:bg-green-500 text-white font-bold text-lg py-4 rounded-xl shadow-lg shadow-green-900/30 transition-all active:scale-98 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
-            <span v-if="procesando"
-              class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+          <button @click="confirmarPrestamo" :disabled="procesando || totalHerramientas === 0" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold text-lg py-4 rounded-xl shadow-lg shadow-green-900/30 transition-all active:scale-98 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+            <span v-if="procesando" class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
             <span v-else>{{ tipoSolicitud === 'reserva' ? 'Confirmar Reserva' : 'Confirmar Solicitud' }}</span>
             <svg v-if="!procesando" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
@@ -268,11 +238,9 @@
       </div>
     </transition>
 
-    <div v-if="mostrarConfirmacion"
-      class="fixed inset-0 bg-black/95 backdrop-blur-xl flex items-center justify-center z-[60] p-6 animate-fade-in">
+    <div v-if="mostrarConfirmacion" class="fixed inset-0 bg-black/95 backdrop-blur-xl flex items-center justify-center z-[60] p-6 animate-fade-in">
       <div class="text-center w-full max-w-md">
-        <div
-          class="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-5 shadow-[0_0_50px_rgba(34,197,94,0.4)] animate-bounce">
+        <div class="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-5 shadow-[0_0_50px_rgba(34,197,94,0.4)] animate-bounce">
           <svg class="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
           </svg>
@@ -283,8 +251,7 @@
           <span class="text-4xl font-mono font-bold text-green-400 tracking-widest">{{ codigoPrestamo }}</span>
         </div>
         <p class="text-yellow-300 text-sm mb-6">Tienes 30 minutos para retirar</p>
-        <button @click="finalizarSesion"
-          class="w-full bg-gray-800 hover:bg-gray-700 text-white font-bold py-4 rounded-xl border border-gray-600 text-base transition-all active:scale-95">
+        <button @click="finalizarSesion" class="w-full bg-gray-800 hover:bg-gray-700 text-white font-bold py-4 rounded-xl border border-gray-600 text-base transition-all active:scale-95">
           Cerrar Sesión
         </button>
       </div>
@@ -300,6 +267,7 @@ import { inventarioService } from '@/services/inventarioService'
 import { prestamosService } from '@/services/prestamosService'
 import inacapLogo from '../assets/images/inacap-logo.png'
 import sedeBackground from '../assets/images/sede-background.jpg'
+import { alertaService } from '@/services/alertasService'
 
 const router = useRouter()
 const usuario = ref(JSON.parse(localStorage.getItem('user') || '{"nombres": "Estudiante"}'))
@@ -400,7 +368,7 @@ const confirmarPrestamo = async () => {
     const idUsuario = user?.id ?? user?.id_usuario
 
     if (!idUsuario) {
-      alert('No se encontró el id del usuario autenticado. Vuelve a iniciar sesión.')
+      alertaService.warning('No se encontró el id del usuario autenticado. Vuelve a iniciar sesión.')
       return
     }
 
@@ -412,7 +380,7 @@ const confirmarPrestamo = async () => {
       }))
 
     if (tipos.length === 0) {
-      alert('Selecciona al menos una herramienta')
+      alertaService.info('Selecciona al menos una herramienta')
       return
     }
 
@@ -453,7 +421,7 @@ const confirmarPrestamo = async () => {
       error.response?.data?.detail ||
       error.response?.data?.fecha_inicio_reserva?.[0] ||
       'Error al procesar la solicitud'
-    alert(mensaje)
+    alertaService.error(mensaje)
   } finally {
     procesando.value = false
   }
