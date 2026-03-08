@@ -22,9 +22,17 @@
           </div>
         </div>
 
-        <div class="bg-red-600/20 border border-red-500/50 rounded-lg px-3 py-1 flex flex-col items-center shadow-[0_0_15px_rgba(220,38,38,0.3)]">
-          <span class="text-[10px] text-red-300 uppercase font-bold tracking-wider">Sesión</span>
-          <span class="text-base font-mono text-white font-bold">{{ tiempoRestante }}</span>
+        <div class="flex items-center gap-2">
+          <div class="bg-red-600/20 border border-red-500/50 rounded-lg px-3 py-1 flex flex-col items-center shadow-[0_0_15px_rgba(220,38,38,0.3)]">
+            <span class="text-[10px] text-red-300 uppercase font-bold tracking-wider">Sesión</span>
+            <span class="text-base font-mono text-white font-bold">{{ tiempoRestante }}</span>
+          </div>
+
+          <button @click="seguroFinalizarSesion" title="Cerrar sesión y salir" class="bg-gray-800/80 hover:bg-red-600 border border-white/10 hover:border-red-500 text-white p-2 rounded-lg transition-all active:scale-95 group">
+            <svg class="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+          </button>
         </div>
       </div>
 
@@ -267,6 +275,7 @@ import { inventarioService } from '@/services/inventarioService'
 import { prestamosService } from '@/services/prestamosService'
 import inacapLogo from '../assets/images/inacap-logo.png'
 import sedeBackground from '../assets/images/sede-background.jpg'
+import { toast } from 'vue-sonner'
 import { alertaService } from '@/services/alertasService'
 
 const router = useRouter()
@@ -431,6 +440,23 @@ const finalizarSesion = () => {
   localStorage.removeItem('user')
   localStorage.removeItem('isAuthenticated')
   router.push('/')
+}
+
+const seguroFinalizarSesion = () => {
+  toast.warning('¿Deseas finalizar tu sesión?', {
+    description: 'Si tienes herramientas en el carrito, se perderán.',
+    duration: 8000, // Le damos 8 segundos al usuario para decidir
+    action: {
+      label: 'Sí, salir',
+      onClick: () => {
+        finalizarSesion() // Llama a tu función original para cerrar sesión
+      }
+    },
+    cancel: {
+      label: 'Cancelar',
+      onClick: () => console.log('Cierre de sesión cancelado')
+    }
+  })
 }
 
 const cargarDatos = async () => {
