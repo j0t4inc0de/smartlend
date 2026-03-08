@@ -1,21 +1,21 @@
 <template>
   <div class="p-8">
     <!-- HEADER -->
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-6">
       <div>
-        <h1 class="text-3xl font-bold text-white mb-2">Inventario de Herramientas</h1>
-        <p class="text-gray-400">Gestiona el stock y añade nuevas herramientas</p>
+        <h1 class="text-2xl md:text-3xl font-bold text-white mb-1">Inventario de Herramientas</h1>
+        <p class="text-sm text-gray-400">Gestiona el stock y añade nuevas herramientas</p>
       </div>
 
-      <div class="flex gap-3">
-        <button @click="abrirModalNuevoTipo" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-lg font-medium transition-all flex items-center gap-2 shadow-lg shadow-blue-900/30">
-          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <div class="flex gap-2">
+        <button @click="abrirModalNuevoTipo" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 shadow-lg shadow-blue-900/30">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
           </svg>
           Nuevo Tipo
         </button>
-        <button @click="abrirModalNuevaHerramienta" class="bg-red-600 hover:bg-red-500 text-white px-6 py-3 rounded-lg font-medium transition-all flex items-center gap-2 shadow-lg shadow-red-900/30">
-          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <button @click="abrirModalNuevaHerramienta" class="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 shadow-lg shadow-red-900/30">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
           </svg>
           Añadir Existencia
@@ -24,23 +24,23 @@
     </div>
 
     <!-- FILTROS -->
-    <div class="mb-6 flex flex-wrap gap-3">
-      <button @click="abrirModalCategorias" class="bg-purple-600 hover:bg-purple-500 text-white px-6 py-3 rounded-lg font-medium transition-all flex items-center gap-2 shadow-lg shadow-purple-900/30">
-        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <div class="mb-6 flex flex-wrap items-center gap-2">
+      <button @click="abrirModalCategorias" class="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 shadow-lg shadow-purple-900/30">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
         </svg>
         Categorías
       </button>
       <button @click="categoriaSeleccionada = null" :class="[
-        'px-4 py-2 rounded-lg font-medium transition-all',
+        'px-3 py-1.5 rounded-lg text-sm font-medium transition-all',
         categoriaSeleccionada === null
           ? 'bg-red-600 text-white shadow-lg shadow-red-900/30'
           : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
       ]">
-        Todas las categorías
+        Todas
       </button>
       <button v-for="categoria in categorias" :key="categoria.id_categoria" @click="categoriaSeleccionada = categoria.id_categoria" :class="[
-        'px-4 py-2 rounded-lg font-medium transition-all',
+        'px-3 py-1.5 rounded-lg text-sm font-medium transition-all',
         categoriaSeleccionada === categoria.id_categoria
           ? 'bg-red-600 text-white shadow-lg shadow-red-900/30'
           : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
@@ -748,6 +748,16 @@ const eliminarCategoria = async (id) => {
 }
 
 const eliminarCategoriaAlerta = async (id, nombre) => {
+  const tiposAsociados = tiposHerramienta.value.filter(tipo => tipo.id_categoria === id)
+
+  if (tiposAsociados.length > 0) {
+    toast.error(
+      `No puedes eliminar la categoría "${nombre}" porque tiene ${tiposAsociados.length} tipo(s) de herramienta asociados. Por favor, elimínalos o cámbiales la categoría primero.`,
+      { duration: 6000 }
+    )
+    return; // Detenemos la ejecución de la función aquí mismo
+  }
+
   toast.warning(`¿Estás seguro de eliminar la categoría "${nombre}"?`, {
     duration: 8000,
     action: {
@@ -758,10 +768,11 @@ const eliminarCategoriaAlerta = async (id, nombre) => {
     },
     cancel: {
       label: 'Cancelar',
-      onClick: () => console.log('Eliminación cancelada') // Actualicé el log de consola por si acaso 😉
+      onClick: () => console.log('Eliminación cancelada')
     }
   })
 }
+
 const cargarDatos = async () => {
   try {
     loading.value = true
