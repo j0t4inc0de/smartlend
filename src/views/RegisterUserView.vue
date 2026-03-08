@@ -273,6 +273,7 @@ import { ref, onMounted, onUnmounted, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { authService } from '@/services/authService'
 import sedeBackground from '@/assets/images/sede-background.jpg'
+import { alertaService } from '@/services/alertasService'
 
 const router = useRouter()
 
@@ -354,7 +355,7 @@ const loadInitialData = async () => {
     console.log('Roles cargados:', roles.value)
   } catch (error) {
     console.error('Error cargando datos iniciales:', error)
-    alert('Error al cargar los datos del formulario. Por favor, recarga la página.')
+    alertaService.error('Error al cargar los datos del formulario. Por favor, recarga la página.')
   } finally {
     loadingData.value = false
   }
@@ -505,7 +506,7 @@ const startCamera = async () => {
     }
   } catch (error) {
     console.error('❌ Error al acceder a la cámara:', error)
-    alert('No se pudo acceder a la cámara. Verifica los permisos del navegador.')
+    alertaService.error('No se pudo acceder a la cámara. Verifica los permisos del navegador.')
   }
 }
 
@@ -567,7 +568,7 @@ const registerUser = async () => {
 
       result = await authService.registerUserWithEmail(payload)
       console.log('Resultado:', result)
-      alert(`Registro completado. Ya puedes iniciar sesión con tu correo.`)
+      alertaService.success(`Registro completado. Ya puedes iniciar sesión con tu correo.`)
       router.push('/')
       return
     }
@@ -592,12 +593,12 @@ const registerUser = async () => {
       ? `¡Bienvenido ${formData.value.nombres}! Tu registro biométrico fue completado exitosamente.`
       : `¡Perfecto ${formData.value.nombres}! Tu información y datos biométricos fueron actualizados.`
 
-    alert(mensaje)
+    alertaService.success(mensaje)
     router.push('/')
 
   } catch (error) {
     console.error('Error en registro:', error)
-    alert(`Error: ${error.message}`)
+    alertaService.error(`Error: ${error.message}`)
   } finally {
     isSubmitting.value = false
   }

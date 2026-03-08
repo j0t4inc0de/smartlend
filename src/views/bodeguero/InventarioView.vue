@@ -8,16 +8,13 @@
       </div>
 
       <div class="flex gap-3">
-        <button @click="abrirModalNuevoTipo"
-          class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-lg font-medium transition-all flex items-center gap-2 shadow-lg shadow-blue-900/30">
+        <button @click="abrirModalNuevoTipo" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-lg font-medium transition-all flex items-center gap-2 shadow-lg shadow-blue-900/30">
           <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
           </svg>
           Nuevo Tipo
         </button>
-        <button @click="abrirModalNuevaHerramienta"
-          class="bg-red-600 hover:bg-red-500 text-white px-6 py-3 rounded-lg font-medium transition-all flex items-center gap-2 shadow-lg shadow-red-900/30">
+        <button @click="abrirModalNuevaHerramienta" class="bg-red-600 hover:bg-red-500 text-white px-6 py-3 rounded-lg font-medium transition-all flex items-center gap-2 shadow-lg shadow-red-900/30">
           <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
           </svg>
@@ -36,13 +33,12 @@
       ]">
         Todas las categorías
       </button>
-      <button v-for="categoria in categorias" :key="categoria.id_categoria"
-        @click="categoriaSeleccionada = categoria.id_categoria" :class="[
-          'px-4 py-2 rounded-lg font-medium transition-all',
-          categoriaSeleccionada === categoria.id_categoria
-            ? 'bg-red-600 text-white shadow-lg shadow-red-900/30'
-            : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-        ]">
+      <button v-for="categoria in categorias" :key="categoria.id_categoria" @click="categoriaSeleccionada = categoria.id_categoria" :class="[
+        'px-4 py-2 rounded-lg font-medium transition-all',
+        categoriaSeleccionada === categoria.id_categoria
+          ? 'bg-red-600 text-white shadow-lg shadow-red-900/30'
+          : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+      ]">
         {{ categoria.nombre }}
       </button>
     </div>
@@ -57,26 +53,20 @@
     </div>
 
     <!-- GRID DE HERRAMIENTAS -->
-    <div v-else-if="tiposFiltrados.length > 0"
-      class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3">
+    <div v-else-if="tiposFiltrados.length > 0" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3">
       <!-- Tarjeta completa -->
-      <div v-for="tipo in tiposFiltrados" :key="tipo.id_tipo_herramienta"
-        class="bg-gray-800 rounded-xl overflow-hidden border border-gray-700 hover:border-gray-600 transition-all group flex flex-col">
+      <div v-for="tipo in tiposFiltrados" :key="tipo.id_tipo_herramienta" class="bg-gray-800 rounded-xl overflow-hidden border border-gray-700 hover:border-gray-600 transition-all group flex flex-col">
 
         <!-- Imagen  -->
         <div class="aspect-video bg-gray-700 relative overflow-hidden">
-          <img v-if="tipo.imagen" :src="tipo.imagen" :alt="tipo.nombre"
-            class="w-full h-full object-cover scale-95 group-hover:scale-105 transition-transform duration-300"
-            @error="handleImageError" />
+          <img v-if="tipo.imagen" :src="tipo.imagen" :alt="tipo.nombre" class="w-full h-full object-cover scale-95 group-hover:scale-105 transition-transform duration-300" @error="handleImageError" />
           <div v-else class="w-full h-full flex items-center justify-center">
             <svg class="w-16 h-16 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
             </svg>
           </div>
           <!-- Badge de stock -->
-          <div
-            class="absolute top-3 right-3 bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/20">
+          <div class="absolute top-3 right-3 bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/20">
             <div class="flex items-center gap-2">
               <span :class="[
                 'w-2 h-2 rounded-full',
@@ -98,12 +88,10 @@
 
           <!-- Acciones - AGREGAR mt-auto -->
           <div class="flex gap-2 mt-auto">
-            <button @click="verDetalles(tipo)"
-              class="flex-1 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all">
+            <button @click="verDetalles(tipo)" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all">
               Ver Detalles
             </button>
-            <button @click="añadirHerramientaTipo(tipo)"
-              class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all">
+            <button @click="añadirHerramientaTipo(tipo)" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all">
               <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
               </svg>
@@ -135,22 +123,19 @@
           <!-- Nombre -->
           <div>
             <label class="block text-sm font-medium text-gray-300 mb-2">Nombre *</label>
-            <input v-model="nuevoTipo.nombre" type="text" required placeholder="Ej: Martillo de Goma"
-              class="w-full bg-gray-700 text-white rounded-lg px-4 py-3 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <input v-model="nuevoTipo.nombre" type="text" required placeholder="Ej: Martillo de Goma" class="w-full bg-gray-700 text-white rounded-lg px-4 py-3 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
 
           <!-- Descripción -->
           <div>
             <label class="block text-sm font-medium text-gray-300 mb-2">Descripción *</label>
-            <textarea v-model="nuevoTipo.descripcion" required placeholder="Describe el tipo de herramienta..." rows="3"
-              class="w-full bg-gray-700 text-white rounded-lg px-4 py-3 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+            <textarea v-model="nuevoTipo.descripcion" required placeholder="Describe el tipo de herramienta..." rows="3" class="w-full bg-gray-700 text-white rounded-lg px-4 py-3 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
           </div>
 
           <!-- Categoría -->
           <div>
             <label class="block text-sm font-medium text-gray-300 mb-2">Categoría *</label>
-            <select v-model="nuevoTipo.id_categoria" required
-              class="w-full bg-gray-700 text-white rounded-lg px-4 py-3 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <select v-model="nuevoTipo.id_categoria" required class="w-full bg-gray-700 text-white rounded-lg px-4 py-3 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
               <option value="">Seleccionar categoría...</option>
               <option v-for="categoria in categorias" :key="categoria.id_categoria" :value="categoria.id_categoria">
                 {{ categoria.nombre }}
@@ -163,11 +148,9 @@
             <label class="block text-sm font-medium text-gray-300 mb-2">Imagen</label>
             <div class="relative">
               <input ref="imageInput" type="file" accept="image/*" @change="handleImageUpload" class="hidden" />
-              <button type="button" @click="$refs.imageInput.click()"
-                class="w-full bg-gray-700 hover:bg-gray-600 text-white rounded-lg px-4 py-3 border border-gray-600 transition-colors flex items-center justify-center gap-2">
+              <button type="button" @click="$refs.imageInput.click()" class="w-full bg-gray-700 hover:bg-gray-600 text-white rounded-lg px-4 py-3 border border-gray-600 transition-colors flex items-center justify-center gap-2">
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
                 {{ imagenSeleccionada ? 'Cambiar imagen' : 'Seleccionar imagen' }}
               </button>
@@ -183,18 +166,15 @@
           <!-- Preview de imagen -->
           <div v-if="imagenPreview" class="mt-4">
             <p class="text-sm text-gray-400 mb-2">Vista previa:</p>
-            <img :src="imagenPreview" alt="Preview"
-              class="w-full h-48 object-cover rounded-lg border border-gray-600" />
+            <img :src="imagenPreview" alt="Preview" class="w-full h-48 object-cover rounded-lg border border-gray-600" />
           </div>
 
           <!-- Botones -->
           <div class="flex gap-3 pt-4">
-            <button type="button" @click="cerrarModalNuevoTipo"
-              class="flex-1 px-4 py-3 rounded-lg border border-gray-600 text-gray-300 hover:bg-gray-700 transition-colors">
+            <button type="button" @click="cerrarModalNuevoTipo" class="flex-1 px-4 py-3 rounded-lg border border-gray-600 text-gray-300 hover:bg-gray-700 transition-colors">
               Cancelar
             </button>
-            <button type="submit" :disabled="procesandoTipo"
-              class="flex-1 px-4 py-3 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+            <button type="submit" :disabled="procesandoTipo" class="flex-1 px-4 py-3 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
               {{ procesandoTipo ? 'Creando...' : 'Crear Tipo' }}
             </button>
           </div>
@@ -218,11 +198,9 @@
           <!-- Tipo de herramienta -->
           <div>
             <label class="block text-sm font-medium text-gray-300 mb-2">Tipo de Herramienta *</label>
-            <select v-model="nuevaHerramienta.id_tipo_herramienta" required
-              class="w-full bg-gray-700 text-white rounded-lg px-4 py-3 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500">
+            <select v-model="nuevaHerramienta.id_tipo_herramienta" required class="w-full bg-gray-700 text-white rounded-lg px-4 py-3 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500">
               <option value="">Seleccionar tipo...</option>
-              <option v-for="tipo in tiposHerramienta" :key="tipo.id_tipo_herramienta"
-                :value="tipo.id_tipo_herramienta">
+              <option v-for="tipo in tiposHerramienta" :key="tipo.id_tipo_herramienta" :value="tipo.id_tipo_herramienta">
                 {{ tipo.nombre }}
               </option>
             </select>
@@ -231,15 +209,13 @@
           <!-- Código de barras -->
           <div>
             <label class="block text-sm font-medium text-gray-300 mb-2">Código de Barras *</label>
-            <input v-model="nuevaHerramienta.codigo_barras" type="text" required placeholder="Ej: BAR-001"
-              class="w-full bg-gray-700 text-white rounded-lg px-4 py-3 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500" />
+            <input v-model="nuevaHerramienta.codigo_barras" type="text" required placeholder="Ej: BAR-001" class="w-full bg-gray-700 text-white rounded-lg px-4 py-3 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500" />
           </div>
 
           <!-- Estado -->
           <div>
             <label class="block text-sm font-medium text-gray-300 mb-2">Estado *</label>
-            <select v-model="nuevaHerramienta.estado_herramienta" required
-              class="w-full bg-gray-700 text-white rounded-lg px-4 py-3 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500">
+            <select v-model="nuevaHerramienta.estado_herramienta" required class="w-full bg-gray-700 text-white rounded-lg px-4 py-3 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500">
               <option value="Nuevo">Nuevo</option>
               <option value="Excelente">Excelente</option>
               <option value="Bueno">Bueno</option>
@@ -251,12 +227,10 @@
 
           <!-- Botones -->
           <div class="flex gap-3 pt-4">
-            <button type="button" @click="cerrarModalNuevaHerramienta"
-              class="flex-1 px-4 py-3 rounded-lg border border-gray-600 text-gray-300 hover:bg-gray-700 transition-colors">
+            <button type="button" @click="cerrarModalNuevaHerramienta" class="flex-1 px-4 py-3 rounded-lg border border-gray-600 text-gray-300 hover:bg-gray-700 transition-colors">
               Cancelar
             </button>
-            <button type="submit" :disabled="procesando"
-              class="flex-1 px-4 py-3 rounded-lg bg-red-600 hover:bg-red-500 text-white font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+            <button type="submit" :disabled="procesando" class="flex-1 px-4 py-3 rounded-lg bg-red-600 hover:bg-red-500 text-white font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
               {{ procesando ? 'Guardando...' : 'Guardar' }}
             </button>
           </div>
@@ -296,8 +270,7 @@
         </div>
 
         <div v-else-if="herramientasDetalle.length > 0" class="space-y-2">
-          <div v-for="herramienta in herramientasDetalle" :key="herramienta.id_herramienta"
-            class="bg-gray-700 rounded-lg p-4 flex items-center justify-between hover:bg-gray-600 transition-colors">
+          <div v-for="herramienta in herramientasDetalle" :key="herramienta.id_herramienta" class="bg-gray-700 rounded-lg p-4 flex items-center justify-between hover:bg-gray-600 transition-colors">
             <div class="flex-1">
               <p class="text-white font-medium font-mono">{{ herramienta.codigo_barras }}</p>
               <p class="text-gray-400 text-sm">Adquirido: {{ formatFecha(herramienta.fecha_adquisicion) }}</p>
@@ -319,13 +292,9 @@
               ]" :title="herramienta.disponible ? 'Disponible' : 'En préstamo'"></span>
 
               <!--  BOTÓN HISTORIAL -->
-              <button @click="verHistorial(herramienta)"
-                class="p-2 bg-purple-500/20 hover:bg-purple-500/30 rounded-lg border border-purple-500/50 transition-colors group"
-                title="Ver historial">
-                <svg class="w-4 h-4 text-purple-400 group-hover:text-purple-300" fill="none" viewBox="0 0 24 24"
-                  stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <button @click="verHistorial(herramienta)" class="p-2 bg-purple-500/20 hover:bg-purple-500/30 rounded-lg border border-purple-500/50 transition-colors group" title="Ver historial">
+                <svg class="w-4 h-4 text-purple-400 group-hover:text-purple-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </button>
             </div>
@@ -345,8 +314,7 @@
           <div>
             <h3 class="text-xl font-bold text-white flex items-center gap-2">
               <svg class="w-6 h-6 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               Historial de Trazabilidad
             </h3>
@@ -362,8 +330,7 @@
         </div>
 
         <!-- Estado Actual -->
-        <div
-          class="mb-6 bg-gradient-to-r from-purple-500/20 to-purple-600/20 border border-purple-500/50 rounded-lg p-4">
+        <div class="mb-6 bg-gradient-to-r from-purple-500/20 to-purple-600/20 border border-purple-500/50 rounded-lg p-4">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm text-gray-300 mb-1">Estado Actual</p>
@@ -441,8 +408,7 @@
 
         <div v-else class="text-center py-12">
           <svg class="w-16 h-16 text-gray-600 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           <p class="text-gray-400 text-lg">Sin historial registrado</p>
           <p class="text-gray-500 text-sm mt-1">Esta herramienta no tiene cambios de estado previos</p>
@@ -450,8 +416,7 @@
 
         <!-- Botón Cerrar -->
         <div class="mt-6 flex justify-end">
-          <button @click="cerrarModalHistorial"
-            class="px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-medium transition-colors">
+          <button @click="cerrarModalHistorial" class="px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-medium transition-colors">
             Cerrar
           </button>
         </div>
@@ -464,6 +429,8 @@
 import { ref, computed, onMounted } from 'vue'
 import { inventarioService } from '@/services/inventarioService'
 import { usuariosService } from '@/services/usuariosService'
+import { alertaService } from '@/services/alertasService'
+
 // Estados
 const loading = ref(true)
 const procesando = ref(false)
@@ -537,7 +504,7 @@ const cargarDatos = async () => {
 
   } catch (error) {
     console.error('Error al cargar datos:', error)
-    alert('Error al cargar el inventario')
+    alertaService.error('Error al cargar el inventario')
   } finally {
     loading.value = false
   }
@@ -566,7 +533,7 @@ const verHistorial = async (herramienta) => {
     console.log('Historial cargado:', historialDetalle.value)
   } catch (error) {
     console.error('Error al cargar historial:', error)
-    alert('Error al cargar el historial de la herramienta')
+    alertaService.error('Error al cargar el historial de la herramienta')
   } finally {
     loadingHistorial.value = false
   }
@@ -625,12 +592,12 @@ const crearTipoHerramienta = async () => {
     }
 
     await inventarioService.crearTipoHerramienta(formData)
-    alert('Tipo de herramienta creado exitosamente')
+    alertaService.success('Tipo de herramienta creado exitosamente')
     cerrarModalNuevoTipo()
     await cargarDatos()
   } catch (error) {
     console.error('Error:', error)
-    alert(error.message || 'Error al crear el tipo de herramienta')
+    alertaService.error(error.message || 'Error al crear el tipo de herramienta')
   } finally {
     procesandoTipo.value = false
   }
@@ -660,12 +627,12 @@ const crearHerramienta = async () => {
   procesando.value = true
   try {
     await inventarioService.crearHerramienta(nuevaHerramienta.value)
-    alert('Herramienta creada exitosamente')
+    alertaService.success('Herramienta creada exitosamente')
     cerrarModalNuevaHerramienta()
     await cargarDatos()
   } catch (error) {
     console.error('Error:', error)
-    alert(error.message || 'Error al crear la herramienta')
+    alertaService.error(error.message || 'Error al crear la herramienta')
   } finally {
     procesando.value = false
   }
