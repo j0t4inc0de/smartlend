@@ -407,7 +407,7 @@
               </span>
             </div>
             <div class="w-full bg-gray-600 rounded-full h-2">
-              <div class="h-2 rounded-full transition-all duration-300" :class="codigosEscaneados.length === totalHerramientasRequeridas ? 'bg-green-500' : 'bg-yellow-500'" :style="{ width: `${(codigosEscaneados.length / totalHerramientasRequeridas) * 100}%` }"></div>
+              <div class="h-2 rounded-full transition-all duration-300" :class="codigosEscaneados.length === totalHerramientasRequeridas ? 'bg-green-500' : 'bg-yellow-500'" :style="{ width: `${Math.min((codigosEscaneados.length / totalHerramientasRequeridas) * 100, 100)}%` }"></div>
             </div>
           </div>
 
@@ -741,6 +741,12 @@ const escanearCodigo = (event) => {
   const codigo = event.target.value.trim()
 
   if (!codigo) return
+
+  if (codigosEscaneados.value.length >= totalHerramientasRequeridas.value) {
+    alertaService.warning('Préstamo completo, no se pidieron más herramientas')
+    event.target.value = '' // Limpiamos el input
+    return // Cortamos la función aquí
+  }
 
   if (codigosEscaneados.value.includes(codigo)) {
     alertaService.error(`El código ${codigo} ya fue escaneado`)
