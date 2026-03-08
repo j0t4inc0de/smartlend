@@ -1,6 +1,7 @@
 // src\services\authService.js
 import axios from 'axios'
 import API_BASE_URL from './config/api.js'
+import { alertaService } from './alertasService.js'
 
 export const authService = {
   // Manejo de autenticación facial
@@ -23,6 +24,7 @@ export const authService = {
       return response.data
     } catch (error) {
       console.error('Error completo:', error.response || error)
+      alertaService.error('Error al registrar usuario, el usuario ya existe')
       const errorMessage = error.response?.data?.error || error.message || 'Error desconocido'
       throw new Error(errorMessage)
     }

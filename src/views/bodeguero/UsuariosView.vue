@@ -295,6 +295,7 @@ const guardarUsuario = async () => {
     } else {
         await usuariosStore.addUsuario(formUsuario.value)
     }
+    alertaService.success('Usuario guardado exitosamente')
     cerrarModal()
 }
 
