@@ -173,4 +173,72 @@ export const inventarioService = {
       throw new Error('No se pudo cargar el historial de la herramienta')
     }
   },
+
+  // --- GESTIÓN DE CATEGORÍAS ---
+  async crearCategoria(data) {
+    try {
+      const response = await axios.post(
+        `${API_BASE_URL}/inventario/api/categorias-herramienta/`,
+        data,
+      )
+      return response.data
+    } catch (error) {
+      console.error('Error al crear categoría:', error)
+      throw new Error('No se pudo crear la categoría')
+    }
+  },
+  async eliminarCategoria(id) {
+    try {
+      await axios.delete(`${API_BASE_URL}/inventario/api/categorias-herramienta/${id}/`)
+    } catch (error) {
+      console.error('Error al eliminar categoría:', error)
+      throw new Error('No se pudo eliminar la categoría')
+    }
+  },
+
+  // --- CRUD TIPO DE HERRAMIENTA ---
+  async actualizarTipoHerramienta(id, formData) {
+    try {
+      const response = await axios.put(
+        `${API_BASE_URL}/inventario/api/tipos-herramienta/${id}/`,
+        formData,
+        {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        },
+      )
+      return response.data
+    } catch (error) {
+      console.error('Error al actualizar tipo de herramienta:', error)
+      throw new Error('No se pudo actualizar el tipo de herramienta')
+    }
+  },
+  async eliminarTipoHerramienta(id) {
+    try {
+      await axios.delete(`${API_BASE_URL}/inventario/api/tipos-herramienta/${id}/`)
+    } catch (error) {
+      console.error('Error al eliminar tipo de herramienta:', error)
+      throw new Error('No se pudo eliminar el tipo de herramienta')
+    }
+  },
+
+  // --- CRUD DE EXISTENCIAS (HERRAMIENTAS) ---
+  // Nota: Usamos el ID de la herramienta para las peticiones REST estándar,
+  // aunque en la UI la identifiques por el código de barras.
+  async actualizarHerramienta(id, data) {
+    try {
+      const response = await axios.put(`${API_BASE_URL}/inventario/api/herramientas/${id}/`, data)
+      return response.data
+    } catch (error) {
+      console.error('Error al actualizar herramienta:', error)
+      throw new Error('No se pudo actualizar la herramienta')
+    }
+  },
+  async eliminarHerramienta(id) {
+    try {
+      await axios.delete(`${API_BASE_URL}/inventario/api/herramientas/${id}/`)
+    } catch (error) {
+      console.error('Error al eliminar herramienta:', error)
+      throw new Error('No se pudo eliminar la herramienta')
+    }
+  },
 }

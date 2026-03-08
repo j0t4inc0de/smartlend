@@ -25,6 +25,12 @@
 
     <!-- FILTROS -->
     <div class="mb-6 flex flex-wrap gap-3">
+      <button @click="abrirModalCategorias" class="bg-purple-600 hover:bg-purple-500 text-white px-6 py-3 rounded-lg font-medium transition-all flex items-center gap-2 shadow-lg shadow-purple-900/30">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+        </svg>
+        Categorías
+      </button>
       <button @click="categoriaSeleccionada = null" :class="[
         'px-4 py-2 rounded-lg font-medium transition-all',
         categoriaSeleccionada === null
@@ -422,6 +428,35 @@
         </div>
       </div>
     </div>
+
+    <!-- MODAL DE CATEGORÍAS -->
+    <div v-if="modalCategorias" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+      <div class="bg-gray-800 rounded-xl p-6 max-w-lg w-full border border-gray-700">
+        <div class="flex justify-between items-center mb-6">
+          <h3 class="text-xl font-bold text-white">Gestionar Categorías</h3>
+          <button @click="modalCategorias = false" class="text-gray-400 hover:text-white">
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="space-y-2 mb-6 max-h-60 overflow-y-auto">
+          <div v-for="cat in categorias" :key="cat.id_categoria" class="flex justify-between items-center bg-gray-700 p-3 rounded-lg">
+            <span class="text-white">{{ cat.nombre }}</span>
+
+            <button @click="eliminarCategoriaAlerta(cat.id_categoria, cat.nombre)" class="text-red-400 hover:text-red-300">
+              Eliminar
+            </button>
+          </div>
+        </div>
+
+        <form @submit.prevent="crearCategoria" class="flex gap-2">
+          <input v-model="nuevaCategoriaNombre" type="text" required placeholder="Nueva categoría..." class="flex-1 bg-gray-700 text-white rounded-lg px-4 border border-gray-600 focus:ring-2 focus:ring-purple-500" />
+          <button type="submit" class="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-lg font-medium">Añadir</button>
+        </form>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -430,6 +465,7 @@ import { ref, computed, onMounted } from 'vue'
 import { inventarioService } from '@/services/inventarioService'
 import { usuariosService } from '@/services/usuariosService'
 import { alertaService } from '@/services/alertasService'
+import { toast } from 'vue-sonner'
 
 // Estados
 const loading = ref(true)
@@ -452,6 +488,8 @@ const imageInput = ref(null)
 const imagenSeleccionada = ref(null)
 const imagenPreview = ref(null)
 const usuarios = ref([])
+const modalCategorias = ref(false)
+const nuevaCategoriaNombre = ref('')
 
 const nuevaHerramienta = ref({
   codigo_barras: '',
@@ -474,6 +512,46 @@ const tiposFiltrados = computed(() => {
 })
 
 // Funciones
+const abrirModalCategorias = () => {
+  modalCategorias.value = true
+}
+
+const crearCategoria = async () => {
+  try {
+    await inventarioService.crearCategoria({ nombre: nuevaCategoriaNombre.value })
+    nuevaCategoriaNombre.value = ''
+    alertaService.success('Categoría creada')
+    await cargarDatos() // Recarga la lista
+  } catch (error) {
+    alertaService.error(error.message)
+  }
+}
+
+const eliminarCategoria = async (id) => {
+  try {
+    await inventarioService.eliminarCategoria(id)
+    alertaService.success('Categoría eliminada')
+    await cargarDatos()
+  } catch (error) {
+    alertaService.error(error.message)
+  }
+}
+
+const eliminarCategoriaAlerta = async (id, nombre) => {
+  toast.warning(`¿Estás seguro de eliminar la categoría "${nombre}"?`, {
+    duration: 8000,
+    action: {
+      label: 'Sí, eliminar',
+      onClick: () => {
+        eliminarCategoria(id)
+      }
+    },
+    cancel: {
+      label: 'Cancelar',
+      onClick: () => console.log('Eliminación cancelada') // Actualicé el log de consola por si acaso 😉
+    }
+  })
+}
 const cargarDatos = async () => {
   try {
     loading.value = true
