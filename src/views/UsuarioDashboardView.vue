@@ -17,7 +17,7 @@
             <img :src="inacapLogo" alt="INACAP" class="h-6" />
           </div>
           <div>
-            <h1 class="text-base font-bold text-white leading-tight">Hola, {{ usuario.nombres }}</h1>
+            <h1 class="text-base font-bold text-white leading-tight">Hola, {{ usuario.nombres }} {{ usuario.apellidos }}</h1>
             <p class="text-gray-400 text-xs">Selecciona tus herramientas</p>
           </div>
         </div>
