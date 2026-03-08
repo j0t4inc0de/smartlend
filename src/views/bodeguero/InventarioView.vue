@@ -104,7 +104,7 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                 </svg>
               </button>
-              <button @click="eliminarTipo(tipo.id_tipo_herramienta)" class="p-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-all" title="Eliminar">
+              <button @click="eliminarTipo(tipo.id_tipo_herramienta, tipo.nombre)" class="p-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-all" title="Eliminar">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                 </svg>
@@ -201,6 +201,50 @@
       </div>
     </div>
 
+    <!-- MODAL EDITAR TIPO DE HERRAMIENTA -->
+    <div v-if="modalEditarTipo" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+      <div class="bg-gray-800 rounded-xl p-6 max-w-lg w-full border border-gray-700">
+        <div class="flex justify-between items-center mb-6">
+          <h3 class="text-xl font-bold text-white">Editar Tipo de Herramienta</h3>
+          <button @click="modalEditarTipo = false" class="text-gray-400 hover:text-white">
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <form @submit.prevent="guardarEdicionTipo" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2">Nombre *</label>
+            <input v-model="tipoEditando.nombre" type="text" required class="w-full bg-gray-700 text-white rounded-lg px-4 py-3 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2">Descripción *</label>
+            <textarea v-model="tipoEditando.descripcion" required rows="3" class="w-full bg-gray-700 text-white rounded-lg px-4 py-3 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2">Categoría *</label>
+            <select v-model="tipoEditando.id_categoria" required class="w-full bg-gray-700 text-white rounded-lg px-4 py-3 border border-gray-600 hover:border-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-700">
+              <option v-for="categoria in categorias" :key="categoria.id_categoria" :value="categoria.id_categoria">
+                {{ categoria.nombre }}
+              </option>
+            </select>
+          </div>
+
+          <div class="flex gap-3 pt-4">
+            <button type="button" @click="modalEditarTipo = false" class="flex-1 px-4 py-3 rounded-lg border border-gray-600 text-gray-300 hover:bg-gray-700 transition-colors">
+              Cancelar
+            </button>
+            <button type="submit" class="flex-1 px-4 py-3 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-medium transition-colors">
+              Guardar Cambios
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
     <!-- MODAL NUEVA HERRAMIENTA -->
     <div v-if="modalNuevaHerramienta" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
       <div class="bg-gray-800 rounded-xl p-6 max-w-lg w-full border border-gray-700">
@@ -251,6 +295,55 @@
             </button>
             <button type="submit" :disabled="procesando" class="flex-1 px-4 py-3 rounded-lg bg-red-600 hover:bg-red-500 text-white font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
               {{ procesando ? 'Guardando...' : 'Guardar' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- MODAL EDITAR EXISTENCIA -->
+    <div v-if="modalEditarHerramienta" class="fixed inset-0 bg-black/80 flex items-center justify-center z-[70] p-4">
+      <div class="bg-gray-800 rounded-xl p-6 max-w-lg w-full border border-gray-700">
+        <div class="flex justify-between items-center mb-6">
+          <h3 class="text-xl font-bold text-white">Editar Existencia</h3>
+          <button @click="modalEditarHerramienta = false" class="text-gray-400 hover:text-white">
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <form @submit.prevent="guardarEdicionHerramienta" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2">Código de Barras *</label>
+            <input v-model="herramientaEditando.codigo_barras" type="text" required class="w-full bg-gray-700 text-white rounded-lg px-4 py-3 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-500" />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2">Estado Físico *</label>
+            <select v-model="herramientaEditando.estado_herramienta" required class="w-full bg-gray-700 text-white rounded-lg px-4 py-3 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-500">
+              <option value="Nuevo">Nuevo</option>
+              <option value="Excelente">Excelente</option>
+              <option value="Bueno">Bueno</option>
+              <option value="Regular">Regular</option>
+              <option value="Defectuoso">Defectuoso</option>
+              <option value="Dañado">Dañado</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" v-model="herramientaEditando.disponible" class="w-5 h-5 rounded border-gray-600 text-yellow-500 focus:ring-yellow-500 bg-gray-700">
+              <span class="text-gray-300 font-medium">Herramienta Disponible en Bodega</span>
+            </label>
+          </div>
+
+          <div class="flex gap-3 pt-4">
+            <button type="button" @click="modalEditarHerramienta = false" class="flex-1 px-4 py-3 rounded-lg border border-gray-600 text-gray-300 hover:bg-gray-700 transition-colors">
+              Cancelar
+            </button>
+            <button type="submit" class="flex-1 px-4 py-3 rounded-lg bg-yellow-600 hover:bg-yellow-500 text-white font-medium transition-colors">
+              Actualizar
             </button>
           </div>
         </form>
@@ -321,7 +414,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                   </svg>
                 </button>
-                <button @click="eliminarExistencia(herramienta.id_herramienta)" class="p-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-all group" title="Eliminar">
+                <button @click="eliminarExistencia(herramienta.id_herramienta, herramienta.codigo_barras)" class="p-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-all group" title="Eliminar">
                   <svg class="w-4 h-4 text-red-400 group-hover:text-red-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                   </svg>
@@ -569,17 +662,28 @@ const guardarEdicionHerramienta = async () => {
   }
 }
 
-const eliminarExistencia = async (id) => {
-  if (!confirm('¿Eliminar esta existencia de forma permanente?')) return
-  try {
-    await inventarioService.eliminarHerramienta(id)
-    alertaService.success('Herramienta eliminada')
-    await verDetalles(tipoSeleccionado.value) // Recargar lista
-    await cargarDatos() // Recargar datos generales de stock
-  } catch (error) {
-    console.error('Error al eliminar herramienta:', error)
-    alertaService.error('Error al eliminar')
-  }
+const eliminarExistencia = async (id, codigo_barras) => {
+  toast.warning(`¿Eliminar permanentemente la herramienta con código "${codigo_barras}"?`, {
+    duration: 8000,
+    action: {
+      label: 'Sí, eliminar',
+      onClick: async () => {
+        try {
+          await inventarioService.eliminarHerramienta(id)
+          alertaService.success('Herramienta eliminada')
+          await verDetalles(tipoSeleccionado.value)
+          await cargarDatos()
+        } catch (error) {
+          console.error('Error al eliminar herramienta:', error)
+          alertaService.error('Error al eliminar')
+        }
+      }
+    },
+    cancel: {
+      label: 'Cancelar',
+      onClick: () => console.log('Eliminación cancelada')
+    }
+  })
 }
 
 const guardarEdicionTipo = async () => {
@@ -599,16 +703,27 @@ const guardarEdicionTipo = async () => {
   }
 }
 
-const eliminarTipo = async (id) => {
-  if (!confirm('¿Seguro que deseas eliminar este tipo de herramienta?')) return
-  try {
-    await inventarioService.eliminarTipoHerramienta(id)
-    alertaService.success('Tipo eliminado')
-    await cargarDatos()
-  } catch (error) {
-    console.error('Error al eliminar tipo:', error)
-    alertaService.error('Error al eliminar')
-  }
+const eliminarTipo = async (id, nombre) => {
+  toast.warning(`¿Seguro que deseas eliminar el tipo de herramienta "${nombre}" y todo su stock?`, {
+    duration: 8000,
+    action: {
+      label: 'Sí, eliminar',
+      onClick: async () => {
+        try {
+          await inventarioService.eliminarTipoHerramienta(id)
+          alertaService.success('Tipo eliminado')
+          await cargarDatos()
+        } catch (error) {
+          console.error('Error al eliminar tipo:', error)
+          alertaService.error('Error al eliminar')
+        }
+      }
+    },
+    cancel: {
+      label: 'Cancelar',
+      onClick: () => console.log('Eliminación cancelada')
+    }
+  })
 }
 
 const crearCategoria = async () => {
