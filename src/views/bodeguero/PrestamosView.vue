@@ -914,7 +914,15 @@ const prestamosFiltrados = computed(() => {
     })
   }
 
-  return resultado
+  return resultado.sort((a, b) => {
+    // Si 'a' es Pendiente y 'b' no lo es, 'a' va primero
+    if (a.estado_prestamo === 'Pendiente' && b.estado_prestamo !== 'Pendiente') return -1;
+    // Si 'b' es Pendiente y 'a' no lo es, 'b' va primero
+    if (a.estado_prestamo !== 'Pendiente' && b.estado_prestamo === 'Pendiente') return 1;
+
+    // Si ambos tienen el mismo estado (ej. los dos son Pendientes, o ninguno lo es), ordenamos por fecha
+    return new Date(b.fecha_prestamo) - new Date(a.fecha_prestamo);
+  })
 })
 
 const contarPorEstado = (estado) => {
