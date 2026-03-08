@@ -516,6 +516,8 @@ const modalCategorias = ref(false)
 const nuevaCategoriaNombre = ref('')
 const modalEditarTipo = ref(false)
 const tipoEditando = ref(null)
+const modalEditarHerramienta = ref(false)
+const herramientaEditando = ref(null)
 
 const nuevaHerramienta = ref({
   codigo_barras: '',
@@ -547,6 +549,39 @@ const abrirModalCategorias = () => {
   modalCategorias.value = true
 }
 
+const abrirModalEditarHerramienta = (herramienta) => {
+  herramientaEditando.value = { ...herramienta }
+  modalEditarHerramienta.value = true
+}
+
+const guardarEdicionHerramienta = async () => {
+  try {
+    await inventarioService.actualizarHerramienta(
+      herramientaEditando.value.id_herramienta,
+      herramientaEditando.value
+    )
+    alertaService.success('Herramienta actualizada')
+    modalEditarHerramienta.value = false
+    await verDetalles(tipoSeleccionado.value) // Recarga los detalles del modal actual
+  } catch (error) {
+    console.error('Error al actualizar herramienta:', error)
+    alertaService.error('Error al actualizar la herramienta')
+  }
+}
+
+const eliminarExistencia = async (id) => {
+  if (!confirm('¿Eliminar esta existencia de forma permanente?')) return
+  try {
+    await inventarioService.eliminarHerramienta(id)
+    alertaService.success('Herramienta eliminada')
+    await verDetalles(tipoSeleccionado.value) // Recargar lista
+    await cargarDatos() // Recargar datos generales de stock
+  } catch (error) {
+    console.error('Error al eliminar herramienta:', error)
+    alertaService.error('Error al eliminar')
+  }
+}
+
 const guardarEdicionTipo = async () => {
   try {
     const formData = new FormData()
@@ -554,13 +589,12 @@ const guardarEdicionTipo = async () => {
     formData.append('descripcion', tipoEditando.value.descripcion)
     formData.append('id_categoria', tipoEditando.value.id_categoria)
 
-    // Si cambiaste la imagen, también la agregas al formData aquí
-
     await inventarioService.actualizarTipoHerramienta(tipoEditando.value.id_tipo_herramienta, formData)
     alertaService.success('Tipo actualizado')
     modalEditarTipo.value = false
     await cargarDatos()
   } catch (error) {
+    console.error('Error al actualizar tipo:', error)
     alertaService.error('Error al actualizar')
   }
 }
@@ -572,6 +606,7 @@ const eliminarTipo = async (id) => {
     alertaService.success('Tipo eliminado')
     await cargarDatos()
   } catch (error) {
+    console.error('Error al eliminar tipo:', error)
     alertaService.error('Error al eliminar')
   }
 }
