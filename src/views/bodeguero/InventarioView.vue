@@ -441,6 +441,11 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                   </svg>
                 </button>
+                <button v-if="['Defectuoso', 'Dañado'].includes(herramienta.estado_herramienta)" @click="reactivarHerramienta(herramienta)" class="p-2 bg-green-700 hover:bg-green-600 text-white rounded-lg transition-all group" title="Marcar como usable">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </button>
               </div>
             </div>
           </div>
@@ -669,6 +674,27 @@ const abrirModalCategorias = () => {
 const abrirModalEditarHerramienta = (herramienta) => {
   herramientaEditando.value = { ...herramienta }
   modalEditarHerramienta.value = true
+}
+
+const reactivarHerramienta = async (herramienta) => {
+  const nuevoEstado = prompt(
+    `Reactivar herramienta ${herramienta.codigo_barras}\nIngresa el nuevo estado (Nuevo, Excelente, Bueno, Regular):`,
+    "Bueno"
+  )
+
+  if (nuevoEstado && ['Nuevo', 'Excelente', 'Bueno', 'Regular'].includes(nuevoEstado)) {
+    try {
+      await inventarioService.marcarHerramientaUsable(herramienta.id_herramienta, nuevoEstado)
+      alertaService.success('Herramienta reactivada y en stock')
+      await verDetalles(tipoSeleccionado.value) // Actualiza el modal actual
+      await cargarDatos() // Actualiza los contadores globales
+    } catch (error) {
+      console.error('Error al reactivar herramienta:', error)
+      alertaService.error('Error al reactivar')
+    }
+  } else if (nuevoEstado) {
+    alertaService.error('Estado inválido. Intenta nuevamente.')
+  }
 }
 
 const guardarEdicionHerramienta = async () => {
