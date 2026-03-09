@@ -19,8 +19,7 @@
             'p-2 rounded-lg hover:bg-gray-700/50 transition-all duration-200 group shrink-0',
             isCollapsed ? 'mx-auto' : ''
           ]">
-            <svg class="w-6 h-6 text-gray-400 group-hover:text-white transition-transform duration-300"
-              :class="{ 'rotate-180': isCollapsed }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg class="w-6 h-6 text-gray-400 group-hover:text-white transition-transform duration-300" :class="{ 'rotate-180': isCollapsed }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
             </svg>
           </button>
@@ -37,12 +36,10 @@
               : 'hover:bg-gray-700/50 hover:translate-x-1'
           ]">
             <svg class="w-6 h-6 shrink-0 z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
             </svg>
             <span v-if="!isCollapsed" class="font-medium z-10">Préstamos</span>
-            <span v-if="!isCollapsed && prestamosActivos > 0"
-              class="ml-auto bg-white/20 text-xs px-2 py-1 rounded-full z-10">
+            <span v-if="!isCollapsed && prestamosActivos > 0" class="ml-auto bg-white/20 text-xs px-2 py-1 rounded-full z-10">
               {{ prestamosActivos }}
             </span>
           </div>
@@ -57,8 +54,7 @@
               : 'hover:bg-gray-700/50 hover:translate-x-1'
           ]">
             <svg class="w-6 h-6 shrink-0 z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
             </svg>
             <span v-if="!isCollapsed" class="font-medium z-10">Inventario</span>
           </div>
@@ -73,8 +69,7 @@
               : 'hover:bg-gray-700/50 hover:translate-x-1'
           ]">
             <svg class="w-6 h-6 shrink-0 z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
             </svg>
             <span v-if="!isCollapsed" class="font-medium z-10">Usuarios</span>
           </div>
@@ -89,8 +84,7 @@
               : 'hover:bg-gray-700/50 hover:translate-x-1'
           ]">
             <svg class="w-6 h-6 shrink-0 z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
             </svg>
             <span v-if="!isCollapsed" class="font-medium z-10">Reportes</span>
           </div>
@@ -103,8 +97,7 @@
           'flex items-center p-3 rounded-xl transition-all duration-200',
           isCollapsed ? 'justify-center' : 'gap-3'
         ]">
-          <div
-            class="w-10 h-10 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center font-bold text-white shrink-0 shadow-lg">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center font-bold text-white shrink-0 shadow-lg">
             {{ authStore.user?.nombres?.charAt(0) || 'B' }}
           </div>
 
@@ -125,10 +118,8 @@
           'group',
           isCollapsed ? 'justify-center' : 'gap-2'
         ]">
-          <svg class="w-5 h-5 shrink-0 transition-transform duration-200 group-hover:translate-x-1" fill="none"
-            viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          <svg class="w-5 h-5 shrink-0 transition-transform duration-200 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
           </svg>
           <span v-if="!isCollapsed">Cerrar Sesión</span>
         </button>
@@ -152,8 +143,7 @@
                 </span>
               </div>
 
-              <button @click="manejarSiguienteTurno" :disabled="isLoadingSiguiente"
-                class="flex items-center gap-2 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-600 text-white font-medium py-2 px-4 rounded-lg shadow-lg shadow-red-900/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+              <button @click="manejarSiguienteTurno" :disabled="isLoadingSiguiente" class="flex items-center gap-2 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-600 text-white font-medium py-2 px-4 rounded-lg shadow-lg shadow-red-900/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
                 </svg>
@@ -164,32 +154,24 @@
 
           <div class="flex items-center gap-4">
             <div v-if="alertasCount > 0" class="relative">
-              <button @click="mostrarNotificaciones = !mostrarNotificaciones"
-                class="p-2 rounded-lg hover:bg-gray-700/50 transition-colors group">
-                <svg class="w-5 h-5 text-red-400 group-hover:text-red-300" fill="none" viewBox="0 0 24 24"
-                  stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+              <button @click="mostrarNotificaciones = !mostrarNotificaciones" class="p-2 rounded-lg hover:bg-gray-700/50 transition-colors group">
+                <svg class="w-5 h-5 text-red-400 group-hover:text-red-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                 </svg>
-                <span v-if="alertasCount > 0"
-                  class="absolute -top-1 -right-1 bg-red-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center border-2 border-gray-800">
+                <span v-if="alertasCount > 0" class="absolute -top-1 -right-1 bg-red-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center border-2 border-gray-800">
                   {{ alertasCount }}
                 </span>
               </button>
-              <div v-if="mostrarNotificaciones"
-                class="absolute right-0 mt-2 w-96 bg-gray-800 border border-gray-700 rounded-xl shadow-2xl z-50 overflow-hidden">
+              <div v-if="mostrarNotificaciones" class="absolute right-0 mt-2 w-96 bg-gray-800 border border-gray-700 rounded-xl shadow-2xl z-50 overflow-hidden">
 
-                <div
-                  class="px-4 py-3 border-b border-gray-700 bg-gradient-to-r from-red-900/20 to-red-800/20 flex justify-between items-center">
+                <div class="px-4 py-3 border-b border-gray-700 bg-gradient-to-r from-red-900/20 to-red-800/20 flex justify-between items-center">
                   <h3 class="text-sm font-bold text-white flex items-center gap-2">
                     <svg class="w-4 h-4 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.232 18.5c-.77.833.192 2.5 1.732 2.5z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.232 18.5c-.77.833.192 2.5 1.732 2.5z" />
                     </svg>
                     Préstamos Vencidos
                   </h3>
-                  <button @click="mostrarNotificaciones = false"
-                    class="text-xs text-red-400 hover:text-red-300 bg-red-500/10 hover:bg-red-500/20 px-2 py-1 rounded transition-colors">
+                  <button @click="mostrarNotificaciones = false" class="text-xs text-red-400 hover:text-red-300 bg-red-500/10 hover:bg-red-500/20 px-2 py-1 rounded transition-colors">
                     Cerrar
                   </button>
                 </div>
@@ -207,12 +189,10 @@
                 </div>
 
                 <div v-else-if="alertas.length > 0" class="max-h-80 overflow-y-auto">
-                  <div v-for="alerta in alertas" :key="alerta.id_alerta"
-                    class="p-4 border-b border-gray-700/50 hover:bg-gray-700/30 transition-colors">
+                  <div v-for="alerta in alertas" :key="alerta.id_alerta" class="p-4 border-b border-gray-700/50 hover:bg-gray-700/30 transition-colors">
 
                     <div class="flex items-start gap-3">
-                      <div
-                        class="w-8 h-8 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
+                      <div class="w-8 h-8 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
                         {{ alerta.usuario_nombre?.charAt(0) || '?' }}
                       </div>
 
@@ -223,25 +203,19 @@
 
                         <p class="text-gray-400 text-xs font-mono mt-0.5 truncate">
                           Préstamo:
-                          <span @click="copiarCodigo(alerta.codigo_prestamo, alerta.id_alerta)"
-                            class="text-blue-400 font-bold cursor-pointer hover:text-blue-300 transition-colors relative inline-flex items-center gap-1">
+                          <span @click="copiarCodigo(alerta.codigo_prestamo, alerta.id_alerta)" class="text-blue-400 font-bold cursor-pointer hover:text-blue-300 transition-colors relative inline-flex items-center gap-1">
                             {{ alerta.codigo_prestamo || 'N/A' }}
-                            <svg v-if="codigoCopiadoId === alerta.id_alerta" class="w-3 h-3 text-green-400" fill="none"
-                              viewBox="0 0 24 24" stroke="currentColor">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M5 13l4 4L19 7" />
+                            <svg v-if="codigoCopiadoId === alerta.id_alerta" class="w-3 h-3 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                             </svg>
-                            <svg v-else class="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" fill="none"
-                              viewBox="0 0 24 24" stroke="currentColor">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            <svg v-else class="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                             </svg>
                           </span>
                         </p>
 
                         <div class="flex items-center gap-2 mt-2">
-                          <span
-                            class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-red-500/20 text-red-400 border border-red-500/50">
+                          <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-red-500/20 text-red-400 border border-red-500/50">
                             {{ alerta.dias_vencido }} día{{ alerta.dias_vencido !== 1 ? 's' : '' }}
                           </span>
                           <span class="text-gray-500 text-xs">
@@ -252,8 +226,7 @@
 
                       <div class="text-red-400 shrink-0">
                         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.232 18.5c-.77.833.192 2.5 1.732 2.5z" />
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.232 18.5c-.77.833.192 2.5 1.732 2.5z" />
                         </svg>
                       </div>
                     </div>
@@ -268,7 +241,7 @@
                 <div v-if="alertas.length > 0" class="px-4 py-3 border-t border-gray-700 bg-gray-900/50">
                   <div class="flex justify-between items-center">
                     <span class="text-xs text-gray-400">{{ alertas.length }} alerta{{ alertas.length !== 1 ? 's' : ''
-                    }}</span>
+                      }}</span>
                     <span class="text-xs text-gray-500">Se resuelven automáticamente al devolver</span>
                   </div>
                 </div>
@@ -298,6 +271,7 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useBodegueroAuthStore } from '@/stores/bodegueroAuthStore'
 import { alertasService } from '@/services/alertasService'
+import { prestamosService } from '@/services/prestamosService'
 import { saltarTurnoSiguiente, getTurnoActual } from '@/services/turneroService'
 
 const router = useRouter()
@@ -396,19 +370,13 @@ const cargarAlertas = async () => {
 const cargarEstadisticas = async () => {
   try {
     console.log('Cargando estadísticas...')
-
-    // Cargar alertas reales
     await cargarAlertas()
 
-    // Cargar otros datos (préstamos activos, etc.)
-    // const prestamos = await prestamosService.getPrestamos()
-    // prestamosActivos.value = prestamos.filter(p => p.estado === 'activo').length
+    const prestamos = await prestamosService.getPrestamos()
 
-    // Datos mock por ahora
-    prestamosActivos.value = 8
+    prestamosActivos.value = prestamos.filter(p => p.estado_prestamo === 'Pendiente').length
 
     console.log(' Estadísticas cargadas')
-
   } catch (error) {
     console.error('❌ Error al cargar estadísticas:', error)
   }
