@@ -1,3 +1,4 @@
+// src\stores\bodegueroAuthStore.js
 // cerebro que maneja TODO lo relacionado con la autenticación del bodeguero en tu aplicación.
 // administrador centralizado que:
 
@@ -16,15 +17,19 @@ export const useBodegueroAuthStore = defineStore('bodegueroAuth', () => {
   const user = ref(null)
   const loading = ref(false)
   const error = ref(null)
+  const token = ref(null)
 
   // Inicializar desde localStorage al cargar la app
   const initializeAuth = () => {
     const savedAuth = localStorage.getItem('bodegueroAuth')
     const savedUser = localStorage.getItem('bodegueroUser')
+    const savedToken = localStorage.getItem('token')
 
-    if (savedAuth === 'true' && savedUser) {
+    // Agregamos savedToken a la validación
+    if (savedAuth === 'true' && savedUser && savedToken) {
       isAuthenticated.value = true
       user.value = JSON.parse(savedUser)
+      token.value = savedToken
     }
   }
 
@@ -45,10 +50,12 @@ export const useBodegueroAuthStore = defineStore('bodegueroAuth', () => {
         apellidos: response.apellidos,
         rol: response.rol,
       }
+      token.value = response.token // Guardamos en la variable reactiva
 
       // Persistir en localStorage
       localStorage.setItem('bodegueroAuth', 'true')
       localStorage.setItem('bodegueroUser', JSON.stringify(user.value))
+      localStorage.setItem('token', token.value)
 
       return true
     } catch (err) {
@@ -63,8 +70,10 @@ export const useBodegueroAuthStore = defineStore('bodegueroAuth', () => {
   const logout = () => {
     isAuthenticated.value = false
     user.value = null
+    token.value = null
     localStorage.removeItem('bodegueroAuth')
     localStorage.removeItem('bodegueroUser')
+    localStorage.removeItem('token')
   }
 
   // Getters
@@ -79,6 +88,7 @@ export const useBodegueroAuthStore = defineStore('bodegueroAuth', () => {
     user,
     loading,
     error,
+    token,
 
     // Actions
     initializeAuth,
