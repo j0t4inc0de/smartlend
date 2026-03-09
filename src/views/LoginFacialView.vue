@@ -402,39 +402,32 @@ const handleLogin = async () => {
       const loginResponse = await authService.loginWithFace(blob)
 
       console.log('Respuesta completa del backend:', loginResponse)
-      console.log('existe_embedding:', loginResponse.existe_embedding)
-      console.log('usuario_id:', loginResponse.usuario_id)
 
       if (loginResponse.existe_embedding === false) {
-        console.log('No se encontró coincidencia facial')
         alertaService.warning('No se reconoció tu rostro. Por favor, regístrate primero.')
         router.push('/register')
         return
       }
 
       if (loginResponse.existe_embedding === true && loginResponse.usuario_id) {
-        console.log('Coincidencia encontrada Usuario ID:', loginResponse.usuario_id)
-
-        const usuario = await authService.getUsuarioById(loginResponse.usuario_id)
-        console.log('Datos del usuario:', usuario)
 
         const userToken = loginResponse.token || loginResponse.access || loginResponse.key
         if (userToken) {
           localStorage.setItem('token', userToken)
         }
 
+        const usuario = await authService.getUsuarioById(loginResponse.usuario_id)
+
         localStorage.setItem('user', JSON.stringify(usuario))
         localStorage.setItem('isAuthenticated', 'true')
 
         router.push('/dashboard')
       } else {
-        console.log('Respuesta inesperada del backend')
         alertaService.error('Error en la respuesta del servidor. Intenta de nuevo.')
       }
 
     } catch (error) {
       console.error('Error en login:', error)
-      console.error('Detalles del error:', error.response?.data)
       alertaService.error(error.message || 'Error al intentar iniciar sesión. Intenta de nuevo.')
     } finally {
       isSubmitting.value = false
