@@ -1,3 +1,4 @@
+<!-- src\views\LoginFacialView.vue -->
 <template>
   <div class="relative min-h-screen w-full overflow-hidden flex items-center justify-center p-4">
 
@@ -361,6 +362,11 @@ const handleEmailLogin = async () => {
       return
     }
 
+    const userToken = response.token || response.access || response.key
+    if (userToken) {
+      localStorage.setItem('token', userToken)
+    }
+
     localStorage.setItem('user', JSON.stringify(normalizedUser))
     localStorage.setItem('isAuthenticated', 'true')
 
@@ -411,6 +417,11 @@ const handleLogin = async () => {
 
         const usuario = await authService.getUsuarioById(loginResponse.usuario_id)
         console.log('Datos del usuario:', usuario)
+
+        const userToken = loginResponse.token || loginResponse.access || loginResponse.key
+        if (userToken) {
+          localStorage.setItem('token', userToken)
+        }
 
         localStorage.setItem('user', JSON.stringify(usuario))
         localStorage.setItem('isAuthenticated', 'true')
