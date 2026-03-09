@@ -241,4 +241,17 @@ export const inventarioService = {
       throw new Error('No se pudo eliminar la herramienta')
     }
   },
+  // --- MARCAR HERRAMIENTA COMO USABLE ---
+  async marcarHerramientaUsable(id, estado) {
+    try {
+      const response = await axios.post(
+        `${API_BASE_URL}/inventario/api/herramientas/${id}/marcar-usable/`,
+        { estado_herramienta: estado },
+      )
+      return response.data
+    } catch (error) {
+      console.error('Error al reactivar herramienta:', error)
+      throw new Error('No se pudo reactivar la herramienta')
+    }
+  },
 }

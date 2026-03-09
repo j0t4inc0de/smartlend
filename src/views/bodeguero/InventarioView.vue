@@ -275,6 +275,17 @@
             <input v-model="nuevaHerramienta.codigo_barras" type="text" required placeholder="Ej: BAR-001" class="w-full bg-gray-700 text-white rounded-lg px-4 py-3 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500" />
           </div>
 
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-300 mb-2">Marca</label>
+              <input v-model="nuevaHerramienta.marca" type="text" placeholder="Ej: Makita" class="w-full bg-gray-700 text-white rounded-lg px-4 py-3 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-300 mb-2">Modelo</label>
+              <input v-model="nuevaHerramienta.modelo" type="text" placeholder="Ej: HR2470" class="w-full bg-gray-700 text-white rounded-lg px-4 py-3 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500" />
+            </div>
+          </div>
+
           <!-- Estado -->
           <div>
             <label class="block text-sm font-medium text-gray-300 mb-2">Estado *</label>
@@ -317,6 +328,17 @@
           <div>
             <label class="block text-sm font-medium text-gray-300 mb-2">Código de Barras *</label>
             <input v-model="herramientaEditando.codigo_barras" type="text" required class="w-full bg-gray-700 text-white rounded-lg px-4 py-3 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-500" />
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-300 mb-2">Marca</label>
+              <input v-model="nuevaHerramienta.marca" type="text" placeholder="Ej: Makita" class="w-full bg-gray-700 text-white rounded-lg px-4 py-3 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-300 mb-2">Modelo</label>
+              <input v-model="nuevaHerramienta.modelo" type="text" placeholder="Ej: HR2470" class="w-full bg-gray-700 text-white rounded-lg px-4 py-3 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500" />
+            </div>
           </div>
 
           <div>
@@ -614,6 +636,8 @@ const herramientaEditando = ref(null)
 
 const nuevaHerramienta = ref({
   codigo_barras: '',
+  marca: '',
+  modelo: '',
   estado_herramienta: 'Nuevo',
   id_tipo_herramienta: '',
   fecha_adquisicion: new Date().toISOString(),
