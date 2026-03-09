@@ -14,6 +14,11 @@
                     <span v-else>Inventario Detallado (Excel)</span>
                 </button>
 
+                <button @click="generarExcelDanadas" :disabled="cargandoExcelDanadas" class="bg-orange-600 hover:bg-orange-500 disabled:opacity-50 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2">
+                    <span v-if="cargandoExcelDanadas">Generando...</span>
+                    <span v-else>Herramientas Dañadas (Excel)</span>
+                </button>
+
                 <button @click="generarPDFInventario" :disabled="cargandoPDF" class="bg-red-600 hover:bg-red-500 disabled:opacity-50 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2">
                     <span v-if="cargandoPDF">Generando PDF...</span>
                     <span v-else>Inventario Resumen (PDF)</span>
@@ -35,6 +40,7 @@ import { alertaService } from '@/services/alertasService'
 const cargandoExcel = ref(false)
 const cargandoExcelInv = ref(false)
 const cargandoPDF = ref(false)
+const cargandoExcelDanadas = ref(false)
 // --- GENERAR EXCEL DE USUARIOS ---
 // --- GENERAR EXCEL DE USUARIOS ---
 const generarExcelUsuarios = async () => {
@@ -237,6 +243,60 @@ const generarPDFInventario = async () => {
         alertaService.error('Hubo un error al generar el PDF.')
     } finally {
         cargandoPDF.value = false
+    }
+}
+
+// --- GENERAR EXCEL DE HERRAMIENTAS DAÑADAS ---
+const generarExcelDanadas = async () => {
+    try {
+        cargandoExcelDanadas.value = true
+
+        const [noUsablesRaw, tiposRaw] = await Promise.all([
+            reportesService.getHerramientasNoUsables(),
+            reportesService.getInventarioDatos() // Asumo que este método trae los tipos de herramienta
+        ])
+
+        const tiposMap = {}
+        tiposRaw.forEach(tipo => {
+            tiposMap[tipo.id_tipo_herramienta] = tipo
+        })
+
+        const datosFormateados = noUsablesRaw.map(h => {
+            const tipo = tiposMap[h.id_tipo_herramienta] || {}
+            return {
+                'Tipo de Herramienta': tipo.nombre || 'Desconocido',
+                'Código de Barras': h.codigo_barras || 'Sin código',
+                'Estado Físico': h.estado_herramienta || 'Desconocido',
+                'Fecha Adquisición': h.fecha_adquisicion
+                    ? new Date(h.fecha_adquisicion).toLocaleDateString('es-CL')
+                    : 'N/A'
+            }
+        })
+
+        datosFormateados.sort((a, b) => {
+            return a['Tipo de Herramienta'].localeCompare(b['Tipo de Herramienta'], 'es')
+        })
+
+        const worksheet = XLSX.utils.json_to_sheet(datosFormateados)
+
+        worksheet['!cols'] = [
+            { wch: 30 }, // Tipo de Herramienta
+            { wch: 20 }, // Código de Barras
+            { wch: 15 }, // Estado Físico
+            { wch: 18 }  // Fecha Adquisición
+        ]
+
+        const workbook = XLSX.utils.book_new()
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Dañadas y Defectuosas")
+        XLSX.writeFile(workbook, "reporte_herramientas_danadas.xlsx")
+
+        alertaService.success('Reporte de herramientas dañadas generado con éxito')
+
+    } catch (error) {
+        console.error(error)
+        alertaService.error('Hubo un error al generar el Excel de herramientas dañadas.')
+    } finally {
+        cargandoExcelDanadas.value = false
     }
 }
 </script>

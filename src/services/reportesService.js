@@ -45,4 +45,14 @@ export const reportesService = {
       throw error
     }
   },
+  // Obtener las herramientas dañadas o defectuosas
+  async getHerramientasNoUsables() {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/inventario/api/herramientas/no-usables/`)
+      return response.data
+    } catch (error) {
+      console.error('Error al obtener herramientas no usables:', error)
+      throw new Error('No se pudieron cargar las herramientas dañadas')
+    }
+  },
 }
