@@ -371,6 +371,16 @@ const filtrarPorCategoria = (id) => {
 // Funcion para confirmar el préstamo o reserva, dependiendo del rol del usuario
 // bifurcar la lógica dependiendo de si el usuario es Docente o no
 const confirmarPrestamo = async () => {
+  // Obtenemos la hora actual forzando la zona horaria de Santiago
+  const opcionesHora = { timeZone: 'America/Santiago', hour: 'numeric', hour12: false }
+  const formateador = new Intl.DateTimeFormat('es-CL', opcionesHora)
+  const horaActualChile = parseInt(formateador.format(new Date()), 10)
+
+  if (tipoSolicitud.value === 'normal' && horaActualChile >= 22) {
+    alertaService.warning('El horario límite para solicitar préstamos en el día es hasta las 10 PM hrs.')
+    return // Detenemos la ejecución aquí
+  }
+
   procesando.value = true
   try {
     const stored = localStorage.getItem('user')
@@ -405,6 +415,7 @@ const confirmarPrestamo = async () => {
 
       prestamo = await prestamosService.crearReservaDocente({
         id_usuario: idUsuario,
+        // toISOString enviará la hora en formato UTC, asegúrate de que tu backend lo entienda así
         fecha_inicio_reserva: fechaManana.toISOString(),
         tipos,
       })
@@ -430,7 +441,9 @@ const confirmarPrestamo = async () => {
       error.response?.data?.tipos ||
       error.response?.data?.detail ||
       error.response?.data?.fecha_inicio_reserva?.[0] ||
-      'Error al procesar la solicitud'
+      error.response?.data?.non_field_errors?.[0] ||
+      'Error al procesar la solicitud, intenta nuevamente o contacta al soporte: smartlend.notificacion@gmail.com'
+
     alertaService.error(mensaje)
   } finally {
     procesando.value = false
