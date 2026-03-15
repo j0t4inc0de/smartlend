@@ -382,7 +382,7 @@ const confirmarPrestamo = async () => {
 
   if (tipoSolicitud.value === 'normal' && horaActualChile >= 22) {
     alertaService.warning('El horario límite para solicitar préstamos en el día es hasta las 10 PM hrs.')
-    return // Detenemos la ejecución aquí
+    return
   }
 
   procesando.value = true
