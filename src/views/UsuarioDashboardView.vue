@@ -304,9 +304,13 @@ const tiempoRestante = computed(() => {
 const esDocente = computed(() => {
   const stored = localStorage.getItem('user')
   const user = stored ? JSON.parse(stored) : null
-  return user?.rol === 'Docente' || user?.tipo_usuario === 'Docente'
+  // Validamos si tiene el string 'Docente' (login correo) 
+  // O si tiene el id_rol igual a 2 (login facial, según el documento)
+  return user?.rol === 'Docente' ||
+    user?.tipo_usuario === 'Docente' ||
+    user?.id_rol === 2
 })
-// NUEVO: Fecha de devolución automática (mismo día 22:00)
+// Fecha de devolución automática (mismo día 22:00)
 const fechaDevolucionAutomatica = computed(() => {
   const hoy = new Date()
   // Establecer hora a 22:00
