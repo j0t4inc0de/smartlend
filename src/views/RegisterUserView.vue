@@ -401,7 +401,7 @@ const validateRut = (rut) => {
     return "El RUT es inválido (dígito verificador no coincide).";
   }
 
-  return ""; // No hay error
+  return "";
 };
 
 const validateEmail = (email) => {
