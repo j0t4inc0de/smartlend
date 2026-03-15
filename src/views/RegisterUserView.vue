@@ -124,7 +124,7 @@
                       <option value="" disabled class="bg-gray-900 text-gray-500">
                         {{ loadingData ? 'Cargando...' : 'Seleccionar...' }}
                       </option>
-                      <option v-for="rol in roles" :key="rol.id" :value="rol.nombre" class="bg-gray-900">
+                      <option v-for="rol in roles" :key="rol.id_rol" :value="rol.id_rol" class="bg-gray-900">
                         {{ rol.nombre.charAt(0).toUpperCase() + rol.nombre.slice(1) }}
                       </option>
                     </select>
@@ -141,9 +141,9 @@
                     Carrera
                   </label>
                   <div class="relative">
-                    <select v-model="formData.carrera" :disabled="formData.rol.toLowerCase() !== 'estudiante' || loadingData" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 focus:bg-white/10 appearance-none transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <select v-model="formData.carrera" :disabled="!isRoleWithCarrera || loadingData" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 focus:bg-white/10 appearance-none transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
                       <option value="" class="bg-gray-900">N/A u Opcional</option>
-                      <option v-for="carrera in carreras" :key="carrera.id" :value="carrera.nombre" class="bg-gray-900">
+                      <option v-for="carrera in carreras" :key="carrera.id_carrera" :value="carrera.id_carrera" class="bg-gray-900">
                         {{ carrera.nombre }}
                       </option>
                     </select>
@@ -362,6 +362,22 @@ const loadInitialData = async () => {
 }
 
 // --- VALIDACIONES ---
+const isRoleWithCarrera = computed(() => {
+  // Si no hay un rol seleccionado, la carrera debe estar deshabilitada
+  if (!formData.value.rol) return false
+
+  // Buscamos el rol usando 'id_rol' que es como viene del backend
+  const selectedRole = roles.value.find(r => r.id_rol === formData.value.rol)
+
+  // Si encontramos el rol, verificamos si es estudiante o docente
+  if (selectedRole) {
+    const roleName = selectedRole.nombre.toLowerCase()
+    return roleName === 'estudiante' || roleName === 'docente'
+  }
+
+  return false
+})
+
 const validateRut = (rut) => {
   if (!rut) return "El RUT es obligatorio."
 
@@ -561,8 +577,8 @@ const registerUser = async () => {
         nombres: formData.value.nombres,
         apellidos: formData.value.apellidos,
         correo: formData.value.correo,
-        rol: formData.value.rol,
-        carrera: formData.value.carrera || '',
+        id_rol: formData.value.rol,
+        id_carrera: formData.value.carrera || null,
         password: password.value,
       }
 
@@ -580,10 +596,10 @@ const registerUser = async () => {
     data.append('nombres', formData.value.nombres)
     data.append('apellidos', formData.value.apellidos)
     data.append('correo', formData.value.correo)
-    data.append('rol', formData.value.rol)
+    data.append('id_rol', formData.value.rol)
 
     if (formData.value.carrera) {
-      data.append('carrera', formData.value.carrera)
+      data.append('id_carrera', formData.value.carrera)
     }
 
     result = await authService.registerUserWithFace(data)
