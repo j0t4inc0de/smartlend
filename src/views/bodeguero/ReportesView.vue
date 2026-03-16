@@ -1,3 +1,4 @@
+<!-- src\views\bodeguero\ReportesView.vue -->
 <template>
     <div class="space-y-6">
         <div class="bg-gray-800 rounded-xl border border-gray-700 p-6 shadow-xl">
@@ -180,19 +181,39 @@ const generarExcelInventario = async () => {
     }
 }
 
-// --- FUNCIÓN AUXILIAR PRECARGAR IMÁGENES ---
-const cargarImagen = (url) => {
-    return new Promise((resolve) => {
-        if (!url) {
-            resolve(null)
-            return
+// --- FUNCIÓN AUXILIAR PRECARGAR IMÁGENES COMO BLOB ---
+const cargarImagen = async (url) => {
+    if (!url) return null;
+
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            mode: 'cors',
+            cache: 'no-cache'
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error HTTP: ${response.status}`);
         }
-        const img = new Image()
-        img.crossOrigin = 'Anonymous'
-        img.onload = () => resolve(img)
-        img.onerror = () => resolve(null)
-        img.src = url
-    })
+
+        const blob = await response.blob();
+
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                resolve(reader.result);
+            };
+            reader.onerror = () => {
+                console.error('Error al convertir la imagen a Base64');
+                resolve(null);
+            };
+            reader.readAsDataURL(blob);
+        });
+
+    } catch (error) {
+        console.error('Falló la descarga de la imagen:', url, error);
+        return null;
+    }
 }
 
 // --- GENERAR PDF DE INVENTARIO RESUMEN ---
@@ -228,7 +249,12 @@ const generarPDFInventario = async () => {
                         const dim = data.cell.height - data.cell.padding('vertical') - 4
                         const x = data.cell.x + data.cell.padding('left') + 2
                         const y = data.cell.y + data.cell.padding('top') + 2
-                        try { doc.addImage(item.imgElement, 'JPEG', x, y, dim, dim) } catch (e) { }
+                        try {
+                            const format = item.imgElement.includes('image/png') ? 'PNG' : 'JPEG';
+                            doc.addImage(item.imgElement, format, x, y, dim, dim);
+                        } catch (e) {
+                            console.error('Error al insertar imagen en jsPDF', e);
+                        }
                     } else {
                         doc.text('Sin img', data.cell.x + 4, data.cell.y + 12)
                     }
