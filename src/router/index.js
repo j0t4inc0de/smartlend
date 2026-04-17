@@ -8,6 +8,8 @@ import FacialLoginView from '@/views/LoginFacialView.vue'
 import UsuarioDashboardView from '@/views/UsuarioDashboardView.vue'
 // Vistas del bodeguero
 import LoginBodegueroView from '@/views/bodeguero/LoginBodegueroView.vue'
+import RecuperarPasswordView from '@/views/bodeguero/RecuperarPasswordView.vue'
+import ConfirmarRecuperacionPasswordView from '@/views/bodeguero/ConfirmarRecuperacionPasswordView.vue'
 import PrestamosView from '@/views/bodeguero/PrestamosView.vue'
 // Layouts
 import DashboardBodegueroLayout from '@/layouts/DashboardBodegueroLayout.vue'
