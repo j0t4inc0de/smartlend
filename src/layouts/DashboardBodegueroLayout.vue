@@ -95,7 +95,6 @@
 
         <router-link to="/bodeguero/dashboard/asistencia" :class="[
           'flex items-center rounded-xl transition-all duration-200 border border-transparent text-gray-400 group',
-          'hover:bg-white/10 hover:text-white',
           isCollapsed ? 'justify-center p-3' : 'gap-3 px-4 py-3'
         ]" active-class="!bg-red-600/10 !text-red-500 !border-red-500/20">
           <svg class="w-5 h-5 shrink-0 transition-transform duration-200 group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -252,7 +251,7 @@
                 <div v-if="alertas.length > 0" class="px-4 py-3 border-t border-gray-700 bg-gray-900/50">
                   <div class="flex justify-between items-center">
                     <span class="text-xs text-gray-400">{{ alertas.length }} alerta{{ alertas.length !== 1 ? 's' : ''
-                    }}</span>
+                      }}</span>
                     <span class="text-xs text-gray-500">Se resuelven automáticamente al devolver</span>
                   </div>
                 </div>

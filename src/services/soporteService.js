@@ -10,7 +10,10 @@ export const soporteService = {
       })
       return response.data
     } catch (error) {
-      throw new Error(error.response?.data?.detail || 'Error al enviar la solicitud de asistencia')
+      throw new Error(
+        error.response?.data?.detail ||
+          'Funcionalidad no terminada. Contacta a Juan Erices para más información mediante correo electrónico -> smartlend.notificacion@gmail.com',
+      )
     }
   },
 }

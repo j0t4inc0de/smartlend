@@ -21,7 +21,7 @@
 
                     <div class="space-y-2">
                         <label class="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Ventana del Problema</label>
-                        <input v-model="form.ventana" type="text" readonly class="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-gray-400 cursor-not-allowed focus:outline-none" />
+                        <input v-model="form.ventana" type="text" required placeholder="Ej: Reportes, Préstamos..." class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 transition-all" />
                     </div>
                 </div>
 
