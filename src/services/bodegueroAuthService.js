@@ -33,4 +33,33 @@ export const bodegueroAuthService = {
       }
     }
   },
+  async solicitarRecuperacion(correo) {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/usuarios/auth/recuperar-password/`, {
+        correo,
+      })
+      return response.data
+    } catch (error) {
+      console.log('Error en solicitud de recuperación:', error)
+      throw new Error('Error al procesar la solicitud')
+    }
+  },
+  async confirmarRecuperacion(correo, codigo, nueva_password) {
+    try {
+      const response = await axios.post(
+        `${API_BASE_URL}/usuarios/auth/confirmar-recuperacion-password/`,
+        {
+          correo,
+          codigo,
+          nueva_password,
+        },
+      )
+      return response.data
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        throw new Error(error.response.data.error || 'Error en la validación de los datos')
+      }
+      throw new Error('Error al procesar la confirmación')
+    }
+  },
 }
