@@ -93,9 +93,20 @@
 
       <div class="p-4 border-t border-gray-700/50 space-y-3">
 
+        <router-link to="/bodeguero/dashboard/asistencia" :class="[
+          'flex items-center rounded-xl transition-all duration-200 border border-transparent text-gray-400 group',
+          'hover:bg-white/10 hover:text-white',
+          isCollapsed ? 'justify-center p-3' : 'gap-3 px-4 py-3'
+        ]" active-class="!bg-red-600/10 !text-red-500 !border-red-500/20">
+          <svg class="w-5 h-5 shrink-0 transition-transform duration-200 group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span v-if="!isCollapsed" class="text-sm font-medium">Asistencia Técnica</span>
+        </router-link>
+
         <div :class="[
-          'flex items-center p-3 rounded-xl transition-all duration-200',
-          isCollapsed ? 'justify-center' : 'gap-3'
+          'flex items-center rounded-xl transition-all duration-200',
+          isCollapsed ? 'justify-center p-2' : 'gap-3 p-3 bg-white/5 border border-white/5'
         ]">
           <div class="w-10 h-10 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center font-bold text-white shrink-0 shadow-lg">
             {{ authStore.user?.nombres?.charAt(0) || 'B' }}
@@ -112,11 +123,11 @@
         </div>
 
         <button @click="handleLogout" :class="[
-          'w-full flex items-center px-4 py-3 rounded-xl font-medium transition-all duration-200',
+          'w-full flex items-center rounded-xl font-medium transition-all duration-200',
           'bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-600',
           'shadow-lg shadow-red-900/50 hover:shadow-red-900/70 hover:scale-[1.02] active:scale-[0.98]',
           'group',
-          isCollapsed ? 'justify-center' : 'gap-2'
+          isCollapsed ? 'justify-center p-3' : 'gap-2 px-4 py-3'
         ]">
           <svg class="w-5 h-5 shrink-0 transition-transform duration-200 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -241,7 +252,7 @@
                 <div v-if="alertas.length > 0" class="px-4 py-3 border-t border-gray-700 bg-gray-900/50">
                   <div class="flex justify-between items-center">
                     <span class="text-xs text-gray-400">{{ alertas.length }} alerta{{ alertas.length !== 1 ? 's' : ''
-                      }}</span>
+                    }}</span>
                     <span class="text-xs text-gray-500">Se resuelven automáticamente al devolver</span>
                   </div>
                 </div>
@@ -344,7 +355,7 @@ const pageTitle = computed(() => {
     'dashboard-usuarios': 'Gestión de Usuarios',
     'dashboard-reportes': 'Reportes y Análisis'
   }
-  return titles[route.name] || 'Dashboard'
+  return titles[route.name] || 'Smartlend by Fablab Juan Erices'
 })
 
 // Cargar alertas reales

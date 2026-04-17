@@ -106,6 +106,12 @@ const router = createRouter({
           name: 'dashboard-reportes',
           component: () => import('@/views/bodeguero/ReportesView.vue'),
         },
+        {
+          path: '/bodeguero/dashboard/asistencia',
+          name: 'bodeguero-asistencia',
+          component: () => import('@/views/bodeguero/AsistenciaView.vue'),
+          meta: { requiresAuth: true, role: 'bodeguero' },
+        },
       ],
     },
 
