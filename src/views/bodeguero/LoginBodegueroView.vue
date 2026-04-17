@@ -18,12 +18,9 @@
 
         <!-- Encabezado -->
         <div class="p-8 pb-0 text-center">
-          <div
-            class="inline-flex justify-center items-center w-16 h-16 bg-red-600 rounded-2xl mb-4 shadow-lg shadow-red-900/30">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+          <div class="inline-flex justify-center items-center w-16 h-16 bg-red-600 rounded-2xl mb-4 shadow-lg shadow-red-900/30">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
             </svg>
           </div>
           <h2 class="text-2xl font-bold text-white tracking-tight">Acceso Bodeguero</h2>
@@ -36,37 +33,36 @@
           <!-- Input Correo -->
           <div class="space-y-2">
             <label class="text-xs font-bold text-gray-300 uppercase tracking-wider ml-1">Correo Electrónico</label>
-            <input v-model="email" type="email" required placeholder="ejemplo@inacap.cl"
-              class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 transition-all" />
+            <input v-model="email" type="email" required placeholder="ejemplo@inacap.cl" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 transition-all" />
           </div>
 
           <!-- Input Contraseña -->
           <div class="space-y-2">
-            <label class="text-xs font-bold text-gray-300 uppercase tracking-wider ml-1">Contraseña</label>
-            <input v-model="password" type="password" required placeholder="••••••••"
-              class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 transition-all" />
+            <div class="flex justify-between items-center">
+              <label class="text-xs font-bold text-gray-300 uppercase tracking-wider ml-1">Contraseña</label>
+              <router-link to="/bodeguero/login/recuperar" class="text-xs text-red-400 hover:text-red-300 transition-colors">
+                ¿Olvidó su contraseña?
+              </router-link>
+            </div>
+            <input v-model="password" type="password" required placeholder="••••••••" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 transition-all" />
           </div>
 
           <!-- Mensaje de Error -->
           <div v-if="errorMessage" class="bg-red-500/10 border border-red-500/50 rounded-lg p-3 flex items-start gap-3">
             <svg class="w-5 h-5 text-red-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <span class="text-sm text-red-200">{{ errorMessage }}</span>
           </div>
 
           <!-- Botones -->
           <div class="pt-2 space-y-3">
-            <button type="submit" :disabled="isLoading"
-              class="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-red-900/20 transition-all transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center">
-              <span v-if="isLoading"
-                class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2"></span>
+            <button type="submit" :disabled="isLoading" class="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-red-900/20 transition-all transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center">
+              <span v-if="isLoading" class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2"></span>
               {{ isLoading ? 'Ingresando...' : 'Iniciar Sesión' }}
             </button>
 
-            <button type="button" @click="goBack"
-              class="w-full bg-transparent hover:bg-white/5 text-gray-300 font-medium py-3 px-4 rounded-xl border border-white/10 transition-colors">
+            <button type="button" @click="goBack" class="w-full bg-transparent hover:bg-white/5 text-gray-300 font-medium py-3 px-4 rounded-xl border border-white/10 transition-colors">
               Volver al Inicio
             </button>
           </div>
