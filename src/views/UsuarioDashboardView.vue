@@ -379,7 +379,7 @@ const confirmarPrestamo = async () => {
   const formateador = new Intl.DateTimeFormat('es-CL', opcionesHora)
   const horaActualChile = parseInt(formateador.format(new Date()), 10)
 
-  if (tipoSolicitud.value === 'normal' && horaActualChile >= 21) {
+  if (tipoSolicitud.value === 'normal' && horaActualChile >= 20) {
     alertaService.warning('El horario límite para solicitar préstamos en el día es hasta las 9 PM hrs.')
     return
   }
