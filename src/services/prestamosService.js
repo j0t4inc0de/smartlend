@@ -287,6 +287,10 @@ export const prestamosService = {
         activos: prestamos.filter((p) => p.estado === 'activo').length,
         vencidos: prestamos.filter((p) => p.estado === 'vencido').length,
         completados: prestamos.filter((p) => p.estado === 'completado').length,
+        pendiente: prestamos.filter((p) => p.estado_prestamo.toLowerCase() === 'pendiente').length,
+        finalizado: prestamos.filter((p) => p.estado_prestamo.toLowerCase() === 'finalizado')
+          .length,
+        entregado: prestamos.filter((p) => p.estado_prestamo.toLowerCase() === 'entregado').length,
       }
 
       console.log('Estadísticas:', stats)

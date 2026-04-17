@@ -26,35 +26,91 @@
                 </button>
             </div>
         </div>
+        <div class="min-h-screen text-white">
+
+            <div class="bg-gray-900 border border-white/10 p-6 rounded-2xl shadow-xl max-w-md">
+                <h2 class="text-lg font-semibold mb-4 text-gray-300">Estado de Préstamos</h2>
+                <apexchart type="donut" height="300" :options="estadoPrestamosOptions" :series="estadoPrestamosSeries" />
+            </div>
+        </div>
     </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { reportesService } from '@/services/reportesService'
+import { alertaService } from '@/services/alertasService'
+import { prestamosService } from '@/services/prestamosService'
+
 import * as XLSX from 'xlsx'
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
-import { alertaService } from '@/services/alertasService'
+import VueApexCharts from 'vue3-apexcharts'
 
 // Estados de carga independientes
 const cargandoExcel = ref(false)
 const cargandoExcelInv = ref(false)
 const cargandoPDF = ref(false)
 const cargandoExcelDanadas = ref(false)
-// --- GENERAR EXCEL DE USUARIOS ---
+
+// Variables para el gráfico
+const apexchart = VueApexCharts
+
+const cargando = ref(true)
+const estadoPrestamosSeries = ref([])
+const estadoPrestamosOptions = ref({
+    chart: {
+        type: 'donut',
+        foreColor: '#FFFFFF'
+    },
+    labels: ['Completados', 'Pendientes', 'Entregado', 'Vencidos'],
+    colors: ['#10B981', '#B8CC06', '#007BFF', '#F96262'],
+    stroke: {
+        show: false
+    },
+    dataLabels: {
+        enabled: false
+    },
+    plotOptions: {
+        pie: {
+            donut: {
+                size: '70%'
+            }
+        }
+    },
+    tooltip: {
+        theme: 'dark'
+    }
+})
+
+// CARGAR DATOS PA EL GRAFICO DE ESTADO DE PRÉSTAMOS
+const cargarDatosDelGrafico = async () => {
+    try {
+        cargando.value = true
+        const estadisticas = await prestamosService.getEstadisticas()
+
+        estadoPrestamosSeries.value = [
+            estadisticas.finalizado,
+            estadisticas.pendiente,
+            estadisticas.entregado,
+            estadisticas.vencidos
+        ]
+    } catch (error) {
+        console.error('Fallo al obtener las estadísticas de préstamos', error)
+    } finally {
+        cargando.value = false
+    }
+}
+
 // --- GENERAR EXCEL DE USUARIOS ---
 const generarExcelUsuarios = async () => {
     try {
         cargandoExcel.value = true
-
-        // 1. Obtenemos Usuarios e Historial al mismo tiempo
         const [usuariosRaw, historialRaw] = await Promise.all([
             reportesService.getUsuariosDatos(),
             reportesService.getHistorialHerramientasDatos()
         ])
 
-        // 2. Procesamos el historial para encontrar la fecha más reciente por cada usuario
         const ultimosPrestamosMap = {} // Formato: { id_usuario: fecha_mas_reciente (Date) }
 
         historialRaw.forEach(registro => {
@@ -68,13 +124,11 @@ const generarExcelUsuarios = async () => {
             }
         })
 
-        // 3. Mapeamos los usuarios cruzando la información con nuestro mapa
         const datosFormateados = usuariosRaw.map(usuario => {
             const fechaRegistro = usuario.date_joined
                 ? new Date(usuario.date_joined).toLocaleDateString('es-CL')
                 : 'Desconocida';
 
-            // Buscamos la fecha en nuestro mapa usando el ID del usuario
             const fechaUltimo = ultimosPrestamosMap[usuario.id]
 
             const fechaUltimoPrestamo = fechaUltimo
@@ -91,7 +145,6 @@ const generarExcelUsuarios = async () => {
             }
         })
 
-        // 4. Construimos el Excel
         const worksheet = XLSX.utils.json_to_sheet(datosFormateados)
 
         // Ajustamos los anchos de columna para que el Excel quede presentable
@@ -150,7 +203,6 @@ const generarExcelInventario = async () => {
             }
         })
 
-        // *** NUEVO: Ordenar alfabéticamente (A-Z) por Tipo de Herramienta ***
         datosFormateados.sort((a, b) => {
             return a['Tipo de Herramienta'].localeCompare(b['Tipo de Herramienta'], 'es')
         })
@@ -325,4 +377,8 @@ const generarExcelDanadas = async () => {
         cargandoExcelDanadas.value = false
     }
 }
+
+onMounted(() => {
+    cargarDatosDelGrafico()
+})
 </script>
