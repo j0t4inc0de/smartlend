@@ -64,6 +64,18 @@ const router = createRouter({
       beforeEnter: redirectIfAuthenticated,
     },
     {
+      path: '/bodeguero/login/recuperar',
+      name: 'recuperar-bodeguero',
+      component: RecuperarPasswordView,
+      beforeEnter: redirectIfAuthenticated,
+    },
+    {
+      path: '/bodeguero/login/recuperar/confirmar',
+      name: 'confirmar-recuperar-bodeguero',
+      component: ConfirmarRecuperacionPasswordView,
+      beforeEnter: redirectIfAuthenticated,
+    },
+    {
       path: '/bodeguero/dashboard',
       component: DashboardBodegueroLayout,
       beforeEnter: requiresBodegueroAuth,
