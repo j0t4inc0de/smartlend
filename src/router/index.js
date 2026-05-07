@@ -28,7 +28,7 @@ const router = createRouter({
       path: '/registrar-usuario',
       name: 'registrar-usuario',
       component: RegisterUserView,
-      beforeEnter: guestOnly,
+      beforeEnter: requiresBodegueroAuth,
     },
     {
       path: '/facial-recognition',
