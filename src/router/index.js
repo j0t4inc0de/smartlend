@@ -4,6 +4,7 @@ import { requiresBodegueroAuth, redirectIfAuthenticated, guestOnly } from '@/uti
 // Vistas Usuarios
 import WelcomeScreen from '@/views/WelcomeScreen.vue'
 import RegisterUserView from '@/views/RegisterUserView.vue'
+import RegisterInstitucionalView from '@/views/RegisterInstitucionalView.vue'
 import FacialLoginView from '@/views/LoginFacialView.vue'
 import UsuarioDashboardView from '@/views/UsuarioDashboardView.vue'
 // Vistas del bodeguero
@@ -29,6 +30,12 @@ const router = createRouter({
       name: 'registrar-usuario',
       component: RegisterUserView,
       beforeEnter: requiresBodegueroAuth,
+    },
+    {
+      path: '/registro-institucional',
+      name: 'registro-institucional',
+      component: RegisterInstitucionalView,
+      beforeEnter: guestOnly,
     },
     {
       path: '/facial-recognition',
