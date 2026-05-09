@@ -283,7 +283,7 @@ const carreras = ref([])
 const passwordConfirm = ref('')
 const mostrarPassword = ref(false)
 
-// Estado del formulario (Cumpliendo reglas del backend: NO id_rol)
+// Sin ID ROL
 const formulario = ref({
   codigoAcceso: '',
   rut: '',
@@ -323,14 +323,13 @@ const manejarRegistro = async () => {
       formulario.value.idCarrera = ''
     }
 
-    // Llamamos al nuevo servicio
     const respuesta = await authService.registrarInstitucional(formulario.value)
 
     // Mostramos mensaje de éxito del backend
     alertaService.success(respuesta.mensaje || '¡Registro exitoso!')
-    router.push('/') // Volvemos al inicio o al login
+    router.push('/registro-institucional')
   } catch (error) {
-    // Mostramos el error del backend (por ejemplo: código inválido, o falta carrera)
+    // Mostramos el error del backend
     const mensajeError = error.error || error.detail || 'Error al intentar registrar el usuario.'
     alertaService.error(mensajeError)
   } finally {
