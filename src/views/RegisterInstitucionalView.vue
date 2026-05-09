@@ -296,9 +296,9 @@ const formulario = ref({
 
 // Computada reactiva que evalúa el código de acceso en tiempo real
 const rolDetectado = computed(() => {
-  const codigo = formulario.value.codigoAcceso.trim()
-  if (codigo === '027072003') return 'estudiante'
-  if (codigo === '015072003') return 'docente'
+  const codigo = btoa(formulario.value.codigoAcceso.trim())
+  if (codigo === 'MDI3MDcyMDAz') return 'estudiante'
+  if (codigo === 'MDE1MDcyMDAz') return 'docente'
   return null
 })
 
