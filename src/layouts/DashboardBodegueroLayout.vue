@@ -1,26 +1,42 @@
 <template>
   <div class="flex h-screen bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800">
-
-    <aside :class="[
-      'bg-gradient-to-b from-gray-800 to-gray-900 text-white flex flex-col transition-all duration-300 ease-in-out shadow-2xl border-r border-gray-700/50',
-      isCollapsed ? 'w-20' : 'w-72'
-    ]">
-
+    <aside
+      :class="[
+        'bg-gradient-to-b from-gray-800 to-gray-900 text-white flex flex-col transition-all duration-300 ease-in-out shadow-2xl border-r border-gray-700/50',
+        isCollapsed ? 'w-20' : 'w-72',
+      ]"
+    >
       <div class="p-6 border-b border-gray-700/50">
         <div class="flex items-center justify-between">
           <div v-if="!isCollapsed" class="transition-all duration-300">
-            <h1 class="text-2xl font-bold bg-gradient-to-r from-red-500 to-red-600 bg-clip-text text-transparent">
+            <h1
+              class="text-2xl font-bold bg-gradient-to-r from-red-500 to-red-600 bg-clip-text text-transparent"
+            >
               SmartLend
             </h1>
             <p class="text-xs text-gray-400 mt-1">Panel de Control</p>
           </div>
 
-          <button @click="isCollapsed = !isCollapsed" :class="[
-            'p-2 rounded-lg hover:bg-gray-700/50 transition-all duration-200 group shrink-0',
-            isCollapsed ? 'mx-auto' : ''
-          ]">
-            <svg class="w-6 h-6 text-gray-400 group-hover:text-white transition-transform duration-300" :class="{ 'rotate-180': isCollapsed }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+          <button
+            @click="isCollapsed = !isCollapsed"
+            :class="[
+              'p-2 rounded-lg hover:bg-gray-700/50 transition-all duration-200 group shrink-0',
+              isCollapsed ? 'mx-auto' : '',
+            ]"
+          >
+            <svg
+              class="w-6 h-6 text-gray-400 group-hover:text-white transition-transform duration-300"
+              :class="{ 'rotate-180': isCollapsed }"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
+              />
             </svg>
           </button>
         </div>
@@ -28,63 +44,111 @@
 
       <nav class="flex-1 p-4 space-y-2">
         <router-link to="/bodeguero/dashboard/prestamos" v-slot="{ isActive }" class="block">
-          <div :class="[
-            'flex items-center px-4 py-3 rounded-xl transition-all duration-200 group relative overflow-hidden',
-            isCollapsed ? 'justify-center' : 'gap-3',
-            isActive
-              ? 'bg-gradient-to-r from-red-600 to-red-500 shadow-lg shadow-red-900/50'
-              : 'hover:bg-gray-700/50 hover:translate-x-1'
-          ]">
-            <svg class="w-6 h-6 shrink-0 z-10" fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE -->
-              <path fill="currentColor" d="M5 11q-.825 0-1.412-.587T3 9V5q0-.825.588-1.412T5 3h4q.825 0 1.413.588T11 5v4q0 .825-.587 1.413T9 11zm0 10q-.825 0-1.412-.587T3 19v-4q0-.825.588-1.412T5 13h4q.825 0 1.413.588T11 15v4q0 .825-.587 1.413T9 21zm10-10q-.825 0-1.412-.587T13 9V5q0-.825.588-1.412T15 3h4q.825 0 1.413.588T21 5v4q0 .825-.587 1.413T19 11zm0 10q-.825 0-1.412-.587T13 19v-4q0-.825.588-1.412T15 13h4q.825 0 1.413.588T21 15v4q0 .825-.587 1.413T19 21zM5 9h4V5H5zm10 0h4V5h-4zm0 10h4v-4h-4zM5 19h4v-4H5zM9 9" />
+          <div
+            :class="[
+              'flex items-center px-4 py-3 rounded-xl transition-all duration-200 group relative overflow-hidden',
+              isCollapsed ? 'justify-center' : 'gap-3',
+              isActive
+                ? 'bg-gradient-to-r from-red-600 to-red-500 shadow-lg shadow-red-900/50'
+                : 'hover:bg-gray-700/50 hover:translate-x-1',
+            ]"
+          >
+            <svg
+              class="w-6 h-6 shrink-0 z-10"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+            >
+              <!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE -->
+              <path
+                fill="currentColor"
+                d="M5 11q-.825 0-1.412-.587T3 9V5q0-.825.588-1.412T5 3h4q.825 0 1.413.588T11 5v4q0 .825-.587 1.413T9 11zm0 10q-.825 0-1.412-.587T3 19v-4q0-.825.588-1.412T5 13h4q.825 0 1.413.588T11 15v4q0 .825-.587 1.413T9 21zm10-10q-.825 0-1.412-.587T13 9V5q0-.825.588-1.412T15 3h4q.825 0 1.413.588T21 5v4q0 .825-.587 1.413T19 11zm0 10q-.825 0-1.412-.587T13 19v-4q0-.825.588-1.412T15 13h4q.825 0 1.413.588T21 15v4q0 .825-.587 1.413T19 21zM5 9h4V5H5zm10 0h4V5h-4zm0 10h4v-4h-4zM5 19h4v-4H5zM9 9"
+              />
             </svg>
             <span v-if="!isCollapsed" class="font-medium z-10">Préstamos</span>
-            <span v-if="!isCollapsed && prestamosActivos > 0" class="ml-auto bg-white/20 text-xs px-2 py-1 rounded-full z-10">
+            <span
+              v-if="!isCollapsed && prestamosActivos > 0"
+              class="ml-auto bg-white/20 text-xs px-2 py-1 rounded-full z-10"
+            >
               {{ prestamosActivos }}
             </span>
           </div>
         </router-link>
 
         <router-link to="/bodeguero/dashboard/inventario" v-slot="{ isActive }" class="block">
-          <div :class="[
-            'flex items-center px-4 py-3 rounded-xl transition-all duration-200 group relative overflow-hidden',
-            isCollapsed ? 'justify-center' : 'gap-3',
-            isActive
-              ? 'bg-gradient-to-r from-red-600 to-red-500 shadow-lg shadow-red-900/50'
-              : 'hover:bg-gray-700/50 hover:translate-x-1'
-          ]">
-            <svg class="w-6 h-6 shrink-0 z-10" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE -->
-              <path fill="currentColor" d="M5 22q-.825 0-1.412-.587T3 20V8.725q-.45-.275-.725-.712T2 7V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v3q0 .575-.275 1.013T21 8.724V20q0 .825-.587 1.413T19 22zM5 9v11h14V9zM4 7h16V4H4zm5 7h6v-2H9zm3 .5" />
+          <div
+            :class="[
+              'flex items-center px-4 py-3 rounded-xl transition-all duration-200 group relative overflow-hidden',
+              isCollapsed ? 'justify-center' : 'gap-3',
+              isActive
+                ? 'bg-gradient-to-r from-red-600 to-red-500 shadow-lg shadow-red-900/50'
+                : 'hover:bg-gray-700/50 hover:translate-x-1',
+            ]"
+          >
+            <svg
+              class="w-6 h-6 shrink-0 z-10"
+              fill="none"
+              stroke="currentColor"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+            >
+              <!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE -->
+              <path
+                fill="currentColor"
+                d="M5 22q-.825 0-1.412-.587T3 20V8.725q-.45-.275-.725-.712T2 7V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v3q0 .575-.275 1.013T21 8.724V20q0 .825-.587 1.413T19 22zM5 9v11h14V9zM4 7h16V4H4zm5 7h6v-2H9zm3 .5"
+              />
             </svg>
             <span v-if="!isCollapsed" class="font-medium z-10">Inventario</span>
           </div>
         </router-link>
 
         <router-link to="/bodeguero/dashboard/usuarios" v-slot="{ isActive }" class="block">
-          <div :class="[
-            'flex items-center px-4 py-3 rounded-xl transition-all duration-200 group relative overflow-hidden',
-            isCollapsed ? 'justify-center' : 'gap-3',
-            isActive
-              ? 'bg-gradient-to-r from-red-600 to-red-500 shadow-lg shadow-red-900/50'
-              : 'hover:bg-gray-700/50 hover:translate-x-1'
-          ]">
-            <svg class="w-8 h-8 shrink-0 z-10" fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE -->
-              <path fill="currentColor" d="M15 7q-.425 0-.712-.288T14 6t.288-.712T15 5h6q.425 0 .713.288T22 6t-.288.713T21 7zm0 4q-.425 0-.712-.288T14 10t.288-.712T15 9h6q.425 0 .713.288T22 10t-.288.713T21 11zm0 4q-.425 0-.712-.288T14 14t.288-.712T15 13h6q.425 0 .713.288T22 14t-.288.713T21 15zm-7-1q-1.25 0-2.125-.875T5 11t.875-2.125T8 8t2.125.875T11 11t-.875 2.125T8 14m-6 5v-.9q0-.525.25-1t.7-.75q1.125-.675 2.388-1.012T8 15t2.663.338t2.387 1.012q.45.275.7.75t.25 1v.9q0 .425-.288.713T13 20H3q-.425 0-.712-.288T2 19m2.15-1h7.7q-.875-.5-1.85-.75T8 17t-2 .25t-1.85.75M8 12q.425 0 .713-.288T9 11t-.288-.712T8 10t-.712.288T7 11t.288.713T8 12m0 6" />
+          <div
+            :class="[
+              'flex items-center px-4 py-3 rounded-xl transition-all duration-200 group relative overflow-hidden',
+              isCollapsed ? 'justify-center' : 'gap-3',
+              isActive
+                ? 'bg-gradient-to-r from-red-600 to-red-500 shadow-lg shadow-red-900/50'
+                : 'hover:bg-gray-700/50 hover:translate-x-1',
+            ]"
+          >
+            <svg
+              class="w-8 h-8 shrink-0 z-10"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+            >
+              <!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE -->
+              <path
+                fill="currentColor"
+                d="M15 7q-.425 0-.712-.288T14 6t.288-.712T15 5h6q.425 0 .713.288T22 6t-.288.713T21 7zm0 4q-.425 0-.712-.288T14 10t.288-.712T15 9h6q.425 0 .713.288T22 10t-.288.713T21 11zm0 4q-.425 0-.712-.288T14 14t.288-.712T15 13h6q.425 0 .713.288T22 14t-.288.713T21 15zm-7-1q-1.25 0-2.125-.875T5 11t.875-2.125T8 8t2.125.875T11 11t-.875 2.125T8 14m-6 5v-.9q0-.525.25-1t.7-.75q1.125-.675 2.388-1.012T8 15t2.663.338t2.387 1.012q.45.275.7.75t.25 1v.9q0 .425-.288.713T13 20H3q-.425 0-.712-.288T2 19m2.15-1h7.7q-.875-.5-1.85-.75T8 17t-2 .25t-1.85.75M8 12q.425 0 .713-.288T9 11t-.288-.712T8 10t-.712.288T7 11t.288.713T8 12m0 6"
+              />
             </svg>
             <span v-if="!isCollapsed" class="font-medium z-10">Usuarios</span>
           </div>
         </router-link>
 
         <router-link to="/bodeguero/dashboard/reportes" v-slot="{ isActive }" class="block">
-          <div :class="[
-            'flex items-center px-4 py-3 rounded-xl transition-all duration-200 group relative overflow-hidden',
-            isCollapsed ? 'justify-center' : 'gap-3',
-            isActive
-              ? 'bg-gradient-to-r from-red-600 to-red-500 shadow-lg shadow-red-900/50'
-              : 'hover:bg-gray-700/50 hover:translate-x-1'
-          ]">
-            <svg class="w-7 h-7 shrink-0 z-10" fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE -->
-              <path fill="currentColor" d="M7 17h2v-5H7zm8 0h2V7h-2zm-4 0h2v-3h-2zm0-5h2v-2h-2zm-6 9q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v14q0 .825-.587 1.413T19 21zm0-2h14V5H5zM5 5v14z" />
+          <div
+            :class="[
+              'flex items-center px-4 py-3 rounded-xl transition-all duration-200 group relative overflow-hidden',
+              isCollapsed ? 'justify-center' : 'gap-3',
+              isActive
+                ? 'bg-gradient-to-r from-red-600 to-red-500 shadow-lg shadow-red-900/50'
+                : 'hover:bg-gray-700/50 hover:translate-x-1',
+            ]"
+          >
+            <svg
+              class="w-7 h-7 shrink-0 z-10"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+            >
+              <!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE -->
+              <path
+                fill="currentColor"
+                d="M7 17h2v-5H7zm8 0h2V7h-2zm-4 0h2v-3h-2zm0-5h2v-2h-2zm-6 9q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v14q0 .825-.587 1.413T19 21zm0-2h14V5H5zM5 5v14z"
+              />
             </svg>
             <span v-if="!isCollapsed" class="font-medium z-10">Reportes</span>
           </div>
@@ -92,22 +156,39 @@
       </nav>
 
       <div class="p-4 border-t border-gray-700/50 space-y-3">
-
-        <router-link to="/bodeguero/dashboard/asistencia" :class="[
-          'flex items-center rounded-xl transition-all duration-200 border border-transparent text-gray-400 group',
-          isCollapsed ? 'justify-center p-3' : 'gap-3 px-4 py-3'
-        ]" active-class="!bg-red-600/10 !text-red-500 !border-red-500/20">
-          <svg class="w-5 h-5 shrink-0 transition-transform duration-200 group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        <router-link
+          to="/bodeguero/dashboard/asistencia"
+          :class="[
+            'flex items-center rounded-xl transition-all duration-200 border border-transparent text-gray-400 group',
+            isCollapsed ? 'justify-center p-3' : 'gap-3 px-4 py-3',
+          ]"
+          active-class="!bg-red-600/10 !text-red-500 !border-red-500/20"
+        >
+          <svg
+            class="w-5 h-5 shrink-0 transition-transform duration-200 group-hover:scale-110"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
           </svg>
           <span v-if="!isCollapsed" class="text-sm font-medium">Asistencia Técnica</span>
         </router-link>
 
-        <div :class="[
-          'flex items-center rounded-xl transition-all duration-200',
-          isCollapsed ? 'justify-center p-2' : 'gap-3 p-3 bg-white/5 border border-white/5'
-        ]">
-          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center font-bold text-white shrink-0 shadow-lg">
+        <div
+          :class="[
+            'flex items-center rounded-xl transition-all duration-200',
+            isCollapsed ? 'justify-center p-2' : 'gap-3 p-3 bg-white/5 border border-white/5',
+          ]"
+        >
+          <div
+            class="w-10 h-10 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center font-bold text-white shrink-0 shadow-lg"
+          >
             {{ authStore.user?.nombres?.charAt(0) || 'B' }}
           </div>
 
@@ -121,67 +202,127 @@
           </div>
         </div>
 
-        <button @click="handleLogout" :class="[
-          'w-full flex items-center rounded-xl font-medium transition-all duration-200',
-          'bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-600',
-          'shadow-lg shadow-red-900/50 hover:shadow-red-900/70 hover:scale-[1.02] active:scale-[0.98]',
-          'group',
-          isCollapsed ? 'justify-center p-3' : 'gap-2 px-4 py-3'
-        ]">
-          <svg class="w-5 h-5 shrink-0 transition-transform duration-200 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+        <button
+          @click="handleLogout"
+          :class="[
+            'w-full flex items-center rounded-xl font-medium transition-all duration-200',
+            'bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-600',
+            'shadow-lg shadow-red-900/50 hover:shadow-red-900/70 hover:scale-[1.02] active:scale-[0.98]',
+            'group',
+            isCollapsed ? 'justify-center p-3' : 'gap-2 px-4 py-3',
+          ]"
+        >
+          <svg
+            class="w-5 h-5 shrink-0 transition-transform duration-200 group-hover:translate-x-1"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+            />
           </svg>
           <span v-if="!isCollapsed">Cerrar Sesión</span>
         </button>
-
       </div>
-
     </aside>
 
     <main class="flex-1 overflow-y-auto">
-
-      <div class="bg-gray-800/50 backdrop-blur-sm border-b border-gray-700/50 px-8 py-4 sticky top-0 z-10">
+      <div
+        class="bg-gray-800/50 backdrop-blur-sm border-b border-gray-700/50 px-8 py-4 sticky top-0 z-10"
+      >
         <div class="flex items-center justify-between">
           <h2 class="text-xl font-semibold text-white">{{ pageTitle }}</h2>
 
           <div class="flex items-center gap-4">
-            <div class="flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-lg p-1 pr-1 pl-4 shadow-sm">
+            <div
+              class="flex items-center gap-3 bg-gray-800 border border-gray-700 rounded-lg p-1 pr-1 pl-4 shadow-sm"
+            >
               <div class="flex flex-col">
-                <span class="text-[10px] text-gray-400 font-semibold uppercase tracking-wider">En pantalla</span>
+                <span class="text-[10px] text-gray-400 font-semibold uppercase tracking-wider"
+                  >En pantalla</span
+                >
                 <span class="text-sm font-bold text-white leading-none">
                   {{ turnoActual?.codigo_publico || 'Ninguno' }}
                 </span>
               </div>
 
-              <button @click="manejarSiguienteTurno" :disabled="isLoadingSiguiente" class="flex items-center gap-2 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-600 text-white font-medium py-2 px-4 rounded-lg shadow-lg shadow-red-900/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+              <button
+                @click="manejarSiguienteTurno"
+                :disabled="isLoadingSiguiente"
+                class="flex items-center gap-2 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-600 text-white font-medium py-2 px-4 rounded-lg shadow-lg shadow-red-900/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              >
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M13 5l7 7-7 7M5 5l7 7-7 7"
+                  />
                 </svg>
-                <span class="text-sm">{{ isLoadingSiguiente ? 'Procesando...' : 'Siguiente' }}</span>
+                <span class="text-sm">{{
+                  isLoadingSiguiente ? 'Procesando...' : 'Siguiente'
+                }}</span>
               </button>
             </div>
           </div>
 
           <div class="flex items-center gap-4">
             <div v-if="alertasCount > 0" class="relative">
-              <button @click="mostrarNotificaciones = !mostrarNotificaciones" class="p-2 rounded-lg hover:bg-gray-700/50 transition-colors group">
-                <svg class="w-5 h-5 text-red-400 group-hover:text-red-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+              <button
+                @click="mostrarNotificaciones = !mostrarNotificaciones"
+                class="p-2 rounded-lg hover:bg-gray-700/50 transition-colors group"
+              >
+                <svg
+                  class="w-5 h-5 text-red-400 group-hover:text-red-300"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                  />
                 </svg>
-                <span v-if="alertasCount > 0" class="absolute -top-1 -right-1 bg-red-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center border-2 border-gray-800">
+                <span
+                  v-if="alertasCount > 0"
+                  class="absolute -top-1 -right-1 bg-red-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center border-2 border-gray-800"
+                >
                   {{ alertasCount }}
                 </span>
               </button>
-              <div v-if="mostrarNotificaciones" class="absolute right-0 mt-2 w-96 bg-gray-800 border border-gray-700 rounded-xl shadow-2xl z-50 overflow-hidden">
-
-                <div class="px-4 py-3 border-b border-gray-700 bg-gradient-to-r from-red-900/20 to-red-800/20 flex justify-between items-center">
+              <div
+                v-if="mostrarNotificaciones"
+                class="absolute right-0 mt-2 w-96 bg-gray-800 border border-gray-700 rounded-xl shadow-2xl z-50 overflow-hidden"
+              >
+                <div
+                  class="px-4 py-3 border-b border-gray-700 bg-gradient-to-r from-red-900/20 to-red-800/20 flex justify-between items-center"
+                >
                   <h3 class="text-sm font-bold text-white flex items-center gap-2">
-                    <svg class="w-4 h-4 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.232 18.5c-.77.833.192 2.5 1.732 2.5z" />
+                    <svg
+                      class="w-4 h-4 text-red-400"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.232 18.5c-.77.833.192 2.5 1.732 2.5z"
+                      />
                     </svg>
                     Préstamos Vencidos
                   </h3>
-                  <button @click="mostrarNotificaciones = false" class="text-xs text-red-400 hover:text-red-300 bg-red-500/10 hover:bg-red-500/20 px-2 py-1 rounded transition-colors">
+                  <button
+                    @click="mostrarNotificaciones = false"
+                    class="text-xs text-red-400 hover:text-red-300 bg-red-500/10 hover:bg-red-500/20 px-2 py-1 rounded transition-colors"
+                  >
                     Cerrar
                   </button>
                 </div>
@@ -199,10 +340,15 @@
                 </div>
 
                 <div v-else-if="alertas.length > 0" class="max-h-80 overflow-y-auto">
-                  <div v-for="alerta in alertas" :key="alerta.id_alerta" class="p-4 border-b border-gray-700/50 hover:bg-gray-700/30 transition-colors">
-
+                  <div
+                    v-for="alerta in alertas"
+                    :key="alerta.id_alerta"
+                    class="p-4 border-b border-gray-700/50 hover:bg-gray-700/30 transition-colors"
+                  >
                     <div class="flex items-start gap-3">
-                      <div class="w-8 h-8 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
+                      <div
+                        class="w-8 h-8 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center text-white text-xs font-bold shrink-0"
+                      >
                         {{ alerta.usuario_nombre?.charAt(0) || '?' }}
                       </div>
 
@@ -213,19 +359,46 @@
 
                         <p class="text-gray-400 text-xs font-mono mt-0.5 truncate">
                           Préstamo:
-                          <span @click="copiarCodigo(alerta.codigo_prestamo, alerta.id_alerta)" class="text-blue-400 font-bold cursor-pointer hover:text-blue-300 transition-colors relative inline-flex items-center gap-1">
+                          <span
+                            @click="copiarCodigo(alerta.codigo_prestamo, alerta.id_alerta)"
+                            class="text-blue-400 font-bold cursor-pointer hover:text-blue-300 transition-colors relative inline-flex items-center gap-1"
+                          >
                             {{ alerta.codigo_prestamo || 'N/A' }}
-                            <svg v-if="codigoCopiadoId === alerta.id_alerta" class="w-3 h-3 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            <svg
+                              v-if="codigoCopiadoId === alerta.id_alerta"
+                              class="w-3 h-3 text-green-400"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M5 13l4 4L19 7"
+                              />
                             </svg>
-                            <svg v-else class="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            <svg
+                              v-else
+                              class="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                              />
                             </svg>
                           </span>
                         </p>
 
                         <div class="flex items-center gap-2 mt-2">
-                          <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-red-500/20 text-red-400 border border-red-500/50">
+                          <span
+                            class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-red-500/20 text-red-400 border border-red-500/50"
+                          >
                             {{ alerta.dias_vencido }} día{{ alerta.dias_vencido !== 1 ? 's' : '' }}
                           </span>
                           <span class="text-gray-500 text-xs">
@@ -236,7 +409,12 @@
 
                       <div class="text-red-400 shrink-0">
                         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.232 18.5c-.77.833.192 2.5 1.732 2.5z" />
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.232 18.5c-.77.833.192 2.5 1.732 2.5z"
+                          />
                         </svg>
                       </div>
                     </div>
@@ -248,18 +426,30 @@
                   <p class="text-gray-500 text-xs mt-1">Todos los préstamos están al día</p>
                 </div>
 
-                <div v-if="alertas.length > 0" class="px-4 py-3 border-t border-gray-700 bg-gray-900/50">
+                <div
+                  v-if="alertas.length > 0"
+                  class="px-4 py-3 border-t border-gray-700 bg-gray-900/50"
+                >
                   <div class="flex justify-between items-center">
-                    <span class="text-xs text-gray-400">{{ alertas.length }} alerta{{ alertas.length !== 1 ? 's' : ''
-                      }}</span>
-                    <span class="text-xs text-gray-500">Se resuelven automáticamente al devolver</span>
+                    <span class="text-xs text-gray-400"
+                      >{{ alertas.length }} alerta{{ alertas.length !== 1 ? 's' : '' }}</span
+                    >
+                    <span class="text-xs text-gray-500"
+                      >Se resuelven automáticamente al devolver</span
+                    >
                   </div>
                 </div>
               </div>
-              <div v-if="mostrarNotificaciones" @click="mostrarNotificaciones = false" class="fixed inset-0 z-40"></div>
+              <div
+                v-if="mostrarNotificaciones"
+                @click="mostrarNotificaciones = false"
+                class="fixed inset-0 z-40"
+              ></div>
             </div>
 
-            <div class="flex items-center gap-2 bg-green-500/20 border border-green-500/30 rounded-lg px-3 py-1">
+            <div
+              class="flex items-center gap-2 bg-green-500/20 border border-green-500/30 rounded-lg px-3 py-1"
+            >
               <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
               <span class="text-green-300 text-xs font-medium">Sistema Online</span>
             </div>
@@ -270,9 +460,7 @@
       <div class="p-8">
         <router-view />
       </div>
-
     </main>
-
   </div>
 </template>
 
@@ -336,7 +524,6 @@ const manejarSiguienteTurno = async () => {
 
     // Cargar el nuevo turno para actualizar la vista inmediatamente
     await cargarTurnoEnPantalla()
-
   } catch (error) {
     console.error('Fallo al saltar turno:', error)
   } finally {
@@ -352,7 +539,7 @@ const pageTitle = computed(() => {
     'dashboard-prestamos': 'Gestión de Préstamos',
     'dashboard-inventario': 'Gestión de Inventario',
     'dashboard-usuarios': 'Gestión de Usuarios',
-    'dashboard-reportes': 'Reportes y Análisis'
+    'dashboard-reportes': 'Reportes y Análisis',
   }
   return titles[route.name] || 'Smartlend by Fablab Juan Erices'
 })
@@ -367,7 +554,6 @@ const cargarAlertas = async () => {
 
     console.log('Alertas cargadas:', alertas.value.length)
     console.log('Alertas:', alertas.value)
-
   } catch (error) {
     console.error('Error al cargar alertas:', error)
     alertas.value = []
@@ -384,11 +570,11 @@ const cargarEstadisticas = async () => {
 
     const prestamos = await prestamosService.getPrestamos()
 
-    prestamosActivos.value = prestamos.filter(p => p.estado_prestamo === 'Pendiente').length
+    prestamosActivos.value = prestamos.filter((p) => p.estado_prestamo === 'Pendiente').length
 
     console.log(' Estadísticas cargadas')
   } catch (error) {
-    console.error('❌ Error al cargar estadísticas:', error)
+    console.error(' Error al cargar estadísticas:', error)
   }
 }
 
