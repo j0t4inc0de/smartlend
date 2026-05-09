@@ -118,13 +118,26 @@
                 />
               </div>
 
-              <div class="group col-span-1 md:col-span-2">
+              <div class="group">
                 <label
                   class="block text-xs font-medium text-gray-400 mb-1 ml-1 uppercase tracking-wider"
                   >Contraseña</label
                 >
                 <input
                   v-model="formulario.password"
+                  type="password"
+                  required
+                  class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white"
+                />
+              </div>
+
+              <div class="group">
+                <label
+                  class="block text-xs font-medium text-gray-400 mb-1 ml-1 uppercase tracking-wider"
+                  >Confirmar Contraseña</label
+                >
+                <input
+                  v-model="passwordConfirm"
                   type="password"
                   required
                   class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white"
@@ -183,6 +196,7 @@ import { alertaService } from '@/services/alertasService'
 const router = useRouter()
 const cargando = ref(false)
 const carreras = ref([])
+const passwordConfirm = ref('')
 
 // Estado del formulario (Cumpliendo reglas del backend: NO id_rol)
 const formulario = ref({
@@ -213,6 +227,10 @@ onMounted(async () => {
 })
 
 const manejarRegistro = async () => {
+  if (formulario.value.password !== passwordConfirm.value) {
+    alertaService.error('Las contraseñas no coinciden. Por favor, verifica.')
+    return
+  }
   cargando.value = true
   try {
     // Si es docente, nos aseguramos de no enviar carrera
