@@ -327,7 +327,7 @@ const manejarRegistro = async () => {
 
     // Mostramos mensaje de éxito del backend
     alertaService.success(respuesta.mensaje || '¡Registro exitoso!')
-    router.push('/registro-institucional')
+    router.push('/')
   } catch (error) {
     // Mostramos el error del backend
     const mensajeError = error.error || error.detail || 'Error al intentar registrar el usuario.'
