@@ -29,6 +29,29 @@ export const authService = {
       throw new Error(errorMessage)
     }
   },
+
+  // Para registrar usuarios por ROL definido según la universidad
+  async registrarInstitucional(form) {
+    const response = await fetch(`${API_BASE_URL}/usuarios/api/registro-institucional/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        rut: form.rut,
+        nombres: form.nombres,
+        apellidos: form.apellidos,
+        correo: form.correo,
+        password: form.password,
+        id_carrera: form.idCarrera || undefined,
+        codigo_acceso: form.codigoAcceso.trim(),
+      }),
+    })
+    const data = await response.json()
+    if (!response.ok) {
+      throw data
+    }
+    return data
+  },
+
   // Inicia sesion con reconocimiento facial: Toma la imagen y la envia en un formdata al servidor para que la procese
   async loginWithFace(imageBlob) {
     try {
