@@ -515,6 +515,17 @@
             </div>
           </div>
 
+          <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2"
+              >Fecha Mantención Preventiva</label
+            >
+            <input
+              v-model="nuevaHerramienta.fecha_mantencion"
+              type="date"
+              class="w-full bg-gray-700 text-white rounded-lg px-4 py-3 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+            />
+          </div>
+
           <!-- Código de barras -->
           <div>
             <label class="block text-sm font-medium text-gray-300 mb-2">Código de Barras *</label>
@@ -575,6 +586,17 @@
               v-model="herramientaEditando.codigo_barras"
               type="text"
               required
+              class="w-full bg-gray-700 text-white rounded-lg px-4 py-3 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2"
+              >Fecha Mantención Preventiva</label
+            >
+            <input
+              v-model="herramientaEditando.fecha_mantencion"
+              type="date"
               class="w-full bg-gray-700 text-white rounded-lg px-4 py-3 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-500"
             />
           </div>
@@ -701,6 +723,20 @@
               <p class="text-white font-medium font-mono">{{ herramienta.codigo_barras }}</p>
               <p class="text-gray-400 text-sm">
                 Adquirido: {{ formatFecha(herramienta.fecha_adquisicion) }}
+              </p>
+              <p
+                v-if="herramienta.fecha_mantencion"
+                class="text-yellow-400 text-sm mt-1 flex items-center gap-1"
+              >
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                Mantención: {{ formatFecha(herramienta.fecha_mantencion) }}
               </p>
             </div>
             <div class="flex items-center gap-3">
@@ -1088,6 +1124,7 @@ const nuevaHerramienta = ref({
   estado_herramienta: 'Nuevo',
   id_tipo_herramienta: '',
   fecha_adquisicion: new Date().toISOString(),
+  fecha_mantencion: '',
   disponible: true,
 })
 
@@ -1405,6 +1442,7 @@ const abrirModalNuevaHerramienta = () => {
     estado_herramienta: 'Nuevo',
     id_tipo_herramienta: '',
     fecha_adquisicion: new Date().toISOString(),
+    fecha_mantencion: '',
     disponible: true,
   }
   modalNuevaHerramienta.value = true
