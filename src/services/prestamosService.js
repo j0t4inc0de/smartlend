@@ -135,7 +135,7 @@ export const prestamosService = {
       return prestamosFormateados
     } catch (error) {
       console.error('Error al obtener préstamos:', error)
-
+      // testtest
       // Fallback: devolver cache si existe
       if (this._cache.prestamos.length > 0) {
         console.log('Usando cache por error de conexión')
