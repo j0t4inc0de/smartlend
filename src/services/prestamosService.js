@@ -66,7 +66,6 @@ export const prestamosService = {
 
   //  Obtener usuario individual con fallback al cache
   async getUsuarioConFallback(usuarioId) {
-    // 1. Buscar primero en cache
     const usuarioEnCache = this._usuariosCache.usuarios.find((u) => u.id === usuarioId)
 
     if (usuarioEnCache) {
@@ -99,7 +98,6 @@ export const prestamosService = {
 
   async getPrestamos(useCache = true) {
     try {
-      // 1. Verificar cache válido
       if (useCache && this.isCacheValid() && this._cache.prestamos.length > 0) {
         console.log('Usando préstamos desde cache')
         return this._cache.prestamos
@@ -130,7 +128,6 @@ export const prestamosService = {
         estado: this.determinarEstado(prestamo),
       }))
 
-      // 4. Actualizar cache
       this._cache.prestamos = prestamosFormateados
       this._cache.lastUpdate = Date.now()
 
