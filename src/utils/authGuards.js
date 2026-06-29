@@ -6,6 +6,11 @@ import { useBodegueroAuthStore } from '@/stores/bodegueroAuthStore'
 export const requiresBodegueroAuth = (to, from, next) => {
   const authStore = useBodegueroAuthStore()
 
+  // Inicializar autenticación desde localStorage si no está marcada en el estado reactivo
+  if (!authStore.isAuthenticated) {
+    authStore.initializeAuth()
+  }
+
   if (!authStore.isAuthenticated) {
     // Redirigir a login del bodeguero si no está autenticado
     next('/bodeguero/login')
@@ -17,6 +22,11 @@ export const requiresBodegueroAuth = (to, from, next) => {
 // Guard para evitar que usuarios autenticados vean login again
 export const redirectIfAuthenticated = (to, from, next) => {
   const authStore = useBodegueroAuthStore()
+
+  // Inicializar autenticación desde localStorage si no está marcada en el estado reactivo
+  if (!authStore.isAuthenticated) {
+    authStore.initializeAuth()
+  }
 
   if (authStore.isAuthenticated) {
     // Si ya está logueado, redirigir al dashboard
