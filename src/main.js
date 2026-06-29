@@ -10,7 +10,8 @@ import 'vue-sonner/style.css'
 axios.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token')
-    if (token && token !== 'undefined' && token !== 'null') {
+    // No enviar el token a endpoints de autenticación (/auth/) para evitar errores 401 si el token expiró o es inválido
+    if (token && token !== 'undefined' && token !== 'null' && !config.url.includes('/auth/')) {
       config.headers.Authorization = `Token ${token}`
     }
     return config

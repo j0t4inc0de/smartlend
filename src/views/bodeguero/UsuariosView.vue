@@ -4,7 +4,7 @@
             <h3 class="text-lg font-semibold text-white">Listado de Usuarios</h3>
 
             <div class="flex gap-3">
-                <button @click="router.push('/registrar-usuario')" class="bg-gray-700 hover:bg-gray-600 border border-gray-600 text-white px-4 py-2 rounded-lg font-medium transition-colors text-sm">
+                <button @click="abrirRegistroNuevaPestana" class="bg-gray-700 hover:bg-gray-600 border border-gray-600 text-white px-4 py-2 rounded-lg font-medium transition-colors text-sm">
                     Registrar Usuario
                 </button>
                 <!-- <button @click="abrirModalCrear"
@@ -150,6 +150,11 @@ import { alertaService } from '@/services/alertasService'
 
 const router = useRouter()
 const usuariosStore = useUsuariosStore()
+
+const abrirRegistroNuevaPestana = () => {
+    const routeData = router.resolve({ name: 'registrar-usuario' })
+    window.open(routeData.href, '_blank')
+}
 
 const mostrarModal = ref(false)
 const usuarioEditando = ref(null)
