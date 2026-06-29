@@ -847,10 +847,18 @@ const registerUser = async () => {
     data.append('nombres', formData.value.nombres)
     data.append('apellidos', formData.value.apellidos)
     data.append('correo', formData.value.correo)
-    data.append('id_rol', formData.value.rol)
+
+    // El backend espera el nombre/código del rol y de la carrera en lugar de sus IDs numéricos
+    const selectedRole = roles.value.find((r) => r.id_rol === formData.value.rol)
+    const rolEnvio = selectedRole ? (selectedRole.codigo || selectedRole.nombre) : ''
+    data.append('rol', rolEnvio)
 
     if (formData.value.carrera) {
-      data.append('id_carrera', formData.value.carrera)
+      const selectedCarrera = carreras.value.find((c) => c.id_carrera === formData.value.carrera)
+      const carreraEnvio = selectedCarrera ? selectedCarrera.nombre : ''
+      if (carreraEnvio) {
+        data.append('carrera', carreraEnvio)
+      }
     }
 
     result = await authService.registerUserWithFace(data)
