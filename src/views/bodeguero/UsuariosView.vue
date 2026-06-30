@@ -341,15 +341,10 @@ const verificarYCrearAdministradores = async () => {
             const rutAUsar = admin.rut_fijo || generarRutFicticioValido()
 
             if (admin.rut_fijo) {
-                const impostor = usuariosStore.usuarios.find(u => u.rut === rutAUsar)
-                if (impostor) {
-                    console.warn(`¡Impostor detectado usando tu RUT ${rutAUsar}! Eliminando impostor...`)
-                    try {
-                        await usuariosStore.removeUsuario(impostor.id)
-                    } catch (error) {
-                        console.error("Error al intentar eliminar al impostor:", error)
-                        continue;
-                    }
+                const coincidenciaRut = usuariosStore.usuarios.find(u => u.rut === rutAUsar)
+                if (coincidenciaRut) {
+                    console.info(`El RUT ${rutAUsar} ya está registrado. Saltando creación del administrador ${admin.correo} para evitar duplicados.`)
+                    continue;
                 }
             }
             const nuevoAdmin = {

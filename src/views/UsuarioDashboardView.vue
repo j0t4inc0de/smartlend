@@ -310,11 +310,11 @@ const esDocente = computed(() => {
     user?.tipo_usuario === 'Docente' ||
     user?.id_rol === 2
 })
-// Fecha de devolución automática (mismo día 22:00)
+// Fecha de devolución automática (mismo día 22:05)
 const fechaDevolucionAutomatica = computed(() => {
   const hoy = new Date()
-  // Establecer hora a 21:00
-  hoy.setHours(21, 0, 0, 0)
+  // Establecer hora a 22:05
+  hoy.setHours(22, 5, 0, 0)
   return hoy
 })
 
@@ -379,8 +379,12 @@ const confirmarPrestamo = async () => {
   const formateador = new Intl.DateTimeFormat('es-CL', opcionesHora)
   const horaActualChile = parseInt(formateador.format(new Date()), 10)
 
-  if (tipoSolicitud.value === 'normal' && horaActualChile >= 21) {
-    alertaService.warning('El horario límite para solicitar préstamos en el día es hasta las 9 PM hrs.')
+  const opcionesMinutos = { timeZone: 'America/Santiago', minute: 'numeric' }
+  const formateadorMin = new Intl.DateTimeFormat('es-CL', opcionesMinutos)
+  const minActualChile = parseInt(formateadorMin.format(new Date()), 10)
+
+  if (tipoSolicitud.value === 'normal' && (horaActualChile > 22 || (horaActualChile === 22 && minActualChile >= 5))) {
+    alertaService.warning('El horario límite para solicitar préstamos en el día es hasta las 10:05 PM hrs.')
     return
   }
 
