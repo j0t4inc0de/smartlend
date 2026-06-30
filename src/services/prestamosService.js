@@ -196,6 +196,7 @@ export const prestamosService = {
       id_usuario: data.id_usuario,
       tipos: data.tipos,
     })
+    this.clearCache() // Limpiar cache para recargar lista inmediatamente
     return response.data
   },
 
@@ -208,6 +209,7 @@ export const prestamosService = {
         tipos: data.tipos,
       },
     )
+    this.clearCache() // Limpiar cache para recargar lista inmediatamente
     return response.data
   },
 
@@ -228,6 +230,7 @@ export const prestamosService = {
       `${API_BASE_URL}/operaciones/api/prestamos/${prestamoId}/asignar_herramientas/`,
       { codigos },
     )
+    this.clearCache() // Limpiar cache para recargar lista inmediatamente
     return response.data
   },
 
@@ -236,6 +239,7 @@ export const prestamosService = {
       `${API_BASE_URL}/operaciones/api/prestamos/${prestamoId}/devolver_herramientas/`,
       { codigos, estados },
     )
+    this.clearCache() // Limpiar cache para recargar lista inmediatamente
     return response.data
   },
 
