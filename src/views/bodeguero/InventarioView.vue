@@ -225,7 +225,7 @@
       v-if="modalNuevoTipo"
       class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4"
     >
-      <div class="bg-gray-800 rounded-xl p-6 max-w-lg w-full border border-gray-700">
+      <div class="bg-gray-800 rounded-xl p-6 max-w-lg w-full border border-gray-700 max-h-[90vh] overflow-y-auto">
         <div class="flex justify-between items-center mb-6">
           <h3 class="text-xl font-bold text-white">Crear Nuevo Tipo de Herramienta</h3>
           <button @click="cerrarModalNuevoTipo" class="text-gray-400 hover:text-white">
@@ -363,7 +363,7 @@
       v-if="modalEditarTipo"
       class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4"
     >
-      <div class="bg-gray-800 rounded-xl p-6 max-w-lg w-full border border-gray-700">
+      <div class="bg-gray-800 rounded-xl p-6 max-w-lg w-full border border-gray-700 max-h-[90vh] overflow-y-auto">
         <div class="flex justify-between items-center mb-6">
           <h3 class="text-xl font-bold text-white">Editar Tipo de Herramienta</h3>
           <button @click="modalEditarTipo = false" class="text-gray-400 hover:text-white">
@@ -440,7 +440,7 @@
       v-if="modalNuevaHerramienta"
       class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4"
     >
-      <div class="bg-gray-800 rounded-xl p-6 max-w-lg w-full border border-gray-700">
+      <div class="bg-gray-800 rounded-xl p-6 max-w-lg w-full border border-gray-700 max-h-[90vh] overflow-y-auto">
         <div class="flex justify-between items-center mb-6">
           <h3 class="text-xl font-bold text-white">Añadir Nueva Herramienta</h3>
           <button @click="cerrarModalNuevaHerramienta" class="text-gray-400 hover:text-white">
